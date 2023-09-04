@@ -4,7 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routes.about import router as about_router
 
-app = FastAPI()
+app = FastAPI(
+    root_path="/",
+    debug=True,
+    title="Primal Formulas API",
+)
+app.include_router(about_router, prefix="/api")
 
 origins = ["http://localhost:4200", "http://localhost:8000"]
 
