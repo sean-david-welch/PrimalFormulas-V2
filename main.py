@@ -2,6 +2,8 @@ from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from routes.about import router as about_router
+
 app = FastAPI()
 
 origins = ["http://localhost:4200", "http://localhost:8000"]
