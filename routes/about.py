@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 
+from database.database import create_static
+
 router = APIRouter()
 
 
