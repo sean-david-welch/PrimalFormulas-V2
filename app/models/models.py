@@ -6,20 +6,20 @@ from utils.config import settings
 
 
 class Static(BaseModel):
-    id: Optional[str] = Field(default_factory=uuid4, example="null")
-    title: str = Field(default="About Title")
+    id: Optional[str] = Field(default="string")
+    title: str = Field(default="Static Title")
     content: str = Field(default=f"{settings['BASE_URL']}/images/default.jpg")
 
 
 class AboutContent(BaseModel):
-    id: Optional[str] = Field(default_factory=uuid4, example="null")
+    id: Optional[str] = Field(default="string")
     title: str = Field(default="About Title")
     description: str = Field(default="About Description")
     image: str = Field(default=f"{settings['BASE_URL']}/images/default.jpg")
 
 
 class Product(BaseModel):
-    id: Optional[str] = Field(default_factory=uuid4, example="null")
+    id: Optional[str] = Field(default="string")
     title: str = Field(default="Product Title")
     desription: str = Field(default="Product Description")
     price: float = Field(default=1.0)
@@ -27,7 +27,7 @@ class Product(BaseModel):
 
 
 class User(BaseModel):
-    id: Optional[str] = Field(default_factory=uuid4, example="null")
+    id: Optional[str] = Field(default="string")
     name: str = Field(default="User Name")
     email: Optional[EmailStr] = Field(default="johndoe@example.com")
     password_hash: str = Field(default="password")
@@ -50,7 +50,7 @@ class Address(BaseModel):
 
 
 class Customer(BaseModel):
-    id: Optional[str] = Field(default_factory=uuid4, example="null")
+    id: Optional[str] = Field(default="string")
     name: str = Field(default="Customer Name")
     address: Address = Field(default=Address())
     email: Optional[EmailStr] = Field(default="johndoe@example.come")
@@ -68,7 +68,7 @@ class PaymentIntent(BaseModel):
 
 
 class Order(BaseModel):
-    id: Optional[str] = Field(default_factory=uuid4, example="null")
+    id: Optional[str] = Field(default="string")
     customer: Customer = Field(default=Customer())
     cart_items: List[CartItem] = Field(default=[CartItem()])
     receipt_email: Optional[EmailStr] = Field(default="guest@primalformulas.ie")

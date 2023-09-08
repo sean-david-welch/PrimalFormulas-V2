@@ -4,6 +4,7 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from routes.about import router as about_router
+from routes.static import router as static_router
 
 app = FastAPI(
     root_path="/",
@@ -42,3 +43,4 @@ if __name__ == "__main__":
     )
 
 app.include_router(about_router, prefix="/api")
+app.include_router(static_router, prefix="/api")
