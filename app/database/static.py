@@ -1,10 +1,11 @@
 from models.models import Static
 from database.database import (
+    collections,
+    handle_http_error,
     database_insert_one,
     database_update_one,
     database_delete_one,
 )
-from database.database import collections
 from pydantic import ValidationError
 from fastapi.exceptions import HTTPException
 
@@ -18,14 +19,14 @@ async def get_statc(title: str) -> Static:
     try:
         return Static(**static_data)
     except ValidationError as error:
-        raise HTTPException(status_code=400, detail=str(error))
+        handle_http_error(error)
 
 
 async def create_static(static: Static) -> Static:
     try:
         result = await database_insert_one(collections["static"], static)
     except ValidationError as error:
-        raise HTTPException(status_code=400, detail=str(error))
+        handle_http_error(error)
 
     return result
 
@@ -34,7 +35,7 @@ async def update_static(static: Static, static_id: str) -> Static:
     try:
         result = await database_update_one(static_id, static, collections["static"])
     except ValidationError as error:
-        raise HTTPException(status_code=400, detail=str(error))
+        handle_http_error(error)
 
     return result
 
@@ -43,6 +44,6 @@ async def delete_static(static_id: str) -> None:
     try:
         result = await database_delete_one(static_id, collections["static"])
     except ValidationError as error:
-        raise HTTPException(status_code=400, detail=str(error))
+        handle_http_error(error)
 
     return result

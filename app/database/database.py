@@ -1,4 +1,5 @@
 from uuid import uuid4
+from typing import List, Optional
 from pydantic import BaseModel
 from fastapi.exceptions import HTTPException
 
@@ -25,6 +26,11 @@ collections = {
 }
 
 
+def handle_http_error(error: HTTPException):
+    if isinstance(error, HTTPException):
+        raise HTTPException(status_code=400, detail=str(error))
+
+
 def database_handle_errors(error):
     if isinstance(error, DuplicateKeyError):
         raise HTTPException(status_code=409, detail="Duplicate key")
@@ -34,6 +40,30 @@ def database_handle_errors(error):
         raise HTTPException(status_code=503, detail="Cannot connect to MongoDB")
     else:
         raise HTTPException(status_code=500, detail="Database Operation Failed")
+
+
+async def database_find_all(collection: AsyncIOMotorCollection) -> List[dict]:
+    cursor = collection.find({})
+
+    try:
+        result = await cursor.to_list(length=20)
+    except Exception as error:
+        database_handle_errors(error)
+
+    return result
+
+
+async def database_find_one(
+    collection: AsyncIOMotorCollection, model_id: str
+) -> Optional[dict]:
+    try:
+        result = collection.find_one({"id": model_id})
+        if not result:
+            raise HTTPException(status_code=404, detail="Record not found")
+
+    except Exception as error:
+        database_handle_errors(error)
+    return result
 
 
 async def database_insert_one(
