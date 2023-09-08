@@ -42,5 +42,5 @@ if __name__ == "__main__":
         reload=True,
     )
 
-app.include_router(about_router, prefix="/api")
-app.include_router(static_router, prefix="/api")
+app.include_router(about_router, prefix="/api/about")
+app.include_router(static_router, prefix="/api/static")

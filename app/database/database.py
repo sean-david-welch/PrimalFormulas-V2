@@ -1,10 +1,17 @@
-from utils.config import settings
-from pydantic import ValidationError
+from uuid import uuid4
+from pydantic import BaseModel
 from fastapi.exceptions import HTTPException
-from motor.motor_asyncio import AsyncIOMotorClient
 
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+from pymongo.results import InsertOneResult, UpdateResult, DeleteResult
+from pymongo.errors import (
+    DuplicateKeyError,
+    OperationFailure,
+    ServerSelectionTimeoutError,
+)
+
+from utils.config import settings
 from models.models import Static, AboutContent, Product, User
-from .utils import database_insert_one, database_update_one, database_delete_one
 
 client = AsyncIOMotorClient(settings["MONGO_URI"])
 
@@ -18,44 +25,54 @@ collections = {
 }
 
 
-##### Static Funtions #####
-async def get_statc(title: str) -> Static:
-    static_data = await collections["static"].find_one({"title": title})
+def database_handle_errors(error):
+    if isinstance(error, DuplicateKeyError):
+        raise HTTPException(status_code=409, detail="Duplicate key")
+    elif isinstance(error, OperationFailure):
+        raise HTTPException(status_code=500, detail="Operation failed")
+    elif isinstance(error, ServerSelectionTimeoutError):
+        raise HTTPException(status_code=503, detail="Cannot connect to MongoDB")
+    else:
+        raise HTTPException(status_code=500, detail="Database Operation Failed")
 
-    if not static_data:
-        raise HTTPException(status_code=404, detail="Model data not found")
+
+async def database_insert_one(
+    collection: AsyncIOMotorCollection, data: BaseModel
+) -> InsertOneResult:
+    data.id = str(uuid4())
 
     try:
-        return Static(**static_data)
-    except ValidationError as error:
-        raise HTTPException(status_code=400, detail=str(error))
-
-
-async def create_static(static: Static) -> Static:
-    try:
-        result = await database_insert_one(collections["static"], static)
-    except ValidationError as error:
-        raise HTTPException(status_code=400, detail=str(error))
+        result = await collection.insert_one(data.model_dump())
+    except Exception as error:
+        database_handle_errors(error)
 
     return result
 
 
-async def update_static(static: Static, static_id: str) -> Static:
+async def database_update_one(
+    model_id: str,
+    model_data: BaseModel,
+    collection: AsyncIOMotorCollection,
+) -> UpdateResult:
     try:
-        result = await database_update_one(static_id, static, collections["static"])
-    except ValidationError as error:
-        raise HTTPException(status_code=400, detail=str(error))
+        result = await collection.update_one(
+            {"id": model_id}, {"$set": model_data.model_dump(exclude="id")}
+        )
+    except Exception as error:
+        database_handle_errors(error)
 
     return result
 
 
-async def delete_static(static_id: str) -> None:
+async def database_delete_one(
+    model_id: str, collection: AsyncIOMotorCollection
+) -> DeleteResult:
     try:
-        result = await database_delete_one(static_id, collections["static"])
-    except ValidationError as error:
-        raise HTTPException(status_code=400, detail=str(error))
+        result = await collection.delete_one({"id": model_id})
+    except Exception as error:
+        database_handle_errors(error)
+
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Record not found")
 
     return result
-
-
-#####
