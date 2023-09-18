@@ -45,7 +45,7 @@ async def update_about(
 
 async def delete_about(about_id: str) -> None:
     try:
-        result = await database_find_all(about_id, about_collection)
+        result = await database_delete_one(about_id, about_collection)
     except ValidationError as error:
         handle_http_error(error)
 

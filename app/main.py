@@ -1,10 +1,14 @@
 import uvicorn
+
 from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from routes.about import router as about_router
 from routes.static import router as static_router
+
+from boto3 import client as botoclient
+from utils.config import settings
 
 app = FastAPI(
     root_path="/",
@@ -22,6 +26,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+s3 = botoclient(
+    "s3",
+    aws_access_key_id=settings["AWS_ACCESS_KEY_ID"],
+    aws_secret_access_key=settings["AWS_SECRET_ACCESS_KEY"],
+)
+BUCKET_NAME = "primalformulas-bucket"
+
 
 @app.get("/", response_model=None)
 def root() -> RedirectResponse | JSONResponse:
@@ -34,6 +45,9 @@ def root() -> RedirectResponse | JSONResponse:
         )
 
 
+app.include_router(about_router, prefix="/api/about")
+app.include_router(static_router, prefix="/api/static")
+
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
@@ -41,6 +55,3 @@ if __name__ == "__main__":
         port=8000,
         reload=True,
     )
-
-app.include_router(about_router, prefix="/api/about")
-app.include_router(static_router, prefix="/api/static")
