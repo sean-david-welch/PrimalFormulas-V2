@@ -8,7 +8,6 @@ from database.database import (
     database_update_one,
     database_delete_one,
 )
-from pydantic import ValidationError
 from fastapi.exceptions import HTTPException
 
 
@@ -16,18 +15,18 @@ about_collection = collections["about"]
 
 
 async def get_all_abouts() -> List[AboutContent]:
-    about_data = await database_find_all(about_collection)
+    try:
+        result = await database_find_all(about_collection)
 
-    if not about_data:
-        raise HTTPException(status_code=404, detail="Couldn't find data")
-
-    return about_data
+    except HTTPException as error:
+        handle_http_error(error)
+    return result
 
 
 async def create_about(about: AboutContent) -> AboutContent | HTTPException:
     try:
         result = await database_insert_one(about_collection, about)
-    except ValidationError as error:
+    except HTTPException as error:
         handle_http_error(error)
     return result
 
@@ -37,7 +36,7 @@ async def update_about(
 ) -> AboutContent | HTTPException:
     try:
         result = await database_update_one(about_id, about, about_collection)
-    except ValidationError as error:
+    except HTTPException as error:
         handle_http_error(error)
 
     return result
@@ -46,7 +45,7 @@ async def update_about(
 async def delete_about(about_id: str) -> None:
     try:
         result = await database_delete_one(about_id, about_collection)
-    except ValidationError as error:
+    except HTTPException as error:
         handle_http_error(error)
 
     return result

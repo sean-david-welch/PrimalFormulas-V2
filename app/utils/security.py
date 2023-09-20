@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 
 from utils.config import settings
 from models.models import User, Token
-from database.auth import get_user
+from database.users import get_user
 
 SECRET_KEY = settings["SECRET_KEY"]
 ALGORITHM = settings["ALGORITHM"]
