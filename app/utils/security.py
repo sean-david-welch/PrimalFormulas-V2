@@ -80,7 +80,7 @@ async def is_authenticated(token: str = Depends(cookie_oauth2_scheme)) -> bool:
         username: Optional[str] = payload.get("sub")
         return username is not None
 
-    except JWTError as error:
+    except JWTError:
         return False
 
 
@@ -91,7 +91,8 @@ async def get_current_user(token: str = Depends(cookie_oauth2_scheme)) -> User:
         if username is None:
             raise credentials_exception
 
-        expiration: datetime = payload.get("exp")
+        expiration: datetime = datetime.fromtimestamp(payload.get("exp"))
+
         if expiration and datetime.utcnow() > expiration:
             raise credentials_exception
 

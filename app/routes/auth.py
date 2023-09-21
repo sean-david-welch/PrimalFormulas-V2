@@ -49,9 +49,9 @@ async def logout(response: Response):
     return {"message": "Logged out successfully"}
 
 
-@router.get("/current-user", response_model=User)
+@router.get("/current-user")
 async def return_current_user(current_user: User = Depends(get_current_user)):
-    return await current_user
+    return current_user.model_dump(exclude="password")
 
 
 @router.get("/is-authenticated")
@@ -67,4 +67,5 @@ async def get_users(authenticated: bool = Depends(is_authenticated)):
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
-    return response
+    if authenticated:
+        return response

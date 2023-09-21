@@ -26,12 +26,10 @@ async def get_user(username: str) -> User:
     user = User(**result)
     return user
 
-    # return user.model_dump(exclude="password")
-
 
 async def get_all_users() -> List[User]:
     try:
-        result = database_find_all(user_collections)
+        result = await database_find_all(user_collections)
 
     except HTTPException as error:
         handle_http_error(error)
