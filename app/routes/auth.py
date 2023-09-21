@@ -30,7 +30,7 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
     access_token_expires = timedelta(
         minutes=int(settings["ACCESS_TOKEN_EXPIRE_MINUTES"])
     )
-    access_token = create_access_token({"sub": user.model_dump()}, access_token_expires)
+    access_token = create_access_token({"sub": user.username}, access_token_expires)
 
     response.set_cookie(
         key="access_token",
@@ -46,7 +46,7 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
 @router.post("/logout")
 async def logout(response: Response):
     response.delete_cookie("access_token")
-    return await {"message": "Logged out successfully"}
+    return {"message": "Logged out successfully"}
 
 
 @router.get("/current-user", response_model=User)
@@ -56,7 +56,7 @@ async def return_current_user(current_user: User = Depends(get_current_user)):
 
 @router.get("/is-authenticated")
 async def get_authentication_status(authenticated: bool = Depends(is_authenticated)):
-    return await {"is_authenticated": authenticated}
+    return {"is_authenticated": authenticated}
 
 
 @router.get("/users", response_model=List[User])

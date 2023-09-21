@@ -38,9 +38,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expires = datetime.utcnow() + expires_delta
     else:
-        expires = datetime.utcnow() + timedelta(
-            minutes=int(settings["ACCESS_TOKEN_EXPIRE_MINUTES"])
-        )
+        expires = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
     to_encode.update({"exp": expires})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
@@ -74,14 +72,15 @@ async def cookie_oauth2_scheme(request: Request) -> str:
 
 
 async def is_authenticated(token: str = Depends(cookie_oauth2_scheme)) -> bool:
-    try:
-        if username:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            username: Optional[str] = payload.get("sub")
-            return True
-
+    if token is None:
         return False
-    except JWTError:
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: Optional[str] = payload.get("sub")
+        return username is not None
+
+    except JWTError as error:
         return False
 
 
