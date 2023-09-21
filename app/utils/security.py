@@ -51,7 +51,7 @@ async def authenticate_user(username: str, password: str) -> User:
         if user is None:
             raise HTTPException(status_code=401, detail="User not found")
 
-        if not verify_password(password, user.password_hash):
+        if not verify_password(password, user.password):
             raise HTTPException(status_code=401, detail="Incorrect password")
 
         return user
@@ -59,7 +59,7 @@ async def authenticate_user(username: str, password: str) -> User:
     except HTTPException as http_error:
         raise http_error
     except Exception as error:
-        raise HTTPException(status_code=500, detail="Internal server error")
+        raise HTTPException(status_code=500, detail="Internal server error" + error)
 
 
 async def cookie_oauth2_scheme(request: Request) -> str:
@@ -84,15 +84,25 @@ async def is_authenticated(token: str = Depends(cookie_oauth2_scheme)) -> bool:
 async def get_current_user(token: str = Depends(cookie_oauth2_scheme)) -> User:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+
+        expiration: datetime = payload.get("exp")
+        if expiration and datetime.utcnow() > expiration:
+            raise credentials_exception
+
     except JWTError:
         raise credentials_exception
 
-    username = payload.get("sub")
-    if username is None:
+    current_user = await get_user(username)
+    if current_user is None:
         raise credentials_exception
 
-    user = await get_user(username)
-    if user is None:
-        raise credentials_exception
+    return current_user
 
-    return user
+
+async def is_superuser(current_user: User = Depends(get_current_user)):
+    if current_user.role.value != "superuser":
+        raise HTTPException(status_code=403, detail="Permission Denied")
+    return current_user

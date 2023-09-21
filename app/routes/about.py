@@ -22,7 +22,7 @@ async def get_about_content():
 async def post_about_content(
     about: AboutContent, user: User = Depends(get_current_user)
 ) -> AboutContent:
-    if not user.is_superuser:
+    if user.role.value != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:
@@ -37,7 +37,7 @@ async def post_about_content(
 async def put_about_content(
     about: AboutContent, about_id: str, user: User = Depends(get_current_user)
 ) -> AboutContent:
-    if not user.is_superuser:
+    if not user.role.value == "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:
@@ -52,7 +52,7 @@ async def put_about_content(
 async def delete_about_content(
     about_id: str, user: User = Depends(get_current_user)
 ) -> None:
-    if not user.is_superuser:
+    if not user.role.value == "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:

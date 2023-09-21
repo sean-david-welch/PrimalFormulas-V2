@@ -11,7 +11,7 @@ from fastapi.exceptions import HTTPException
 static_collection = collections["static"]
 
 
-async def get_statc(title: str) -> Static:
+async def get_static(title: str) -> Static:
     try:
         result = await static_collection.find_one({"title": title})
 

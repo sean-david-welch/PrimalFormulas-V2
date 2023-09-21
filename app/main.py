@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.about import router as about_router
 from routes.static import router as static_router
 from routes.auth import router as auth_router
+from routes.register import router as register_router
 
 
 app = FastAPI(
@@ -50,6 +51,7 @@ def root() -> RedirectResponse | JSONResponse:
 app.include_router(about_router, prefix="/api/about")
 app.include_router(static_router, prefix="/api/static")
 app.include_router(auth_router, prefix="/api/auth")
+app.include_router(register_router, prefix="/api/register")
 
 if __name__ == "__main__":
     uvicorn.run(

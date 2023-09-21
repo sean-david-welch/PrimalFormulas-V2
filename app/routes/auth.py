@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from fastapi.security import OAuth2PasswordRequestForm
@@ -13,6 +14,7 @@ from utils.security import (
     create_access_token,
     is_authenticated,
 )
+from database.users import get_all_users
 
 router = APIRouter()
 
@@ -42,14 +44,25 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
 @router.post("/logout")
 async def logout(response: Response):
     response.delete_cookie("access_token")
-    return {"message": "Logged out successfully"}
+    return await {"message": "Logged out successfully"}
 
 
 @router.get("/current-user", response_model=User)
 async def return_current_user(current_user: User = Depends(get_current_user)):
-    return current_user
+    return await current_user
 
 
 @router.get("/is-authenticated")
 async def get_authentication_status(authenticated: bool = Depends(is_authenticated)):
-    return {"is_authenticated": authenticated}
+    return await {"is_authenticated": authenticated}
+
+
+@router.get("/users", response_model=List[User])
+async def get_users(authenticated: bool = Depends(is_authenticated)):
+    try:
+        response = await get_all_users()
+
+    except HTTPException as error:
+        return {"Error": error.detail}, error.status_code
+
+    return response
