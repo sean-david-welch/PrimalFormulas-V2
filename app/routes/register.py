@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 
 from models.models import User
 
 from utils.security import (
-    is_superuser,
+    get_current_user,
     hash_password,
 )
 from database.users import create_user, update_user, delete_user, get_user
@@ -13,7 +13,10 @@ router = APIRouter()
 
 
 @router.post("/create-user")
-async def register(user: User):
+async def register(user: User, current_user: User = Depends(get_current_user)):
+    if current_user.role != "superuser":
+        raise HTTPException(status_code=403, detail="Permission Denied")
+
     existing_user = await get_user(user.username)
     if existing_user is not None:
         raise HTTPException(status_code=400, detail="Username already exists!")
@@ -28,29 +31,41 @@ async def register(user: User):
     except Exception as error:
         return {"Error": str(error)}, 500
 
-    return result
+    if current_user:
+        return result
 
 
 @router.put("/update-user/{user_id}")
-async def update_user_account(user_id: str, user: User):
-    current_user = await is_superuser()
+async def update_user_account(
+    user_id: str, user: User, current_user: User = Depends(get_current_user)
+):
+    if current_user.role != "superuser":
+        raise HTTPException(status_code=403, detail="Permission Denied")
 
-    if current_user.role.value == "superuser":
+    try:
         user_data = user.model_dump(exclude_unset=True)
         user_data["password"] = hash_password(user_data.pop("password"))
 
         result = await update_user(user_data, user_id)
 
-        return result
+    except HTTPException as error:
+        return {"Error": error.detail}, error.status_code
+    except Exception as error:
+        return {"Error": str(error)}, 500
+
+    return result
 
 
 @router.delete("/delete-user/{user_id}")
-async def delete_user_account(user_id: str):
-    current_user = await is_superuser()
+async def delete_user_account(
+    user_id: str, current_user: User = Depends(get_current_user)
+):
+    if current_user.role != "superuser":
+        raise HTTPException(status_code=403, detail="Permission Denied")
 
     try:
-        if current_user.role.value == "superuser":
-            result = await delete_user(user_id)
-            return result
+        result = await delete_user(user_id)
+        return result
+
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code

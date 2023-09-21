@@ -23,8 +23,10 @@ async def get_user(username: str) -> User:
     except Exception as error:
         database_handle_errors(error)
 
-    user = User(**result)
-    return user
+    if result:
+        user = User(**result)
+        return user
+    return None
 
 
 async def get_all_users() -> List[User]:
