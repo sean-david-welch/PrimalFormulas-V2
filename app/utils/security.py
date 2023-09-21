@@ -38,7 +38,9 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expires = datetime.utcnow() + expires_delta
     else:
-        expires = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires = datetime.utcnow() + timedelta(
+            minutes=int(settings["ACCESS_TOKEN_EXPIRE_MINUTES"])
+        )
 
     to_encode.update({"exp": expires})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
@@ -59,7 +61,9 @@ async def authenticate_user(username: str, password: str) -> User:
     except HTTPException as http_error:
         raise http_error
     except Exception as error:
-        raise HTTPException(status_code=500, detail="Internal server error" + error)
+        raise HTTPException(
+            status_code=500, detail="Internal server error" + str(error)
+        )
 
 
 async def cookie_oauth2_scheme(request: Request) -> str:

@@ -27,8 +27,10 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
-    access_token_expires = timedelta(minutes=settings["ACCESS_TOKEN_EXPIRE_MINUTES"])
-    access_token = create_access_token({"sub": user}, access_token_expires)
+    access_token_expires = timedelta(
+        minutes=int(settings["ACCESS_TOKEN_EXPIRE_MINUTES"])
+    )
+    access_token = create_access_token({"sub": user.model_dump()}, access_token_expires)
 
     response.set_cookie(
         key="access_token",

@@ -24,7 +24,9 @@ async def get_user(username: str) -> User:
         database_handle_errors(error)
 
     user = User(**result)
-    return user.model_dump(exclude="password_hash")
+    return user
+
+    # return user.model_dump(exclude="password")
 
 
 async def get_all_users() -> List[User]:
@@ -55,7 +57,9 @@ async def update_user(user: User, user_id: str) -> User:
 
     except HTTPException as error:
         handle_http_error(error)
-    return result
+
+    if result:
+        return user.model_dump()
 
 
 async def delete_user(user_id: str) -> None:
@@ -64,4 +68,6 @@ async def delete_user(user_id: str) -> None:
 
     except HTTPException as error:
         handle_http_error(error)
-    return result
+
+    if result:
+        return {"Message": f"User with id {user_id} has been deleted"}

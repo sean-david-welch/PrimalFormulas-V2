@@ -29,7 +29,7 @@ collections = {
 
 def handle_http_error(error: HTTPException):
     logging.error(f"HTTP Error: {str(error)}")
-    raise HTTPException(status_code=400, detail=str(error))
+    raise HTTPException(status_code=error.status_code, detail=str(error.detail))
 
 
 def database_handle_errors(error):
