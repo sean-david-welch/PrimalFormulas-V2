@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from passlib.context import CryptContext
 
 from utils.config import settings
-from models.models import User, Token
+from models.models import User
 from database.users import get_user
 
 SECRET_KEY = settings["SECRET_KEY"]

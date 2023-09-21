@@ -36,5 +36,5 @@ class PaymentIntent(BaseModel):
 class Order(BaseModel):
     id: Optional[str] = Field(default="string")
     customer: Customer = Field(default=Customer())
-    cart_items: List[CartItem] = Field(default=[CartItem()])
+    cart_items: CartItem = Field(default=[CartItem()])
     receipt_email: Optional[EmailStr] = Field(default="guest@primalformulas.ie")
