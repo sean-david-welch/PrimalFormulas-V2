@@ -14,7 +14,7 @@ SECRET_KEY = settings["SECRET_KEY"]
 ALGORITHM = settings["ALGORITHM"]
 ACCESS_TOKEN_EXPIRE_MINUTES = int(settings["ACCESS_TOKEN_EXPIRE_MINUTES"])
 
-password_context = CryptContext(schemes=["bycrypt"])
+password_context = CryptContext(schemes=["bcrypt"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 
