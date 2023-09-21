@@ -1,14 +1,16 @@
 import uvicorn
 
+from boto3 import client as botoclient
+from utils.config import settings
+
 from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from routes.about import router as about_router
 from routes.static import router as static_router
+from routes.auth import router as auth_router
 
-from boto3 import client as botoclient
-from utils.config import settings
 
 app = FastAPI(
     root_path="/",
@@ -47,6 +49,7 @@ def root() -> RedirectResponse | JSONResponse:
 
 app.include_router(about_router, prefix="/api/about")
 app.include_router(static_router, prefix="/api/static")
+app.include_router(auth_router, prefix="/api/auth")
 
 if __name__ == "__main__":
     uvicorn.run(

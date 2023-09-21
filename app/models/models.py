@@ -1,7 +1,13 @@
-from pydantic import BaseModel, Field, EmailStr
-from typing import Optional
-
 from utils.config import settings
+
+from enum import Enum
+from typing import Optional
+from pydantic import BaseModel, Field, EmailStr
+
+
+class Role(Enum):
+    USER = "user"
+    SUPERUSER = "superusr"
 
 
 class Static(BaseModel):
@@ -27,9 +33,8 @@ class Product(BaseModel):
 
 class User(BaseModel):
     id: Optional[str] = Field(default="string")
-    name: str = Field(default="User Name")
+    username: str = Field(default="username")
     email: Optional[EmailStr] = Field(default="johndoe@example.com")
     password_hash: str = Field(default="password")
-    full_name: Optional[str] = Field(default="John Doe")
     disabled: Optional[bool] = Field(default=False)
-    is_superuser: Optional[bool] = Field(default=False)
+    role: Optional[Role] = Field(default=Role.USER)
