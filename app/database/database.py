@@ -1,3 +1,4 @@
+import logging
 from uuid import uuid4
 from typing import List, Optional
 from pydantic import BaseModel
@@ -27,11 +28,12 @@ collections = {
 
 
 def handle_http_error(error: HTTPException):
-    if isinstance(error, HTTPException):
-        raise HTTPException(status_code=400, detail=str(error))
+    logging.error(f"HTTP Error: {str(error)}")
+    raise HTTPException(status_code=400, detail=str(error))
 
 
 def database_handle_errors(error):
+    logging.error(f"Database Error: {str(error)}")
     if isinstance(error, DuplicateKeyError):
         raise HTTPException(status_code=409, detail="Duplicate key")
     elif isinstance(error, OperationFailure):

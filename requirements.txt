@@ -1,5 +1,6 @@
 annotated-types==0.5.0
 anyio==3.7.1
+bcrypt==4.0.1
 boto3==1.28.40
 botocore==1.31.40
 certifi==2023.7.22

@@ -33,7 +33,9 @@ async def get_all_users() -> List[User]:
 
     except HTTPException as error:
         handle_http_error(error)
-    return result
+
+    if result:
+        return result
 
 
 async def create_user(user: User) -> User:
@@ -42,7 +44,9 @@ async def create_user(user: User) -> User:
 
     except HTTPException as error:
         handle_http_error(error)
-    return result
+
+    if result:
+        return user.model_dump()
 
 
 async def update_user(user: User, user_id: str) -> User:

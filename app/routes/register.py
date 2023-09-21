@@ -1,12 +1,8 @@
-from datetime import timedelta
-from typing import List
-
-from fastapi import APIRouter, Response, Depends, Body
+from fastapi import APIRouter, Body
 from fastapi.exceptions import HTTPException
 
 from models.models import User
-from utils.types import Token
-from utils.config import settings
+
 from utils.security import (
     is_superuser,
     hash_password,
@@ -17,27 +13,26 @@ router = APIRouter()
 
 
 @router.post("/create-user")
-async def register(user: User = Body(..., embed=True)):
-    current_user = await is_superuser()
-
+async def register(user: User):
     existing_user = await get_user(user.username)
-    if existing_user:
+    if existing_user is not None:
         raise HTTPException(status_code=400, detail="Username already exists!")
 
     try:
-        if current_user.role.value == "superuser":
-            hashed_password = hash_password(user.password)
-            user = User(**user.model_dump(), password=hashed_password)
-            result = await create_user(user)
+        user.password = hash_password(user.password)
+
+        result = await create_user(user)
 
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
+    except Exception as error:
+        return {"Error": str(error)}, 500
 
     return result
 
 
 @router.put("/update-user/{user_id}")
-async def update_user_account(user_id: str, user: User = Body(..., embed=True)):
+async def update_user_account(user_id: str, user: User):
     current_user = await is_superuser()
 
     if current_user.role.value == "superuser":

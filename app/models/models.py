@@ -1,3 +1,4 @@
+from typing_extensions import Literal
 from utils.config import settings
 from models.enums import Role
 
@@ -33,3 +34,6 @@ class User(BaseModel):
     password: str = Field(default="password")
     disabled: Optional[bool] = Field(default=False)
     role: Optional[Role] = Field(default=Role.USER)
+
+    class Config:
+        use_enum_values = True
