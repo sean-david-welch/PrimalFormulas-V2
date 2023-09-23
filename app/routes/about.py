@@ -8,7 +8,7 @@ from database.about import get_all_abouts, create_about, update_about, delete_ab
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", response_model=list[AboutContent])
 async def get_about_content():
     try:
         response = await get_all_abouts()
