@@ -27,7 +27,9 @@ async def create_about(about: AboutContent) -> AboutContent | HTTPException:
         result = await database_insert_one(about_collection, about)
     except HTTPException as error:
         handle_http_error(error)
-    return result
+
+    if result:
+        return about.model_dump()
 
 
 async def update_about(
@@ -38,7 +40,8 @@ async def update_about(
     except HTTPException as error:
         handle_http_error(error)
 
-    return result
+    if result:
+        return about.model_dump()
 
 
 async def delete_about(about_id: str) -> None:
@@ -47,4 +50,5 @@ async def delete_about(about_id: str) -> None:
     except HTTPException as error:
         handle_http_error(error)
 
-    return result
+    if result:
+        return {"Message": f"About content with id {about_id} has been deleted"}

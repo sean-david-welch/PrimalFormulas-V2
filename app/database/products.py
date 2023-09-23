@@ -37,7 +37,9 @@ async def create_product(product: Product) -> Product:
 
     except HTTPException as error:
         handle_http_error(error)
-    return result
+
+    if result:
+        return product.model_dump()
 
 
 async def update_product(product: Product, product_id: str) -> Product:
@@ -46,7 +48,9 @@ async def update_product(product: Product, product_id: str) -> Product:
 
     except HTTPException as error:
         handle_http_error(error)
-    return result
+
+    if result:
+        return product.model_dump()
 
 
 async def delete_product(product_id: str) -> None:
@@ -55,4 +59,6 @@ async def delete_product(product_id: str) -> None:
 
     except HTTPException as error:
         handle_http_error(error)
-    return result
+
+    if result:
+        return {"Message": f"Product with id {product_id} has been deleted"}

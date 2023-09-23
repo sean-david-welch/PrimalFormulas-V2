@@ -107,6 +107,6 @@ async def get_current_user(token: str = Depends(cookie_oauth2_scheme)) -> User:
 
 
 async def is_superuser(current_user: User = Depends(get_current_user)):
-    if current_user.role.value != "superuser":
+    if current_user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission Denied")
     return current_user

@@ -20,7 +20,7 @@ async def get_static_content(title: str) -> Static | HTTPException:
 async def post_static_content(
     static: Static, user: User = Depends(get_current_user)
 ) -> Static | HTTPException:
-    if user.role.value != "superuser":
+    if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:
@@ -34,7 +34,7 @@ async def post_static_content(
 async def update_static_content(
     static_id: str, static: Static, user: User = Depends(get_current_user)
 ) -> Static | HTTPException:
-    if user.role.value != "superuser":
+    if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
     response = await update_static(static, static_id)
 
@@ -47,7 +47,7 @@ async def update_static_content(
 async def delete_static_content(
     static_id: str, user: User = Depends(get_current_user)
 ) -> Static | HTTPException:
-    if user.role.value != "superuser":
+    if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
     response = await delete_static(static_id)
 

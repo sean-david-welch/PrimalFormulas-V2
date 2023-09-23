@@ -27,7 +27,8 @@ async def create_static(static: Static) -> Static:
     except HTTPException as error:
         handle_http_error(error)
 
-    return result
+    if result:
+        return static.model_dump()
 
 
 async def update_static(static: Static, static_id: str) -> Static:
@@ -36,7 +37,8 @@ async def update_static(static: Static, static_id: str) -> Static:
     except HTTPException as error:
         handle_http_error(error)
 
-    return result
+    if result:
+        return static.model_dump()
 
 
 async def delete_static(static_id: str) -> None:
@@ -45,4 +47,5 @@ async def delete_static(static_id: str) -> None:
     except HTTPException as error:
         handle_http_error(error)
 
-    return result
+    if result:
+        return {"Message": f"Static content with id {static_id} has been deleted"}
