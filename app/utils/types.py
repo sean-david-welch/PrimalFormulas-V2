@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr
-from typing import Optional, List
+from typing import Optional
 
 
 class Token(BaseModel):
@@ -28,7 +28,7 @@ class CartItem(BaseModel):
 
 
 class PaymentIntent(BaseModel):
-    cart_items: List[CartItem] = Field(default=[CartItem()])
+    cart_items: list[CartItem] = Field(default=[CartItem()])
     customer: Customer = Field(default=Customer())
     receipt_email: Optional[EmailStr] = Field(default="guest@primalformulas.ie")
 

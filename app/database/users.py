@@ -1,4 +1,3 @@
-from typing import List
 from models.models import User
 from database.database import (
     collections,
@@ -29,7 +28,7 @@ async def get_user(username: str) -> User:
     return None
 
 
-async def get_all_users() -> List[User]:
+async def get_all_users() -> list[User]:
     try:
         result = await database_find_all(user_collections)
 

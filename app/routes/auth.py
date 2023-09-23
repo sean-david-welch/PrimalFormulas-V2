@@ -1,5 +1,4 @@
 from datetime import timedelta
-from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from fastapi.security import OAuth2PasswordRequestForm
@@ -59,7 +58,7 @@ async def get_authentication_status(authenticated: bool = Depends(is_authenticat
     return {"is_authenticated": authenticated}
 
 
-@router.get("/users", response_model=List[User])
+@router.get("/users", response_model=list[User])
 async def get_users(authenticated: bool = Depends(is_authenticated)):
     try:
         response = await get_all_users()

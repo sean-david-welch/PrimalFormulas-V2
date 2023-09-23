@@ -1,4 +1,3 @@
-from typing import List
 from models.models import AboutContent
 from database.database import (
     collections,
@@ -14,7 +13,7 @@ from fastapi.exceptions import HTTPException
 about_collection = collections["about"]
 
 
-async def get_all_abouts() -> List[AboutContent]:
+async def get_all_abouts() -> list[AboutContent]:
     try:
         result = await database_find_all(about_collection)
 

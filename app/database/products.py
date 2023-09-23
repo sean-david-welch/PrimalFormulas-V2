@@ -1,4 +1,3 @@
-from typing import List
 from models.models import Product
 from database.database import (
     collections,
@@ -14,7 +13,7 @@ from fastapi.exceptions import HTTPException
 product_collection = collections["products"]
 
 
-async def get_all_products() -> List[Product]:
+async def get_all_products() -> list[Product]:
     try:
         result = await database_find_all(product_collection)
 
@@ -24,12 +23,18 @@ async def get_all_products() -> List[Product]:
 
 
 async def get_product(product_id: str) -> Product:
-    result = await database_find_one(product_collection, product_id)
+    try:
+        result = await database_find_one(product_collection, product_id)
+
+    except HTTPException as error:
+        handle_http_error(error)
+    return result
 
 
 async def create_product(product: Product) -> Product:
     try:
         result = await database_insert_one(product_collection, product)
+
     except HTTPException as error:
         handle_http_error(error)
     return result
@@ -38,6 +43,7 @@ async def create_product(product: Product) -> Product:
 async def update_product(product: Product, product_id: str) -> Product:
     try:
         result = await database_update_one(product_id, product, product_collection)
+
     except HTTPException as error:
         handle_http_error(error)
     return result
@@ -46,6 +52,7 @@ async def update_product(product: Product, product_id: str) -> Product:
 async def delete_product(product_id: str) -> None:
     try:
         result = await database_delete_one(product_id, product_collection)
+
     except HTTPException as error:
         handle_http_error(error)
     return result

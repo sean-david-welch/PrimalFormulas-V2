@@ -1,6 +1,6 @@
 import logging
 from uuid import uuid4
-from typing import List, Optional
+from typing import Optional
 from pydantic import BaseModel
 from fastapi.exceptions import HTTPException
 
@@ -13,7 +13,6 @@ from pymongo.errors import (
 )
 
 from utils.config import settings
-from models.models import Static, AboutContent, Product, User
 
 client = AsyncIOMotorClient(settings["MONGO_URI"])
 
@@ -44,7 +43,7 @@ def database_handle_errors(error):
         raise HTTPException(status_code=500, detail="Database Operation Failed")
 
 
-async def database_find_all(collection: AsyncIOMotorCollection) -> List[dict]:
+async def database_find_all(collection: AsyncIOMotorCollection) -> list[dict]:
     cursor = collection.find({})
 
     try:

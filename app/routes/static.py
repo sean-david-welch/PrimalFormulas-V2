@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.get("/{name}", response_model=Static)
-async def get_static_content(title: str):
+async def get_static_content(title: str) -> Static | HTTPException:
     response = await get_static(title)
     if response:
         return response
@@ -19,7 +19,7 @@ async def get_static_content(title: str):
 @router.post("/", response_model=Static)
 async def post_static_content(
     static: Static, user: User = Depends(get_current_user)
-) -> Static:
+) -> Static | HTTPException:
     if user.role.value != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
@@ -33,7 +33,7 @@ async def post_static_content(
 @router.put("/{id}", response_model=Static)
 async def update_static_content(
     static_id: str, static: Static, user: User = Depends(get_current_user)
-) -> Static:
+) -> Static | HTTPException:
     if user.role.value != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
     response = await update_static(static, static_id)
@@ -46,7 +46,7 @@ async def update_static_content(
 @router.delete("/{id}", response_model=Static)
 async def delete_static_content(
     static_id: str, user: User = Depends(get_current_user)
-) -> Static:
+) -> Static | HTTPException:
     if user.role.value != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
     response = await delete_static(static_id)

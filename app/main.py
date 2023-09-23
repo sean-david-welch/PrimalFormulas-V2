@@ -11,6 +11,7 @@ from routes.about import router as about_router
 from routes.static import router as static_router
 from routes.auth import router as auth_router
 from routes.register import router as register_router
+from routes.products import router as product_router
 
 
 app = FastAPI(
@@ -37,7 +38,7 @@ s3 = botoclient(
 BUCKET_NAME = "primalformulas-bucket"
 
 
-@app.get("/", response_model=None)
+@app.get("/", response_model=None, tags=["Default"])
 def root() -> RedirectResponse | JSONResponse:
     try:
         return RedirectResponse(url="docs")
@@ -48,10 +49,13 @@ def root() -> RedirectResponse | JSONResponse:
         )
 
 
-app.include_router(about_router, prefix="/api/about")
-app.include_router(static_router, prefix="/api/static")
-app.include_router(auth_router, prefix="/api/auth")
-app.include_router(register_router, prefix="/api/register")
+app.include_router(about_router, prefix="/api/about", tags=["About"])
+app.include_router(static_router, prefix="/api/static", tags=["Static"])
+
+app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
+app.include_router(register_router, prefix="/api/register", tags=["Registration"])
+
+app.include_router(product_router, prefix="/api/products", tags=["Products"])
 
 if __name__ == "__main__":
     uvicorn.run(
