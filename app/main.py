@@ -12,6 +12,7 @@ from routes.static import router as static_router
 from routes.auth import router as auth_router
 from routes.register import router as register_router
 from routes.products import router as product_router
+from routes.payments import router as payments_router
 
 
 app = FastAPI(
@@ -56,6 +57,7 @@ app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
 app.include_router(register_router, prefix="/api/register", tags=["Registration"])
 
 app.include_router(product_router, prefix="/api/products", tags=["Products"])
+app.include_router(payments_router, prefix="/api/payments", tags=["Payments"])
 
 if __name__ == "__main__":
     uvicorn.run(

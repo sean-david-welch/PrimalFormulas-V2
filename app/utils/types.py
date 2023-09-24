@@ -27,14 +27,6 @@ class CartItem(BaseModel):
     quantity: int = Field(default=1)
 
 
-class PaymentIntent(BaseModel):
-    cart_items: list[CartItem] = Field(default=[CartItem()])
+class PaymentData(BaseModel):
+    cart: list[CartItem] = Field(default=[CartItem()])
     customer: Customer = Field(default=Customer())
-    receipt_email: Optional[EmailStr] = Field(default="guest@primalformulas.ie")
-
-
-class Order(BaseModel):
-    id: Optional[str] = Field(default="string")
-    customer: Customer = Field(default=Customer())
-    cart_items: CartItem = Field(default=[CartItem()])
-    receipt_email: Optional[EmailStr] = Field(default="guest@primalformulas.ie")

@@ -1,4 +1,5 @@
-from stripe import checkout, Customer, Webhook
+from stripe import Webhook, PaymentIntent, checkout
+from stripe import Customer as StripeCustomer
 from stripe.error import (
     CardError,
     StripeError,
@@ -11,14 +12,11 @@ from stripe.error import (
     StripeErrorWithParamCode,
 )
 
-from utils.config import settings
-from utils.types import CartItem, Customer
-
-from fastapi.applications import Request, Response
+from utils.types import PaymentData, Customer
 
 
-def create_customer(data):
-    existing_customers = Customer.list(email=data.receipt_email).get("data")
+def create_customer(data: PaymentData):
+    existing_customers = Customer.list(email=data.customer.email).get("data")
     if existing_customers:
         return existing_customers[0]
 
@@ -26,18 +24,16 @@ def create_customer(data):
         name=data.customer.name,
         address={
             "line1": data.customer.address.line1,
-            "line2": data.customer.address.line2,
             "city": data.customer.address.city,
             "state": data.customer.address.state,
             "postal_code": data.customer.address.postal_code,
             "country": data.customer.address.country,
         },
-        email=data.receipt_email,
+        email=data.customer.email,
         shipping={
             "name": data.customer.name,
             "address": {
                 "line1": data.customer.address.line1,
-                "line2": data.customer.address.line2,
                 "city": data.customer.address.city,
                 "state": data.customer.address.state,
                 "postal_code": data.customer.address.postal_code,
