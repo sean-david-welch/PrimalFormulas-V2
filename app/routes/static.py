@@ -25,22 +25,27 @@ async def post_static_content(
 
     try:
         response = await create_static(static)
-        return {"Result": response}
+
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
+    return response
 
-@router.put("/{id}", response_model=Static)
+
+@router.put("/{id}", response_model=None)
 async def update_static_content(
     static_id: str, static: Static, user: User = Depends(get_current_user)
 ) -> Static | HTTPException:
     if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
-    response = await update_static(static, static_id)
 
-    if response:
-        return response
-    raise HTTPException(status_code=404, detail=f"Content: {static} not found!")
+    try:
+        response = await update_static(static, static_id)
+
+    except HTTPException as error:
+        return {"Error": error.detail}, error.status_code
+
+    return response
 
 
 @router.delete("/{id}", response_model=Static)
@@ -49,8 +54,11 @@ async def delete_static_content(
 ) -> Static | HTTPException:
     if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
-    response = await delete_static(static_id)
 
-    if response:
-        return response
-    raise HTTPException(status_code=404, detail=f"Content: {static_id} not found!")
+    try:
+        response = await delete_static(static_id)
+
+    except HTTPException as error:
+        return {"Error": error.detail}, error.status_code
+
+    return response

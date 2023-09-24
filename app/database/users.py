@@ -63,7 +63,7 @@ async def update_user(user: User, user_id: str) -> User:
 
 async def delete_user(user_id: str) -> None:
     try:
-        result = await database_delete_one(user_id)
+        result = await database_delete_one(user_id, user_collections)
 
     except HTTPException as error:
         handle_http_error(error)

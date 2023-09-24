@@ -58,7 +58,7 @@ async def database_find_one(
     collection: AsyncIOMotorCollection, model_id: str
 ) -> Optional[dict]:
     try:
-        result = collection.find_one({"id": model_id})
+        result = await collection.find_one({"id": model_id})
         if not result:
             raise HTTPException(status_code=404, detail="Record not found")
 

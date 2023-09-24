@@ -43,10 +43,9 @@ async def update_user_account(
         raise HTTPException(status_code=403, detail="Permission Denied")
 
     try:
-        user_data = user.model_dump(exclude_unset=True)
-        user_data["password"] = hash_password(user_data.pop("password"))
+        user.password = hash_password(user.password)
 
-        result = await update_user(user_data, user_id)
+        result = await update_user(user, user_id)
 
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code

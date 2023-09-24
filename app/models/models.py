@@ -21,8 +21,8 @@ class AboutContent(BaseModel):
 
 class Product(BaseModel):
     id: Optional[str] = Field(default="string")
-    title: str = Field(default="Product Title")
-    desription: str = Field(default="Product Description")
+    name: str = Field(default="Product Name")
+    description: str = Field(default="Product Description")
     price: float = Field(default=1.0)
     image: str = Field(default=f"{settings['BASE_URL']}/images/default.jpg")
 

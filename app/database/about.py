@@ -16,7 +16,6 @@ about_collection = collections["about"]
 async def get_all_abouts() -> list[AboutContent]:
     try:
         result = await database_find_all(about_collection)
-        print("Result:", result)  # Debugging line
 
     except HTTPException as error:
         handle_http_error(error)

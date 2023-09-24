@@ -27,7 +27,7 @@ async def get_products_content():
 @router.get("/{id}", response_model=Product)
 async def get_product_detail(product_id: str):
     try:
-        response = get_product(product_id)
+        response = await get_product(product_id)
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -35,9 +35,12 @@ async def get_product_detail(product_id: str):
 
 
 @router.post("/", response_model=Product)
-async def post_product(product: Product):
+async def post_product(product: Product, user: User = Depends(get_current_user)):
+    if user.role != "superuser":
+        raise HTTPException(status_code=403, detail="Permission denied")
+
     try:
-        response = create_product(product)
+        response = await create_product(product)
 
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
@@ -46,9 +49,14 @@ async def post_product(product: Product):
 
 
 @router.put("/{id}", response_model=Product)
-async def put_product(product: Product, product_id: str):
+async def put_product(
+    product: Product, product_id: str, user: User = Depends(get_current_user)
+):
+    if user.role != "superuser":
+        raise HTTPException(status_code=403, detail="Permission denied")
+
     try:
-        response = update_product(product, product_id)
+        response = await update_product(product, product_id)
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -56,9 +64,14 @@ async def put_product(product: Product, product_id: str):
 
 
 @router.delete("/{id}", response_model=None)
-async def delete_product(product_id: str):
+async def delete_product_content(
+    product_id: str, user: User = Depends(get_current_user)
+):
+    if user.role != "superuser":
+        raise HTTPException(status_code=403, detail="Permission denied")
+
     try:
-        response = delete_product(product_id)
+        response = await delete_product(product_id)
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
