@@ -21,7 +21,12 @@ app = FastAPI(
     title="Primal Formulas API",
 )
 
-origins = ["http://localhost:4200", "http://localhost:8000"]
+origins = [
+    "http://localhost:4200",
+    "http://localhost:8000",
+    "https://primalformulas.ie",
+    "https://primalformulas.eu",
+]
 
 app.add_middleware(
     CORSMiddleware,
