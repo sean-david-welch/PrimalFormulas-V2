@@ -26,6 +26,7 @@ origins = [
     "http://localhost:8000",
     "https://primalformulas.ie",
     "https://primalformulas.eu",
+    "primalformulas-fastapi-dev.eu-west-1.elasticbeanstalk.com",
 ]
 
 app.add_middleware(
