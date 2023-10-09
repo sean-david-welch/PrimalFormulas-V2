@@ -75,7 +75,7 @@ eb_env = aws.elasticbeanstalk.Environment(
         aws.elasticbeanstalk.EnvironmentSettingArgs(
             namespace="aws:elasticbeanstalk:environment:proxy",
             name="ProxyServer",
-            value="apache",
+            value="nginx",
         ),
         aws.elasticbeanstalk.EnvironmentSettingArgs(
             namespace="aws:autoscaling:launchconfiguration",

@@ -2,6 +2,7 @@
 .env
 ../.venv/
 .vscode
+primal-formulas.zip
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

@@ -1,5 +1,3 @@
-import uvicorn
-
 from boto3 import client as botoclient
 from utils.config import settings
 
@@ -21,13 +19,7 @@ app = FastAPI(
     title="Primal Formulas API",
 )
 
-origins = [
-    "http://localhost:4200",
-    "http://localhost:8000",
-    "https://primalformulas.ie",
-    "https://primalformulas.eu",
-    "primalformulas-fastapi-dev.eu-west-1.elasticbeanstalk.com",
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -64,11 +56,3 @@ app.include_router(register_router, prefix="/api/register", tags=["Registration"
 
 app.include_router(product_router, prefix="/api/products", tags=["Products"])
 app.include_router(payments_router, prefix="/api/payments", tags=["Payments"])
-
-if __name__ == "__main__":
-    uvicorn.run(
-        "main:app",
-        host="localhost",
-        port=8000,
-        reload=True,
-    )
