@@ -1,9 +1,13 @@
+import logging
+from fastapi.logger import logger as app_logger
+
 from boto3 import client as botoclient
 from utils.config import settings
 
 from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.wsgi import WSGIMiddleware
 
 from routes.about import router as about_router
 from routes.static import router as static_router
@@ -11,6 +15,9 @@ from routes.auth import router as auth_router
 from routes.register import router as register_router
 from routes.products import router as product_router
 from routes.payments import router as payments_router
+
+logging.basicConfig(level=logging.INFO)
+app_logger.handlers = logging.getLogger("gunicorn.error").handlers
 
 
 app = FastAPI(
@@ -28,6 +35,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/", WSGIMiddleware(app))
 
 s3 = botoclient(
     "s3",
@@ -40,8 +48,10 @@ BUCKET_NAME = "primalformulas-bucket"
 @app.get("/", response_model=None, tags=["Default"])
 def root() -> RedirectResponse | JSONResponse:
     try:
+        app_logger.info("Redirecting to docs")
         return RedirectResponse(url="docs")
     except Exception as error:
+        app_logger.exception(f"An error occurred: {error}")
         return JSONResponse(
             content={"Error": str(error)},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
