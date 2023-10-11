@@ -16,7 +16,6 @@ from routes.products import router as product_router
 from routes.payments import router as payments_router
 
 logging.basicConfig(level=logging.INFO)
-app_logger.handlers = logging.getLogger("gunicorn.error").handlers
 
 
 app = FastAPI(
