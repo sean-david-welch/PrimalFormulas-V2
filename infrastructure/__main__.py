@@ -70,13 +70,8 @@ eb_app = aws.elasticbeanstalk.Application(
 eb_env = aws.elasticbeanstalk.Environment(
     "primalformulas-env",
     application=eb_app.name,
-    solution_stack_name="64bit Amazon Linux 2023 v4.0.4 running Python 3.11",
+    solution_stack_name="64bit Amazon Linux 2023 v4.0.1 running Docker",
     settings=[
-        aws.elasticbeanstalk.EnvironmentSettingArgs(
-            namespace="aws:elasticbeanstalk:environment:proxy",
-            name="ProxyServer",
-            value="nginx",
-        ),
         aws.elasticbeanstalk.EnvironmentSettingArgs(
             namespace="aws:autoscaling:launchconfiguration",
             name="IamInstanceProfile",

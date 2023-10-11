@@ -7,7 +7,6 @@ from utils.config import settings
 from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.wsgi import WSGIMiddleware
 
 from routes.about import router as about_router
 from routes.static import router as static_router
@@ -35,7 +34,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.mount("/", WSGIMiddleware(app))
 
 s3 = botoclient(
     "s3",

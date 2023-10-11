@@ -14,7 +14,6 @@ ecdsa==0.18.0
 email-validator==2.0.0.post2
 fastapi==0.103.1
 grpcio==1.56.2
-gunicorn==21.2.0
 h11==0.14.0
 httptools==0.6.0
 idna==3.4
