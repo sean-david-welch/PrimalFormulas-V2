@@ -20,9 +20,11 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI(
     root_path="/",
-    debug=True,
+    docs_url="/api/docs",
+    openapi_url="/docs/openapi.json",
     title="Primal Formulas API",
 )
+
 
 origins = ["*"]
 
@@ -40,20 +42,6 @@ s3 = botoclient(
     aws_secret_access_key=settings["AWS_SECRET_ACCESS_KEY"],
 )
 BUCKET_NAME = "primalformulas-bucket"
-
-
-@app.get("/", response_model=None, tags=["Default"])
-def root() -> RedirectResponse | JSONResponse:
-    try:
-        app_logger.info("Redirecting to docs")
-        return RedirectResponse(url="docs")
-    except Exception as error:
-        app_logger.exception(f"An error occurred: {error}")
-        return JSONResponse(
-            content={"Error": str(error)},
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
-
 
 app.include_router(about_router, prefix="/api/about", tags=["About"])
 app.include_router(static_router, prefix="/api/static", tags=["Static"])
