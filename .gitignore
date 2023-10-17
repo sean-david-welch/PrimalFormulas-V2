@@ -5,8 +5,11 @@
 primal-formulas.zip
 *.pyc
 venv/
+./src/app/config
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+src/app/config/supervisord.conf
