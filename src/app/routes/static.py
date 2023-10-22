@@ -16,7 +16,7 @@ async def get_static_content(title: str) -> Static | HTTPException:
     raise HTTPException(status_code=404, detail=f"Content: {title} not found!")
 
 
-@router.post("/", response_model=Static)
+@router.post("", response_model=Static)
 async def post_static_content(
     static: Static, user: User = Depends(get_current_user)
 ) -> Static | HTTPException:

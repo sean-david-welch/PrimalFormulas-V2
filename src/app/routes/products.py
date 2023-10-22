@@ -14,7 +14,7 @@ from database.products import (
 router = APIRouter()
 
 
-@router.get("/", response_model=list[Product])
+@router.get("", response_model=list[Product])
 async def get_products_content():
     try:
         response = await get_all_products()
@@ -34,7 +34,7 @@ async def get_product_detail(product_id: str):
     return response
 
 
-@router.post("/", response_model=Product)
+@router.post("", response_model=Product)
 async def post_product(product: Product, user: User = Depends(get_current_user)):
     if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")

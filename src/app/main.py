@@ -1,11 +1,10 @@
 import logging
-from fastapi.logger import logger as app_logger
 
 from boto3 import client as botoclient
 from utils.config import settings
 
-from fastapi import FastAPI, status
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from routes.about import router as about_router
@@ -42,6 +41,26 @@ s3 = botoclient(
     aws_secret_access_key=settings["AWS_SECRET_ACCESS_KEY"],
 )
 BUCKET_NAME = "primalformulas-bucket"
+
+
+@app.get("/api")
+def root() -> RedirectResponse:
+    try:
+        return RedirectResponse(url="/api/docs")
+    except Exception as e:
+        logging.error(e)
+        return JSONResponse(
+            content={"error": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"message": exc.detail},
+    )
+
 
 app.include_router(about_router, prefix="/api/about", tags=["About"])
 app.include_router(static_router, prefix="/api/static", tags=["Static"])
