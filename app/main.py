@@ -43,12 +43,21 @@ s3 = botoclient(
 BUCKET_NAME = "primalformulas-bucket"
 
 
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logging.info(f"Incoming request: {request.method} {request.url}")
+    response = await call_next(request)
+    logging.info(f"Outgoing response: {response.status_code}")
+    return response
+
+
 @app.get("/api")
 def root() -> RedirectResponse:
+    logging.info("Root endpoint accessed")
     try:
         return RedirectResponse(url="/api/docs")
     except Exception as e:
-        logging.error(e)
+        logging.error(f"Exception in root: {e}")
         return JSONResponse(
             content={"error": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
@@ -56,6 +65,7 @@ def root() -> RedirectResponse:
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
+    logging.error(f"HTTP Exception: {exc.detail}")
     return JSONResponse(
         status_code=exc.status_code,
         content={"message": exc.detail},
