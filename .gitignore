@@ -13,3 +13,5 @@ venv/
 !.elasticbeanstalk/*.global.yml
 
 src/app/config/supervisord.conf
+
+infrastructure/
