@@ -14,7 +14,7 @@ from routes.register import router as register_router
 from routes.products import router as product_router
 from routes.payments import router as payments_router
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 app = FastAPI(

@@ -15,7 +15,7 @@ WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
-COPY . .
+COPY . /app
 
 EXPOSE 80
 
