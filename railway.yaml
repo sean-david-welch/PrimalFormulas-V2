@@ -1,3 +1,0 @@
-build:
-  context: './app'
-  dockerfilePath: './app/Dockerfile'
