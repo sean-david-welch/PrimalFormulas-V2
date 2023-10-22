@@ -35,13 +35,13 @@ async def post_about_content(
 
 @router.put("/{id}")
 async def put_about_content(
-    about: AboutContent, about_id: str, user: User = Depends(get_current_user)
+    about: AboutContent, id: str, user: User = Depends(get_current_user)
 ) -> AboutContent:
     if not user.role == "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:
-        response = await update_about(about, about_id)
+        response = await update_about(about, id)
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -49,14 +49,12 @@ async def put_about_content(
 
 
 @router.delete("/{id}")
-async def delete_about_content(
-    about_id: str, user: User = Depends(get_current_user)
-) -> None:
+async def delete_about_content(id: str, user: User = Depends(get_current_user)) -> None:
     if not user.role == "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:
-        response = await delete_about(about_id)
+        response = await delete_about(id)
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 

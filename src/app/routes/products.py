@@ -25,9 +25,9 @@ async def get_products_content():
 
 
 @router.get("/{id}", response_model=Product)
-async def get_product_detail(product_id: str):
+async def get_product_detail(id: str):
     try:
-        response = await get_product(product_id)
+        response = await get_product(id)
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -50,13 +50,13 @@ async def post_product(product: Product, user: User = Depends(get_current_user))
 
 @router.put("/{id}", response_model=Product)
 async def put_product(
-    product: Product, product_id: str, user: User = Depends(get_current_user)
+    product: Product, id: str, user: User = Depends(get_current_user)
 ):
     if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:
-        response = await update_product(product, product_id)
+        response = await update_product(product, id)
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -64,14 +64,12 @@ async def put_product(
 
 
 @router.delete("/{id}", response_model=None)
-async def delete_product_content(
-    product_id: str, user: User = Depends(get_current_user)
-):
+async def delete_product_content(id: str, user: User = Depends(get_current_user)):
     if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:
-        response = await delete_product(product_id)
+        response = await delete_product(id)
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 

@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO)
 app = FastAPI(
     root_path="/",
     docs_url="/api/docs",
-    openapi_url="/docs/openapi.json",
+    openapi_url="/api/openapi.json",
     title="Primal Formulas API",
 )
 

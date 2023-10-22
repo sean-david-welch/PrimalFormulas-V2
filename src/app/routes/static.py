@@ -8,7 +8,7 @@ from database.static import create_static, get_static, update_static, delete_sta
 router = APIRouter()
 
 
-@router.get("/{name}", response_model=Static)
+@router.get("/{title}", response_model=Static)
 async def get_static_content(title: str) -> Static | HTTPException:
     response = await get_static(title)
     if response:
@@ -34,13 +34,13 @@ async def post_static_content(
 
 @router.put("/{id}", response_model=None)
 async def update_static_content(
-    static_id: str, static: Static, user: User = Depends(get_current_user)
+    id: str, static: Static, user: User = Depends(get_current_user)
 ) -> Static | HTTPException:
     if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:
-        response = await update_static(static, static_id)
+        response = await update_static(static, id)
 
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
@@ -50,13 +50,13 @@ async def update_static_content(
 
 @router.delete("/{id}", response_model=Static)
 async def delete_static_content(
-    static_id: str, user: User = Depends(get_current_user)
+    id: str, user: User = Depends(get_current_user)
 ) -> Static | HTTPException:
     if user.role != "superuser":
         raise HTTPException(status_code=403, detail="Permission denied")
 
     try:
-        response = await delete_static(static_id)
+        response = await delete_static(id)
 
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
