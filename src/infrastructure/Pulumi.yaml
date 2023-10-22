@@ -1,6 +1,0 @@
-name: primal-formulas
-runtime:
-  name: python
-  options:
-    virtualenv: ../../.venv
-description: FastApi Server with ASGI uvicorn on EBS
