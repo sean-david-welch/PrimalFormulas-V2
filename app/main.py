@@ -46,7 +46,7 @@ BUCKET_NAME = "primalformulas-bucket"
 @app.get("/")
 def root() -> RedirectResponse:
     try:
-        return RedirectResponse(url="docs")
+        return RedirectResponse(url="/api/docs")
     except Exception as e:
         logging.error(e)
         return JSONResponse(
