@@ -55,7 +55,7 @@ def root() -> RedirectResponse:
 def root_api() -> RedirectResponse:
     logging.info("Root endpoint accessed")
     try:
-        return RedirectResponse(url="/api/docs")
+        return RedirectResponse(url="/docs")
     except Exception as e:
         logging.error(f"Exception in root: {e}")
         return JSONResponse(
