@@ -1,6 +1,6 @@
 [build]
 builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
+dockerfilePath = "app/Dockerfile"
 
 [deploy]
 numReplicas = 1
