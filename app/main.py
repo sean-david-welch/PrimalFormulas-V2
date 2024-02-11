@@ -18,9 +18,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 app = FastAPI(
-    root_path="/",
-    docs_url="/api/docs",
-    openapi_url="/api/openapi.json",
     title="Primal Formulas API",
 )
 
@@ -46,7 +43,7 @@ BUCKET_NAME = "primalformulas-bucket"
 @app.get("/")
 def root() -> RedirectResponse:
     try:
-        return RedirectResponse(url="/api/docs")
+        return RedirectResponse(url="/docs")
     except Exception as e:
         logging.error(e)
         return JSONResponse(
