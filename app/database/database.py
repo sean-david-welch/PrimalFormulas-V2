@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 from fastapi.exceptions import HTTPException
 
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.results import InsertOneResult, UpdateResult, DeleteResult
 from pymongo.errors import (
     DuplicateKeyError,
