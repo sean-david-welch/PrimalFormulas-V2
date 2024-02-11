@@ -43,7 +43,7 @@ def database_handle_errors(error):
         raise HTTPException(status_code=500, detail="Database Operation Failed")
 
 
-async def database_find_all(collection: AsyncIOMotorCollection) -> list[dict]:
+async def database_find_all(collection) -> list[dict]:
     cursor = collection.find({})
 
     try:
@@ -54,9 +54,7 @@ async def database_find_all(collection: AsyncIOMotorCollection) -> list[dict]:
     return result
 
 
-async def database_find_one(
-    collection: AsyncIOMotorCollection, model_id: str
-) -> Optional[dict]:
+async def database_find_one(collection, model_id: str) -> Optional[dict]:
     try:
         result = await collection.find_one({"id": model_id})
         if not result:
@@ -67,9 +65,7 @@ async def database_find_one(
     return result
 
 
-async def database_insert_one(
-    collection: AsyncIOMotorCollection, data: BaseModel
-) -> InsertOneResult:
+async def database_insert_one(collection, data: BaseModel) -> InsertOneResult:
     data.id = str(uuid4())
 
     try:
@@ -83,7 +79,7 @@ async def database_insert_one(
 async def database_update_one(
     model_id: str,
     model_data: BaseModel,
-    collection: AsyncIOMotorCollection,
+    collection,
 ) -> UpdateResult:
     try:
         result = await collection.update_one(
@@ -95,9 +91,7 @@ async def database_update_one(
     return result
 
 
-async def database_delete_one(
-    model_id: str, collection: AsyncIOMotorCollection
-) -> DeleteResult:
+async def database_delete_one(model_id: str, collection) -> DeleteResult:
     try:
         result = await collection.delete_one({"id": model_id})
     except Exception as error:
