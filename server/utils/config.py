@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 settings = {
+    "DATABASE_URL": os.getenv("DATABASE_URL"),
     "AWS_ACCESS_KEY_ID": os.getenv("AWS_ACCESS_KEY_ID"),
     "AWS_SECRET_ACCESS_KEY": os.getenv("AWS_SECRET_ACCESS_KEY"),
     "STRIPE_SECRET_KEY": os.getenv("STRIPE_SECRET_KEY"),
