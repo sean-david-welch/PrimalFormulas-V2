@@ -1,7 +1,8 @@
 import logging
 
-from boto3 import client as botoclient
 from utils.config import settings
+
+from boto3 import client as botoclient
 
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -20,7 +21,6 @@ logging.basicConfig(level=logging.DEBUG)
 app = FastAPI(
     title="Primal Formulas API",
 )
-
 
 origins = ["*"]
 

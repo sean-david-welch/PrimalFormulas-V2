@@ -1,21 +1,31 @@
-import psycopg
+import logging
 
 from models.models import Product
-from utils.config import settings
+from utils.database import get_async_pool
+
+pool = get_async_pool()
+logger = logging.getLogger()
 
 
 async def get_products() -> list[Product]:
     query = "SELECT * FROM products"
-    database_url = settings["DATABASE_URL"]
 
     try:
-        async with psycopg.AsyncConnection.connect(database_url) as conn:
-            async with conn.cursor() as cur:
-                await cur.execute(query)
-                rows = await cur.fetchall()
-                # Assuming you have a way to convert rows to Product instances
-                products = [Product(**row) for row in rows]
-                return products
-    except Exception as err:
-        # Consider logging the error here
-        return []  # Return an empty list or consider raising the exception
+        async with pool.connection() as conn, conn.cursor() as curr:
+            curr.execute(query)
+            rows = curr.fetchall()
+
+            return [
+                Product(
+                    id=row[0],
+                    name=row[1],
+                    description=row[2],
+                    price=row[3],
+                    image=row[4],
+                    created=row[5],
+                )
+                for row in rows
+            ]
+    except Exception as error:
+        logger.error(f"An error occurred in get_products: {error}", exc_info=True)
+        return None
