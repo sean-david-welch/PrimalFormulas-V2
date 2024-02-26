@@ -27,7 +27,7 @@ async def get_product_by_id(id: str):
     return response
 
 
-@router.post("/", response_model=Product)
+@router.post("/", response_model=bool)
 async def create_product(product: Product):
     try:
         response = await database.create_product(product)
@@ -37,7 +37,7 @@ async def create_product(product: Product):
     return response
 
 
-@router.put("/{id}", response_model=Product)
+@router.put("/{id}", response_model=bool)
 async def update_product(id: str, product: Product):
     try:
         response = await database.update_product(id, product)
@@ -47,7 +47,7 @@ async def update_product(id: str, product: Product):
     return response
 
 
-@router.delete("/{id}", response_model=Product)
+@router.delete("/{id}", response_model=bool)
 async def delete_product(id: str, product: Product):
     try:
         response = await database.delete_product(id, product)
