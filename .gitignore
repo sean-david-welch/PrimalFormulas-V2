@@ -7,7 +7,7 @@ primal-formulas.zip
 *.pyc
 venv/
 ./src/app/config
-
+server/service.account.json
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
@@ -16,3 +16,4 @@ venv/
 src/app/config/supervisord.conf
 
 infrastructure/
+server/service.account.json
