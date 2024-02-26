@@ -2,6 +2,7 @@
 .env
 ../.venv/
 .vscode
+server/.env
 primal-formulas.zip
 *.pyc
 venv/
