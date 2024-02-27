@@ -42,7 +42,7 @@ async def get_product_by_id(id: str) -> Product:
             await cursor.execute(query, (id))
             product = await cursor.fetchone()
 
-            return Product(*product) if product != None else None
+            return Product(*product) if product is not None else None
     except Exception as error:
         logger.error(f"An error occurred in get_products_by_id: {error}", exc_info=True)
         return None
@@ -69,10 +69,6 @@ async def create_product(product: Product) -> bool:
     except Exception as error:
         logger.error(f"an error occurred while creating a product: {error}")
         return None
-
-
-from uuid import UUID
-from datetime import datetime
 
 
 async def update_product(id: str, product: Product) -> bool:
