@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routes.about import router as about_router
 from routes.auth import router as auth_router
-from routes.content import router as content_router
+from server.routes.assets import router as assets_router
 from routes.payments import router as payments_router
 from routes.products import router as products_router
 
@@ -72,6 +72,6 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
 app.include_router(about_router, prefix="/api/about", tags=["About"])
 app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
-app.include_router(content_router, prefix="/api/content", tags=["Content"])
+app.include_router(assets_router, prefix="/api/assets", tags=["Assets"])
 app.include_router(payments_router, prefix="/api/payments", tags=["Payments"])
 app.include_router(products_router, prefix="/api/products", tags=["Products"])

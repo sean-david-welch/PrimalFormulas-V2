@@ -17,10 +17,10 @@ async def get_products() -> list[Product]:
         async with pool.connection() as conn, conn.cursor() as cursor:
             await cursor.execute(query)
 
-            column_names = [desc[0] for desc in cursor.description]
-
             rows = await cursor.fetchall()
-            return [Product(**dict(zip(column_names, row))) for row in rows]
+            columns = [desc[0] for desc in cursor.description]
+
+            return [Product(**dict(zip(columns, row))) for row in rows]
     except Exception as error:
         logger.error(f"An error occurred in get_products: {error}", exc_info=True)
         return None

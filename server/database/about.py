@@ -16,18 +16,11 @@ async def get_abouts() -> list[About]:
     try:
         async with pool.connection() as conn, conn.cursor() as cursor:
             await cursor.execute(query)
-            rows = await cursor.fetchall()
 
-            return [
-                About(
-                    id=row[0],
-                    title=row[1],
-                    description=row[2],
-                    image=row[3],
-                    created=row[4],
-                )
-                for row in rows
-            ]
+            rows = await cursor.fetchall()
+            colums = [desc[0] for desc in cursor.description]
+
+            return [About(**dict(zip(colums, row))) for row in rows]
     except Exception as error:
         logger.error(f"An error occurred in get abouts: {error}", exc_info=True)
         return None
