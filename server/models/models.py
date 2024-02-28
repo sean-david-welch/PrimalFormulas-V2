@@ -28,7 +28,7 @@ class About(BaseModel):
     created: Optional[datetime] = None
 
 
-class Asset(BaseModel):
+class Content(BaseModel):
     id: UUID
     title: str
     content: str
