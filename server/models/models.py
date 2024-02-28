@@ -31,5 +31,5 @@ class About(BaseModel):
 class Content(BaseModel):
     id: UUID
     title: str
-    content: str
+    media: str
     created: Optional[datetime] = None

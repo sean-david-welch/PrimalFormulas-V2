@@ -16,19 +16,11 @@ async def get_products() -> list[Product]:
     try:
         async with pool.connection() as conn, conn.cursor() as cursor:
             await cursor.execute(query)
-            rows = await cursor.fetchall()
 
-            return [
-                Product(
-                    id=row[0],
-                    name=row[1],
-                    description=row[2],
-                    price=row[3],
-                    image=row[4],
-                    created=row[5],
-                )
-                for row in rows
-            ]
+            column_names = [desc[0] for desc in cursor.description]
+
+            rows = await cursor.fetchall()
+            return [Product(**dict(zip(column_names, row))) for row in rows]
     except Exception as error:
         logger.error(f"An error occurred in get_products: {error}", exc_info=True)
         return None
