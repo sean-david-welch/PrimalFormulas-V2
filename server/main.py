@@ -6,13 +6,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from utils.auth import initialize_firebase
 
-from routes.about import router as about_router
-from routes.auth import router as auth_router
-from routes.assets import router as assets_router
-from routes.payments import router as payments_router
-from routes.products import router as products_router
+from routes.about_routes import router as about_router
+from routes.auth_routes import router as auth_router
+from routes.assets_routes import router as assets_router
+from routes.payments_routes import router as payments_router
+from routes.product_routes import router as products_router
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 app = FastAPI(

@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 
-from models.models import Asset
+from models.asset_models import Asset
 
-import database.assets as database
+import database.assets_database as database
 
 router = APIRouter()
 

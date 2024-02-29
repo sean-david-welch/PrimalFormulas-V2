@@ -8,7 +8,7 @@ class Product(BaseModel):
     id: UUID
     name: str
     description: Optional[str] = None
-    price: float = Field(..., ge=0, le=9999999999.99)
+    price: float = Field(..., ge=0, le=9999.99)
     image: Optional[str] = None
     created: Optional[datetime] = None
 
@@ -16,5 +16,5 @@ class Product(BaseModel):
 class ProductMutation(BaseModel):
     name: str
     description: Optional[str] = None
-    price: float = Field(..., ge=0, le=9999999999.99)
+    price: float = Field(..., ge=0, le=9999.99)
     image: Optional[str] = None

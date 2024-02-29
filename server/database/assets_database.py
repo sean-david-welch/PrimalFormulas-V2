@@ -3,7 +3,7 @@ import logging
 from uuid import uuid4
 from datetime import datetime
 
-from models.models import Asset
+from models.asset_models import Asset
 from utils.database import get_async_pool
 
 pool = get_async_pool()

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status
-from models.products import Product, ProductMutation
+from models.products_models import Product, ProductMutation
 from utils.aws import generate_presigned_url
 from fastapi.exceptions import HTTPException
 
-import database.products as database
+import database.products_database as database
 
 router = APIRouter()
 

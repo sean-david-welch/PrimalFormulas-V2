@@ -1,6 +1,6 @@
 import logging
 
-from models.products import Product, ProductMutation
+from models.products_models import Product, ProductMutation
 from utils.database import get_async_pool
 
 pool = get_async_pool()
@@ -38,7 +38,9 @@ async def get_product_by_id(id: str) -> Product:
 
 
 async def create_product(product: ProductMutation) -> bool:
-    query = "INSERT INTO products (id, name, description, price, image, created) VALUES (%s, %s, %s, %s)"
+    query = (
+        "INSERT INTO products (name, description, price, image) VALUES (%s, %s, %s, %s)"
+    )
     values = (
         product.name,
         product.description,
