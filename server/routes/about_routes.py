@@ -1,16 +1,17 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 
 from utils.aws import generate_presigned_url
-from models.about_models import AboutMutation
+from utils.auth import verify_token_admin
+from models.about_models import About, AboutMutation
 
 import database.about_database as database
 
 router = APIRouter()
 
 
-@router.get("/", response_model=dict)
+@router.get("/", response_model=About)
 async def get_abouts():
     try:
         about = await database.get_abouts()
@@ -26,7 +27,7 @@ async def get_abouts():
 
 
 @router.post("/", response_model=dict)
-async def create_about(about: AboutMutation):
+async def create_about(about: AboutMutation, _=Depends(verify_token_admin)):
     try:
         image_url, presigned_url = generate_presigned_url("about", about.image)
         about.image = image_url
@@ -48,7 +49,7 @@ async def create_about(about: AboutMutation):
 
 
 @router.put("/{id}", response_model=dict)
-async def update_about(id: str, about: AboutMutation):
+async def update_about(id: str, about: AboutMutation, _=Depends(verify_token_admin)):
     try:
         if about.image != "" and about.image.lower() != "null":
             image_url, presigned_url = generate_presigned_url("about", about.image)
@@ -71,7 +72,7 @@ async def update_about(id: str, about: AboutMutation):
 
 
 @router.delete("/{id}", response_model=dict)
-async def delete_about(id: str):
+async def delete_about(id: str, _=Depends(verify_token_admin)):
     try:
         response = await database.delete_about(id)
 

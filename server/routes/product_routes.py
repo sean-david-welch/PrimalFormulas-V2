@@ -1,8 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 
 from utils.aws import generate_presigned_url
+from utils.auth import verify_token_admin
 from models.products_models import Product, ProductMutation
 
 import database.products_database as database
@@ -10,7 +11,7 @@ import database.products_database as database
 router = APIRouter()
 
 
-@router.get("/", response_model=dict)
+@router.get("/", response_model=Product)
 async def get_products():
     try:
         products = await database.get_products()
@@ -41,7 +42,7 @@ async def get_product_by_id(id: str):
 
 
 @router.post("/", response_model=dict)
-async def create_product(product: ProductMutation):
+async def create_product(product: ProductMutation, _=Depends(verify_token_admin)):
     try:
         image_url, presigned_url = generate_presigned_url("products", product.image)
         product.image = image_url
@@ -62,7 +63,9 @@ async def create_product(product: ProductMutation):
 
 
 @router.put("/{id}", response_model=dict)
-async def update_product(id: str, product: ProductMutation):
+async def update_product(
+    id: str, product: ProductMutation, _=Depends(verify_token_admin)
+):
     try:
         if product.image != "" and product.image.lower() != "null":
             image_url, presigned_url = generate_presigned_url("products", product.image)
@@ -84,7 +87,7 @@ async def update_product(id: str, product: ProductMutation):
 
 
 @router.delete("/{id}", response_model=dict)
-async def delete_product(id: str):
+async def delete_product(id: str, _=Depends(verify_token_admin)):
     try:
         response = await database.delete_product(id)
 

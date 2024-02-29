@@ -1,16 +1,17 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 
 from models.asset_models import Asset
 from utils.aws import generate_presigned_url
+from utils.auth import verify_token_admin
 
 import database.assets_database as database
 
 router = APIRouter()
 
 
-@router.get("/", response_model=dict)
+@router.get("/", response_model=Asset)
 async def get_assets():
     try:
         assets = await database.get_assets()
@@ -41,7 +42,7 @@ async def get_asset_by_title(title: str):
 
 
 @router.post("/", response_model=dict)
-async def create_asset(asset: Asset):
+async def create_asset(asset: Asset, _=Depends(verify_token_admin)):
     try:
         media_url, presigned_url = generate_presigned_url("assets", asset.media)
         asset.media = media_url
@@ -63,7 +64,7 @@ async def create_asset(asset: Asset):
 
 
 @router.put("/{id}", response_model=dict)
-async def update_asset(id: str, asset: Asset):
+async def update_asset(id: str, asset: Asset, _=Depends(verify_token_admin)):
     try:
         if asset.image != "" and asset.image.lower() != "null":
             image_url, presigned_url = generate_presigned_url("products", asset.image)
@@ -86,7 +87,7 @@ async def update_asset(id: str, asset: Asset):
 
 
 @router.delete("/{id}", response_model=dict)
-async def delete_asset(id: str):
+async def delete_asset(id: str, _=Depends(verify_token_admin)):
     try:
         response = await database.delete_asset(id)
 
