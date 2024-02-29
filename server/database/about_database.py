@@ -17,7 +17,9 @@ async def get_abouts() -> list[About]:
             rows = await cursor.fetchall()
             colums = [desc[0] for desc in cursor.description]
 
-            return [About(**dict(zip(colums, row))) for row in rows]
+            return [
+                About(**dict(zip(colums, row))).model_dump(mode="json") for row in rows
+            ]
     except Exception as error:
         logger.error(f"An error occurred in get abouts: {error}", exc_info=True)
         return None

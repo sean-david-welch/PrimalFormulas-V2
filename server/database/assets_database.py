@@ -17,7 +17,9 @@ async def get_assets() -> list[Asset]:
             rows = await cursor.fetchall()
             columns = [desc[0] for desc in cursor.description]
 
-            return [Asset(**dict(zip(columns, row))) for row in rows]
+            return [
+                Asset(**dict(zip(columns, row))).model_dump(mode="json") for row in rows
+            ]
     except Exception as error:
         logger.error(f"An error occurred in get_products: {error}", exc_info=True)
         return None
@@ -29,9 +31,10 @@ async def get_asset_by_title(title: str) -> Asset:
     try:
         async with pool.connection() as conn, conn.cursor() as cursor:
             await cursor.execute(query, (title))
-            asset = await cursor.fetchone()
+            row = await cursor.fetchone()
+            columns = [desc[0] for desc in cursor.description]
 
-            return Asset(*asset) if asset is not None else None
+            return Asset(**dict(zip(columns, row))).model_dump(mode="json")
     except Exception as error:
         logger.error(f"An error occurred in get asset by title: {error}", exc_info=True)
         return None

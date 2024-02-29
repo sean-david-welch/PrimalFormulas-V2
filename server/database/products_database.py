@@ -21,6 +21,7 @@ async def get_products() -> list[Product]:
                 Product(**dict(zip(columns, row))).model_dump(mode="json")
                 for row in rows
             ]
+
             return products
     except Exception as error:
         logger.error(f"An error occurred in get_products: {error}", exc_info=True)
@@ -33,9 +34,10 @@ async def get_product_by_id(id: str) -> Product:
     try:
         async with pool.connection() as conn, conn.cursor() as cursor:
             await cursor.execute(query, [id])
-            product = await cursor.fetchone()
+            row = await cursor.fetchone()
+            columns = [desc[0] for desc in cursor.description]
 
-            return Product(*product) if product is not None else None
+            return Product(**dict(zip(columns, row))).model_dump(mode="json")
     except Exception as error:
         logger.error(f"An error occurred in get_products_by_id: {error}", exc_info=True)
         return None

@@ -10,9 +10,7 @@ import database.products_database as database
 router = APIRouter()
 
 
-@router.get(
-    "/",
-)
+@router.get("/")
 async def get_products():
     try:
         products = await database.get_products()
