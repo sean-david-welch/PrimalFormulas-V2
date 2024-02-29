@@ -1,9 +1,6 @@
 import logging
 
-from uuid import uuid4
-from datetime import datetime
-
-from models.models import Product
+from models.products import Product, ProductMutation
 from utils.database import get_async_pool
 
 pool = get_async_pool()
@@ -31,7 +28,7 @@ async def get_product_by_id(id: str) -> Product:
 
     try:
         async with pool.connection() as conn, conn.cursor() as cursor:
-            await cursor.execute(query, (id))
+            await cursor.execute(query, [id])
             product = await cursor.fetchone()
 
             return Product(*product) if product is not None else None
@@ -40,18 +37,13 @@ async def get_product_by_id(id: str) -> Product:
         return None
 
 
-async def create_product(product: Product) -> bool:
-    product.id = uuid4()
-    product.created = datetime.now()
-
-    query = "INSERT INTO products (id, name, description, price, image, created) VALUES (%s, %s, %s, %s, %s, %s)"
+async def create_product(product: ProductMutation) -> bool:
+    query = "INSERT INTO products (id, name, description, price, image, created) VALUES (%s, %s, %s, %s)"
     values = (
-        product.id,
         product.name,
         product.description,
         product.price,
         product.image,
-        product.created,
     )
 
     try:
@@ -63,7 +55,7 @@ async def create_product(product: Product) -> bool:
         return None
 
 
-async def update_product(id: str, product: Product) -> bool:
+async def update_product(id: str, product: ProductMutation) -> bool:
     query = "UPDATE products SET name = %s, description = %s, price = %s, image = %s WHERE id = %s"
     values = (
         product.name,
@@ -87,7 +79,7 @@ async def delete_product(id: str) -> bool:
 
     try:
         async with pool.connection() as conn, conn.transaction():
-            await conn.execute(query(id))
+            await conn.execute(query, [id])
 
             return True
     except Exception as error:

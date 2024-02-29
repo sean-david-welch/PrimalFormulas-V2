@@ -1,3 +1,4 @@
+-- Created Schemas
 CREATE TABLE products (
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,
@@ -29,3 +30,11 @@ CREATE TABLE assets (
     content TEXT NOT NULL,
     created TIMESTAMP WITH TIME ZONE DEFAULT now() 
 );
+
+-- Update UUIDs
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+ALTER TABLE products ALTER COLUMN id SET DEFAULT uuid_generate_v4();
+ALTER TABLE stock_information ALTER COLUMN id SET DEFAULT uuid_generate_v4();
+ALTER TABLE about ALTER COLUMN id SET DEFAULT uuid_generate_v4();
+ALTER TABLE assets ALTER COLUMN id SET DEFAULT uuid_generate_v4();
