@@ -10,7 +10,9 @@ import database.products_database as database
 router = APIRouter()
 
 
-@router.get("/", response_model=list[Product])
+@router.get(
+    "/",
+)
 async def get_products():
     try:
         products = await database.get_products()
@@ -21,7 +23,6 @@ async def get_products():
             raise HTTPException(
                 200, {"error": "An error occurred while getting the content"}
             )
-
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 

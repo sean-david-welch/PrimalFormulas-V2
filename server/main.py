@@ -1,3 +1,4 @@
+import time
 import logging
 
 from fastapi import FastAPI, HTTPException, Request, status
@@ -27,6 +28,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def log_response_time(request: Request, call_next):
+    start_time = time.time()
+
+    response = await call_next(request)
+    process_time = (time.time() - start_time) * 1000
+
+    logging.info(
+        f"Request path: {request.url.path}, Response time: {process_time:.2f} ms"
+    )
+    return response
 
 
 @app.get("/")

@@ -17,7 +17,11 @@ async def get_products() -> list[Product]:
             rows = await cursor.fetchall()
             columns = [desc[0] for desc in cursor.description]
 
-            return [Product(**dict(zip(columns, row))) for row in rows]
+            products = [
+                Product(**dict(zip(columns, row))).model_dump(mode="json")
+                for row in rows
+            ]
+            return products
     except Exception as error:
         logger.error(f"An error occurred in get_products: {error}", exc_info=True)
         return None

@@ -5,6 +5,6 @@ from fastapi.responses import JSONResponse
 router = APIRouter()
 
 
-@router.post("create-checkout-session")
+@router.post("/create-checkout-session")
 async def create_checkout_session() -> JSONResponse:
     pass
