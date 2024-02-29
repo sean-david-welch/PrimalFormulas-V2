@@ -1,7 +1,9 @@
-from fastapi import APIRouter, status
-from models.products_models import Product, ProductMutation
-from utils.aws import generate_presigned_url
+from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
+from fastapi.responses import JSONResponse
+
+from utils.aws import generate_presigned_url
+from models.products_models import Product, ProductMutation
 
 import database.products_database as database
 
@@ -11,15 +13,15 @@ router = APIRouter()
 @router.get("/", response_model=list[Product])
 async def get_products():
     try:
-        response = await database.get_products()
+        products = await database.get_products()
 
-        if response is not None:
-            return response
+        if products is not None:
+            return JSONResponse(status_code=200, content={"products": products})
         else:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while getting the content",
+                200, {"error": "An error occurred while getting the content"}
             )
+
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -27,14 +29,13 @@ async def get_products():
 @router.get("/{id}", response_model=Product)
 async def get_product_by_id(id: str):
     try:
-        response = await database.get_product_by_id(id)
+        product = await database.get_product_by_id(id)
 
-        if response is not None:
-            return response
+        if product is not None:
+            return JSONResponse(status_code=200, content={"product": product})
         else:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while getting the content",
+                200, {"error": "An error occurred while getting the content"}
             )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
@@ -48,13 +49,15 @@ async def create_product(product: ProductMutation):
 
         response = await database.create_product(product)
 
-        if response is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while creating the content",
+        if response is not None:
+            return JSONResponse(
+                status_code=200,
+                content={"product": product, "presigned_url": presigned_url},
             )
-
-        return {"product": product, "presigned_url": presigned_url}
+        else:
+            raise HTTPException(
+                500, {"error": "An error occurred while creating the content"}
+            )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -68,13 +71,15 @@ async def update_product(id: str, product: ProductMutation):
 
         response = await database.update_product(id, product)
 
-        if response is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while updating the content",
+        if response is not None:
+            return JSONResponse(
+                status_code=200,
+                content={"product": product, "presigned_url": presigned_url},
             )
-
-        return {"product": product, "presigned_url": presigned_url}
+        else:
+            raise HTTPException(
+                500, {"error": "An error occurred while updating the content"}
+            )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -84,12 +89,14 @@ async def delete_product(id: str):
     try:
         response = await database.delete_product(id)
 
-        if response is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while deleting the content.",
+        if response is not None:
+            return JSONResponse(
+                status_code=200,
+                content={"message": f"content deleted successfully: {response}"},
             )
-
-        return {"message": f"content deleted successfully: {response}"}
+        else:
+            raise HTTPException(
+                500, {"error": "An error occurred while deleting the content"}
+            )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code

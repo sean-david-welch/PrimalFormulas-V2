@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from utils.auth import initialize_firebase
+from utils.database import check_async_connection
 
 from routes.about_routes import router as about_router
 from routes.auth_routes import router as auth_router
@@ -69,4 +70,5 @@ app.include_router(products_router, prefix="/api/products", tags=["Products"])
 
 
 if __name__ == "__main__":
+    check_async_connection()
     initialize_firebase()

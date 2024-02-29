@@ -1,4 +1,5 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 
 from models.asset_models import Asset
@@ -12,14 +13,13 @@ router = APIRouter()
 @router.get("/", response_model=list[Asset])
 async def get_assets():
     try:
-        response = await database.get_assets()
+        assets = await database.get_assets()
 
-        if response is not None:
-            return response
+        if assets is not None:
+            return JSONResponse(status_code=200, content={"assets": assets})
         else:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while getting the content",
+                200, {"error": "An error occurred while getting the content"}
             )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
@@ -28,14 +28,13 @@ async def get_assets():
 @router.get("/{title}", response_model=Asset)
 async def get_asset_by_title(title: str):
     try:
-        response = await database.get_asset_by_title(title)
+        asset = await database.get_asset_by_title(title)
 
-        if response is not None:
-            return response
+        if asset is not None:
+            return JSONResponse(status_code=200, content={"asset": asset})
         else:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while getting the content",
+                200, {"error": "An error occurred while getting the content"}
             )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
@@ -49,13 +48,16 @@ async def create_asset(asset: Asset):
 
         response = await database.create_asset(asset)
 
-        if response is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while creating the content",
+        if response is not None:
+            return JSONResponse(
+                status_code=200,
+                content={"asset": asset, "presigned_url": presigned_url},
             )
-
-        return {"asset": asset, "presigned_url": presigned_url}
+        else:
+            raise HTTPException(
+                500,
+                {"error": "An error occurred while creating the content"},
+            )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -69,13 +71,16 @@ async def update_asset(id: str, asset: Asset):
 
         response = await database.update_asset(id, asset)
 
-        if response is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while updating the content",
+        if response is not None:
+            return JSONResponse(
+                status_code=200,
+                content={"asset": asset, "presigned_url": presigned_url},
             )
-
-        return {"asset": asset, "presigned_url": presigned_url}
+        else:
+            raise HTTPException(
+                500,
+                {"error": "An error occurred while updating the content"},
+            )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -85,12 +90,15 @@ async def delete_asset(id: str):
     try:
         response = await database.delete_asset(id)
 
-        if response is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while deleting the content.",
+        if response is not None:
+            return JSONResponse(
+                status_code=200,
+                content={"message": f"content deleted successfully: {response}"},
             )
-
-        return {"message": f"content deleted successfully: {response}"}
+        else:
+            raise HTTPException(
+                500,
+                {"error": "An error occurred while deleting the content"},
+            )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
