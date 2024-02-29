@@ -12,10 +12,16 @@ router = APIRouter()
 async def get_products():
     try:
         response = await database.get_products()
+
+        if response is not None:
+            return response
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred while getting the content",
+            )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
-
-    return response
 
 
 @router.get("/{id}", response_model=Product)
@@ -23,7 +29,13 @@ async def get_product_by_id(id: str):
     try:
         response = await database.get_product_by_id(id)
 
-        return response
+        if response is not None:
+            return response
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred while getting the content",
+            )
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
@@ -34,7 +46,13 @@ async def create_product(product: ProductMutation):
         image_url, presigned_url = generate_presigned_url("products", product.image)
         product.image = image_url
 
-        await database.create_product(product)
+        response = await database.create_product(product)
+
+        if response is None:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred while creating the content",
+            )
 
         return {"product": product, "presigned_url": presigned_url}
     except HTTPException as error:
@@ -48,7 +66,13 @@ async def update_product(id: str, product: ProductMutation):
             image_url, presigned_url = generate_presigned_url("products", product.image)
             product.image = image_url
 
-        await database.update_product(id, product)
+        response = await database.update_product(id, product)
+
+        if response is None:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred while updating the content",
+            )
 
         return {"product": product, "presigned_url": presigned_url}
     except HTTPException as error:
@@ -63,9 +87,9 @@ async def delete_product(id: str):
         if response is None:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An error occurred while deleting the product.",
+                detail="An error occurred while deleting the content.",
             )
 
-        return {"message": f"product deleted successfully: {response}"}
+        return {"message": f"content deleted successfully: {response}"}
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code

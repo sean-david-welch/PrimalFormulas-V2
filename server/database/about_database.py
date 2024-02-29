@@ -1,8 +1,5 @@
 import logging
 
-from uuid import uuid4
-from datetime import datetime
-
 from models.about_models import About
 from utils.database import get_async_pool
 
@@ -27,11 +24,8 @@ async def get_abouts() -> list[About]:
 
 
 async def create_about(about: About) -> bool:
-    about.id = uuid4()
-    about.created = datetime.now()
-
-    query = "INSERT INTO about (id, title, description, image, created) VALUES (%s, %s, %s, %s, %s)"
-    values = (about.id, about.title, about.description, about.image, about.created)
+    query = "INSERT INTO about (title, description, image) VALUES (%s, %s, %s)"
+    values = (about.title, about.description, about.image)
 
     try:
         async with pool.connection() as conn, conn.transaction():
@@ -66,7 +60,7 @@ async def delete_about(id: str) -> bool:
 
     try:
         async with pool.connection() as conn, conn.transaction():
-            await conn.execute(query(id))
+            await conn.execute(query, [id])
 
             return True
     except Exception as error:

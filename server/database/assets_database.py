@@ -1,8 +1,5 @@
 import logging
 
-from uuid import uuid4
-from datetime import datetime
-
 from models.asset_models import Asset
 from utils.database import get_async_pool
 
@@ -41,11 +38,8 @@ async def get_asset_by_title(title: str) -> Asset:
 
 
 async def create_asset(asset: Asset) -> bool:
-    asset.id = uuid4()
-    asset.created = datetime()
-
-    query = "INSERT INTO assets (id, title, media, created) VALUES (%s, %s, %s, %s)"
-    values = (asset.id, asset.title, asset.media, asset.created)
+    query = "INSERT INTO assets (title, media) VALUES (%s, %s)"
+    values = (asset.title, asset.media)
 
     try:
         async with pool.connection() as conn, conn.transaction():
@@ -79,7 +73,7 @@ async def delete_asset(id: str) -> bool:
 
     try:
         async with pool.connection() as conn, conn.transaction():
-            await conn.execute(query(id))
+            await conn.execute(query, [id])
 
             return True
     except Exception as error:
