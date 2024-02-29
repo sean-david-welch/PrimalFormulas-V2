@@ -10,7 +10,7 @@ import database.products_database as database
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", response_model=dict)
 async def get_products():
     try:
         products = await database.get_products()

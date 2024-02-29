@@ -10,7 +10,7 @@ import database.assets_database as database
 router = APIRouter()
 
 
-@router.get("/", response_model=list[Asset])
+@router.get("/", response_model=dict)
 async def get_assets():
     try:
         assets = await database.get_assets()

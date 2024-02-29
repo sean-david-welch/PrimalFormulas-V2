@@ -3,14 +3,14 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 
 from utils.aws import generate_presigned_url
-from models.about_models import About, AboutMutation
+from models.about_models import AboutMutation
 
 import database.about_database as database
 
 router = APIRouter()
 
 
-@router.get("/", response_model=list[About])
+@router.get("/", response_model=dict)
 async def get_abouts():
     try:
         about = await database.get_abouts()
