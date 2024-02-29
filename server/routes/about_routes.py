@@ -47,7 +47,7 @@ async def create_about(about: AboutMutation):
 @router.put("/{id}", response_model=dict)
 async def update_about(id: str, about: AboutMutation):
     try:
-        if about.image != "" or "null":
+        if about.image != "" and about.image.lower() != "null":
             image_url, presigned_url = generate_presigned_url("about", about.image)
             about.image = image_url
 

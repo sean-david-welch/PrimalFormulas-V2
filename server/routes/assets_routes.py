@@ -63,7 +63,7 @@ async def create_asset(asset: Asset):
 @router.put("/{id}", response_model=dict)
 async def update_asset(id: str, asset: Asset):
     try:
-        if asset.image != "" or "null":
+        if asset.image != "" and asset.image.lower() != "null":
             image_url, presigned_url = generate_presigned_url("products", asset.image)
             asset.image = image_url
 

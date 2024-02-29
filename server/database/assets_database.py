@@ -52,12 +52,16 @@ async def create_asset(asset: Asset) -> bool:
 
 
 async def update_asset(id: str, asset: Asset) -> bool:
-    query = "UPDATE assets SET title = %s, media = %s WHERE id = %s"
-    values = (
-        asset.title,
-        asset.media,
-        id,
-    )
+    if asset.media and asset.media.lower() != "null":
+        query = "UPDATE assets SET title = %s, media = %s WHERE id = %s"
+        values = (
+            asset.title,
+            asset.media,
+            id,
+        )
+    else:
+        query = "UPDATE assets SET title = %s, WHERE id = %s"
+        values = (asset.title, id)
 
     try:
         async with pool.connection() as conn, conn.transaction():

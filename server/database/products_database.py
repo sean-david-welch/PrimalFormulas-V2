@@ -58,14 +58,25 @@ async def create_product(product: ProductMutation) -> bool:
 
 
 async def update_product(id: str, product: ProductMutation) -> bool:
-    query = "UPDATE products SET name = %s, description = %s, price = %s, image = %s WHERE id = %s"
-    values = (
-        product.name,
-        product.description,
-        product.price,
-        product.image,
-        id,
-    )
+    if product.image and product.image.lower() != "null":
+        query = "UPDATE products SET name = %s, description = %s, price = %s, image = %s WHERE id = %s"
+        values = (
+            product.name,
+            product.description,
+            product.price,
+            product.image,
+            id,
+        )
+    else:
+        query = (
+            "UPDATE products SET name = %s, description = %s, price = %s WHERE id = %s"
+        )
+        values = (
+            product.name,
+            product.description,
+            product.price,
+            id,
+        )
 
     try:
         async with pool.connection() as conn, conn.transaction():

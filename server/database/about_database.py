@@ -38,13 +38,19 @@ async def create_about(about: About) -> bool:
 
 
 async def update_about(id: str, about: About) -> bool:
-    query = "UPDATE about SET name = %s, description = %s, image = %s WHERE id = %s"
-    values = (
-        about.title,
-        about.description,
-        about.image,
-        id,
-    )
+    if about.image and about.image.lower() != "null":
+        query = (
+            "UPDATE about SET title = %s, description = %s, image = %s WHERE id = %s"
+        )
+        values = (
+            about.title,
+            about.description,
+            about.image,
+            id,
+        )
+    else:
+        query = "UPDATE about set title = %s, description = %s WHERE id = %s"
+        values = (about.title, about.description, id)
 
     try:
         async with pool.connection() as conn, conn.transaction():

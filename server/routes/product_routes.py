@@ -62,7 +62,7 @@ async def create_product(product: ProductMutation):
 @router.put("/{id}", response_model=dict)
 async def update_product(id: str, product: ProductMutation):
     try:
-        if product.image != "" or "null":
+        if product.image != "" and product.image.lower() != "null":
             image_url, presigned_url = generate_presigned_url("products", product.image)
             product.image = image_url
 
