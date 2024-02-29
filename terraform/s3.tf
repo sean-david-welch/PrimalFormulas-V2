@@ -17,7 +17,7 @@ resource "aws_s3_bucket_acl" "primalformulas_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.primalformulas_ownership]
 
   bucket = aws_s3_bucket.primalformulas.id
-  acl    = "public-read"
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_public_access_block" "primalformulas_access_block" {
