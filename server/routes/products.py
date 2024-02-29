@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-from fastapi.exceptions import HTTPException
 from models.models import Product
+from utils.aws import generate_presigned_url
+from fastapi.exceptions import HTTPException
 
 import database.products as database
 
@@ -27,14 +28,18 @@ async def get_product_by_id(id: str):
     return response
 
 
-@router.post("/", response_model=bool)
+@router.post("/", response_model=dict)
 async def create_product(product: Product):
     try:
+        image_url, presigned_url = generate_presigned_url("products", product.image)
+
+        product.image = image_url
+
         response = await database.create_product(product)
     except HTTPException as error:
         return {"Error": error.detail}, error.status_code
 
-    return response
+    return {"product": product, "presigned_url": presigned_url}
 
 
 @router.put("/{id}", response_model=bool)
