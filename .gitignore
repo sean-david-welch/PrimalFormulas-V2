@@ -17,3 +17,4 @@ src/app/config/supervisord.conf
 
 infrastructure/
 server/service.account.json
+terraform/.terraform
