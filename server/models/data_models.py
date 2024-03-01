@@ -24,4 +24,4 @@ class CartItem(BaseModel):
 
 class PaymentData(BaseModel):
     cart: list[CartItem] = Field(default=[CartItem()])
-    customer: Customer = Field(default=Customer())
+    customer: Optional[Customer] = Field(default=Customer())
