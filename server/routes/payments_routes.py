@@ -1,28 +1,31 @@
+import logging
 import stripe
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
 
 from utils.config import settings
+from utils.stripe import create_customer
 from models.data_models import PaymentData
 
 router = APIRouter()
+
+logger = logging.getLogger()
 
 stripe.api_key = settings["STRIPE_SECRET_KEY"]
 
 
 @router.post("/create-checkout-session")
-async def create_checkout_session(data: PaymentData) -> JSONResponse:
+async def create_checkout_session(data: PaymentData, ui_mode: str) -> JSONResponse:
     frontend_url = "http://localhost:5173/"
 
     if not data.cart:
         raise HTTPException(400, {"error": "cart is empty"})
 
-    line_items = []
-    for item in data.cart:
-        line_item = {
+    line_items = [
+        {
             "price_data": {
                 "currency": "eur",
                 "product_data": {
@@ -35,13 +38,15 @@ async def create_checkout_session(data: PaymentData) -> JSONResponse:
             },
             "quantity": item.get("quantity", 1),
         }
-        line_items.append(line_item)
+        for item in data.cart
+    ]
+
+    if data.customer:
+        create_customer(data.customer)
 
     try:
-        # customer = create_customer(data.customer)
-
         session = stripe.checkout.Session.create(
-            ui_mode="embedded",
+            ui_mode=ui_mode,
             payment_method_types=["card"],
             line_items=line_items,
             mode="payment",
@@ -50,6 +55,14 @@ async def create_checkout_session(data: PaymentData) -> JSONResponse:
             automatic_tax={"enabled": True},
         )
 
-        return JSONResponse({"client_secret": session.client_secret}, status_code=200)
+        if ui_mode == "embedded":
+            logger.info(f"client secret: {session.client_secret}")
+            return JSONResponse(
+                {"client_secret": session.client_secret}, status_code=200
+            )
+        elif ui_mode == "hosted":
+            logger.info(f"checkout url: {session.url}")
+            return RedirectResponse(url=f"{frontend_url}/{session.url}")
+
     except Exception as error:
         return JSONResponse(content={"error": str(error)}, status_code=400)
