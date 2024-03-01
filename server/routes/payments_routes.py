@@ -7,7 +7,6 @@ from fastapi.responses import JSONResponse, RedirectResponse
 
 
 from utils.config import settings
-from utils.stripe import create_customer
 from models.data_models import PaymentData
 
 router = APIRouter()
@@ -40,9 +39,6 @@ async def create_checkout_session(data: PaymentData, ui_mode: str) -> JSONRespon
         }
         for item in data.cart
     ]
-
-    if data.customer:
-        create_customer(data.customer)
 
     try:
         session = stripe.checkout.Session.create(

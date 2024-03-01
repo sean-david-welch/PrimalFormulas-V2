@@ -90,6 +90,23 @@ async def register(user: User, request: Request):
         raise HTTPException(status_code=400, detail=str(error))
 
 
-@router.post("/users", response_model=dict)
-async def users():
-    pass
+@router.get("/users", response_model=dict)
+async def get_users(request: Request):
+    await verify_token_admin(request)
+
+    try:
+        users = []
+
+        user_records_generator = await to_thread(auth.list_users)
+        for user_record in user_records_generator.iterate_all():
+            users.append(
+                {
+                    "uid": user_record.uid,
+                    "email": user_record.email,
+                    "is_admin": user_record.custom_claims.get("is_admin", False),
+                }
+            )
+
+        return {"users": users}
+    except HTTPException as error:
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
