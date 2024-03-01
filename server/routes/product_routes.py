@@ -42,8 +42,10 @@ async def get_product_by_id(id: str):
 
 
 @router.post("/", response_model=dict)
-async def create_product(product: ProductMutation, _=Depends(verify_token_admin)):
+async def create_product(product: ProductMutation):
     try:
+        verify_token_admin()
+
         image_url, presigned_url = generate_presigned_url("products", product.image)
         product.image = image_url
 
