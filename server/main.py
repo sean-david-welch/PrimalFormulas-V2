@@ -1,12 +1,13 @@
 import time
 import logging
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from utils.auth import initialize_firebase
-from utils.database import check_async_connection
 
 from routes.about_routes import router as about_router
 from routes.auth_routes import router as auth_router
@@ -17,9 +18,18 @@ from routes.product_routes import router as products_router
 logging.basicConfig(level=logging.INFO)
 
 
-app = FastAPI(
-    title="Primal Formulas API",
-)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    initialize_firebase()
+
+    try:
+        yield
+    finally:
+        pass
+
+
+app = FastAPI(title="Primal Formulas API", lifespan=lifespan)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -81,12 +91,3 @@ app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
 app.include_router(assets_router, prefix="/api/assets", tags=["Assets"])
 app.include_router(payments_router, prefix="/api/payments", tags=["Payments"])
 app.include_router(products_router, prefix="/api/products", tags=["Products"])
-
-
-@app.on_event("startup")
-async def startup_event():
-    initialize_firebase()
-
-
-if __name__ == "__main__":
-    check_async_connection()

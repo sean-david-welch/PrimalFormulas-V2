@@ -24,7 +24,7 @@ docker start ${CONTAINER_ID} || { echo "Failed to start Docker container"; exit 
 
 # Start the FastAPI application
 echo "Starting FastAPI application with Uvicorn..."
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+uvicorn main:app --reload --host 127.0.0.1 --port 8000 --log-level debug
 
 # Ensure the Docker container is stopped when the script exits normally
 stop_container
