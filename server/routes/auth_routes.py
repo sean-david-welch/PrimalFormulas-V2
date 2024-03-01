@@ -1,9 +1,12 @@
 from firebase_admin import auth
+from asyncio import to_thread
 
 from fastapi import APIRouter, Request
 from fastapi.responses import Response, JSONResponse
 from fastapi.exceptions import HTTPException
 
+from models.data_models import User
+from utils.auth import verify_token_admin
 
 router = APIRouter()
 
@@ -46,7 +49,7 @@ async def login(response: Response, request: Request) -> dict:
             status_code=400, detail="Invalid authorization header format"
         )
     except HTTPException as error:
-        raise error
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
 
 
 @router.post("/logout", response_model=dict)
@@ -58,12 +61,33 @@ async def logout(response: Response):
             status_code=200, content={"message": "logged out successfully"}
         )
     except HTTPException as error:
-        raise error
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
 
 
 @router.post("/register", response_model=dict)
-async def register():
-    pass
+async def register(user: User, request: Request):
+    await verify_token_admin(request)
+
+    try:
+        user_record = await to_thread(
+            auth.create_user, email=user.email, password=user.password
+        )
+
+        custom_claims = {"admin": user.role == "admin"}
+        await to_thread(
+            auth.set_custom_user_claims,
+            uid=user_record.uid,
+            custom_claims=custom_claims,
+        )
+
+        return {
+            "message": "User created successfully",
+            "uid": user_record.uid,
+            "admin": custom_claims["admin"],
+        }
+
+    except auth.AuthError as error:
+        raise HTTPException(status_code=400, detail=str(error))
 
 
 @router.post("/users", response_model=dict)
