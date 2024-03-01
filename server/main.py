@@ -83,6 +83,10 @@ app.include_router(payments_router, prefix="/api/payments", tags=["Payments"])
 app.include_router(products_router, prefix="/api/products", tags=["Products"])
 
 
+@app.on_event("startup")
+async def startup_event():
+    initialize_firebase()
+
+
 if __name__ == "__main__":
     check_async_connection()
-    initialize_firebase()

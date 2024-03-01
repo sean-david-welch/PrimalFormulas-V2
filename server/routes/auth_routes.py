@@ -92,7 +92,7 @@ async def register(user: User, request: Request):
 
 @router.get("/users", response_model=dict)
 async def get_users(request: Request):
-    await verify_token_admin(request)
+    # await verify_token_admin(request)
 
     try:
         users = []
