@@ -4,10 +4,9 @@ import firebase_admin
 
 from utils.config import settings
 from firebase_admin import credentials, auth
-from fastapi import Depends
+from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 
 logger = logging.getLogger()
@@ -19,11 +18,12 @@ def initialize_firebase():
     firebase_admin.initialize_app(cred)
 
 
-async def verify_token(
-    http_auth_credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
-) -> dict:
+async def verify_token(request: Request) -> dict:
+    cookie = request.cookies.get("access_token")
+
+    if not cookie:
+        raise HTTPException(status_code=401, detail="cookie is not present")
     try:
-        cookie = http_auth_credentials.credentials
         decoded_token = auth.verify_session_cookie(cookie, check_revoked=True)
 
         return JSONResponse({"decoded_token": decoded_token})
@@ -32,12 +32,13 @@ async def verify_token(
         raise HTTPException(status_code=401, detail="Unauthorized, Invalid Token")
 
 
-async def verify_token_admin(
-    http_auth_credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
-) -> dict:
-    try:
-        cookie = http_auth_credentials.credentials
+async def verify_token_admin(request: Request) -> dict:
+    cookie = request.cookies.get("access_token")
 
+    if not cookie:
+        raise HTTPException(status_code=401, detail="cookie is not present")
+
+    try:
         decoded_token = auth.verify_session_cookie(cookie, check_revoked=True)
         is_admin = decoded_token.get("claims", {}).get("admin", False)
 

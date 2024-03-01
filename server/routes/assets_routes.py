@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 
@@ -23,7 +23,7 @@ async def get_assets():
                 200, {"error": "An error occurred while getting the content"}
             )
     except HTTPException as error:
-        return {"Error": error.detail}, error.status_code
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
 
 
 @router.get("/{title}", response_model=Asset)
@@ -38,11 +38,13 @@ async def get_asset_by_title(title: str):
                 200, {"error": "An error occurred while getting the content"}
             )
     except HTTPException as error:
-        return {"Error": error.detail}, error.status_code
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
 
 
 @router.post("/", response_model=dict)
-async def create_asset(asset: Asset, _=Depends(verify_token_admin)):
+async def create_asset(asset: Asset, request: Request):
+    await verify_token_admin(request)
+
     try:
         media_url, presigned_url = generate_presigned_url("assets", asset.media)
         asset.media = media_url
@@ -60,11 +62,13 @@ async def create_asset(asset: Asset, _=Depends(verify_token_admin)):
                 {"error": "An error occurred while creating the content"},
             )
     except HTTPException as error:
-        return {"Error": error.detail}, error.status_code
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
 
 
 @router.put("/{id}", response_model=dict)
-async def update_asset(id: str, asset: Asset, _=Depends(verify_token_admin)):
+async def update_asset(id: str, asset: Asset, request: Request):
+    await verify_token_admin(request)
+
     try:
         if asset.image != "" and asset.image.lower() != "null":
             image_url, presigned_url = generate_presigned_url("products", asset.image)
@@ -83,11 +87,13 @@ async def update_asset(id: str, asset: Asset, _=Depends(verify_token_admin)):
                 {"error": "An error occurred while updating the content"},
             )
     except HTTPException as error:
-        return {"Error": error.detail}, error.status_code
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
 
 
 @router.delete("/{id}", response_model=dict)
-async def delete_asset(id: str, _=Depends(verify_token_admin)):
+async def delete_asset(id: str, request: Request):
+    await verify_token_admin(request)
+
     try:
         response = await database.delete_asset(id)
 
@@ -102,4 +108,4 @@ async def delete_asset(id: str, _=Depends(verify_token_admin)):
                 {"error": "An error occurred while deleting the content"},
             )
     except HTTPException as error:
-        return {"Error": error.detail}, error.status_code
+        raise HTTPException(status_code=error.status_code, detail=error.detail)

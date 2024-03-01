@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 
@@ -23,11 +23,13 @@ async def get_abouts():
                 200, {"error": "An error occurred while getting the content"}
             )
     except HTTPException as error:
-        return {"Error": error.detail}, error.status_code
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
 
 
 @router.post("/", response_model=dict)
-async def create_about(about: AboutMutation, _=Depends(verify_token_admin)):
+async def create_about(about: AboutMutation, request: Request):
+    await verify_token_admin(request)
+
     try:
         image_url, presigned_url = generate_presigned_url("about", about.image)
         about.image = image_url
@@ -45,11 +47,13 @@ async def create_about(about: AboutMutation, _=Depends(verify_token_admin)):
                 {"error": "An error occurred while creating the content"},
             )
     except HTTPException as error:
-        return {"Error": error.detail}, error.status_code
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
 
 
 @router.put("/{id}", response_model=dict)
-async def update_about(id: str, about: AboutMutation, _=Depends(verify_token_admin)):
+async def update_about(id: str, about: AboutMutation, request: Request):
+    await verify_token_admin(request)
+
     try:
         if about.image != "" and about.image.lower() != "null":
             image_url, presigned_url = generate_presigned_url("about", about.image)
@@ -68,11 +72,13 @@ async def update_about(id: str, about: AboutMutation, _=Depends(verify_token_adm
                 {"error": "An error occurred while updating the content"},
             )
     except HTTPException as error:
-        return {"Error": error.detail}, error.status_code
+        raise HTTPException(status_code=error.status_code, detail=error.detail)
 
 
 @router.delete("/{id}", response_model=dict)
-async def delete_about(id: str, _=Depends(verify_token_admin)):
+async def delete_about(id: str, request: Request):
+    await verify_token_admin(request)
+
     try:
         response = await database.delete_about(id)
 
@@ -87,4 +93,4 @@ async def delete_about(id: str, _=Depends(verify_token_admin)):
                 {"error": "An error occurred while deleting the content"},
             )
     except HTTPException as error:
-        return {"Error": error.detail}, error.status_code
+        raise HTTPException(status_code=error.status_code, detail=error.detail)

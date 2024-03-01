@@ -63,7 +63,7 @@ async def logout(response: Response):
 
 @router.post("/register", response_model=dict)
 async def register():
-
+    pass
 
 
 @router.post("/users", response_model=dict)
