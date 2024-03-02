@@ -7,7 +7,7 @@ pool = get_async_pool()
 logger = logging.getLogger()
 
 
-async def get_assets() -> list[Asset]:
+async def get_assets() -> list[Asset] | None:
     query = "SELECT * FROM assets"
 
     try:
@@ -15,26 +15,30 @@ async def get_assets() -> list[Asset]:
             await cursor.execute(query)
 
             rows = await cursor.fetchall()
-            columns = [desc[0] for desc in cursor.description]
+            if rows is None:
+                return None
 
             return [
-                Asset(**dict(zip(columns, row))).model_dump(mode="json") for row in rows
+                Asset(id=row[0], title=row[1], media=row[2], created=row[3])
+                for row in rows
             ]
     except Exception as error:
         logger.error(f"An error occurred in get_products: {error}", exc_info=True)
         return None
 
 
-async def get_asset_by_title(title: str) -> Asset:
+async def get_asset_by_title(title: str) -> Asset | None:
     query = "SELECT * FROM assets WHERE title = %s"
 
     try:
         async with pool.connection() as conn, conn.cursor() as cursor:
             await cursor.execute(query, (title))
             row = await cursor.fetchone()
-            columns = [desc[0] for desc in cursor.description]
 
-            return Asset(**dict(zip(columns, row))).model_dump(mode="json")
+            if row is None:
+                return None
+
+            return Asset(id=row[0], title=row[1], media=row[2], created=row[3])
     except Exception as error:
         logger.error(f"An error occurred in get asset by title: {error}", exc_info=True)
         return None

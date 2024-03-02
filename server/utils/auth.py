@@ -1,6 +1,6 @@
 import logging
 import firebase_admin as firebase  # type: ignore
-from firebase_admin import credentials, auth  # type: ignore
+from firebase_admin import auth  # type: ignore
 
 from utils.config import settings
 from fastapi import Request
@@ -12,10 +12,8 @@ logger = logging.getLogger()
 
 def initialize_firebase() -> None:
     service_account_info = settings["SERVICE_ACCOUNT_STRING"]
-    cred: credentials.Certificate = firebase.credentials.Certificate(
-        service_account_info
-    )
-    firebase.initialize_app(cred, {}, "primal-formulas")  # type: ignore
+    cred = firebase.credentials.Certificate(service_account_info)
+    firebase.initialize_app(cred, name="primal-formulas")  # type: ignore
 
 
 async def verify_token(request: Request) -> JSONResponse:

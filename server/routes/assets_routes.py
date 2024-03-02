@@ -32,7 +32,7 @@ async def get_asset_by_title(title: str):
         asset = await database.get_asset_by_title(title)
 
         if asset is not None:
-            return JSONResponse(status_code=200, content={"asset": asset})
+            return JSONResponse(status_code=200, content={"asset": asset.model_dump()})
         else:
             raise HTTPException(
                 200, {"error": "An error occurred while getting the content"}
@@ -69,9 +69,13 @@ async def create_asset(asset: Asset, request: Request):
 async def update_asset(id: str, asset: Asset, request: Request):
     await verify_token_admin(request)
 
+    presigned_url = None
     try:
-        if asset.image != "" and asset.image.lower() != "null":
-            image_url, presigned_url = generate_presigned_url("products", asset.image)
+        if asset is None:
+            raise HTTPException(400, {"error": "The request body is required"})
+
+        if asset.media != "null" and asset.media is not None:
+            image_url, presigned_url = generate_presigned_url("products", asset.media)
             asset.image = image_url
 
         response = await database.update_asset(id, asset)
