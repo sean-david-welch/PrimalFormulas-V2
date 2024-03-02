@@ -1,8 +1,8 @@
+import os
 import logging
 import firebase_admin as firebase  # type: ignore
 from firebase_admin import auth  # type: ignore
 
-from utils.config import settings
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
@@ -11,7 +11,7 @@ logger = logging.getLogger()
 
 
 def initialize_firebase() -> None:
-    service_account_info = settings["SERVICE_ACCOUNT_STRING"]
+    service_account_info = os.path.join("./", "service-account.json")
     cred = firebase.credentials.Certificate(service_account_info)
     firebase.initialize_app(cred, name="primal-formulas")  # type: ignore
 

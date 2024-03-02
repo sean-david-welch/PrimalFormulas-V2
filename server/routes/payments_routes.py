@@ -3,7 +3,7 @@ import stripe
 
 from typing import Literal, List, cast
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse, RedirectResponse
 
@@ -21,7 +21,7 @@ stripe.api_key = settings["STRIPE_SECRET_KEY"]
 @router.post("/create-checkout-session")
 async def create_checkout_session(
     data: PaymentData, ui_mode: Literal["embedded", "hosted"]
-) -> JSONResponse | RedirectResponse | None:
+) -> Response:
     frontend_url = "http://localhost:5173/"
 
     if ui_mode not in ["embedded", "hosted"]:
