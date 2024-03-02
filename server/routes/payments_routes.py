@@ -1,6 +1,8 @@
 import logging
 import stripe
 
+from typing import Literal, List, cast
+
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -17,8 +19,13 @@ stripe.api_key = settings["STRIPE_SECRET_KEY"]
 
 
 @router.post("/create-checkout-session")
-async def create_checkout_session(data: PaymentData, ui_mode: str) -> JSONResponse:
+async def create_checkout_session(
+    data: PaymentData, ui_mode: Literal["embedded", "hosted"]
+) -> JSONResponse | RedirectResponse | None:
     frontend_url = "http://localhost:5173/"
+
+    if ui_mode not in ["embedded", "hosted"]:
+        raise ValueError("ui_mode must be 'embedded' or 'hosted'")
 
     if not data.cart:
         raise HTTPException(400, {"error": "cart is empty"})
@@ -28,17 +35,22 @@ async def create_checkout_session(data: PaymentData, ui_mode: str) -> JSONRespon
             "price_data": {
                 "currency": "eur",
                 "product_data": {
-                    "name": item["name"],
-                    "description": item["description"],
-                    "images": [item["image"]],
+                    "name": item.name,
+                    "description": item.description,
+                    "images": [item.image],
                 },
-                "unit_amount": int(item["price"] * 100),
+                "unit_amount": int(item.price * 100),
                 "tax_behavior": "inclusive",
             },
-            "quantity": item.get("quantity", 1),
+            "quantity": item.quantity,
         }
         for item in data.cart
     ]
+
+    line_items: List[stripe.checkout.Session.CreateParamsLineItem] = cast(
+        List[stripe.checkout.Session.CreateParamsLineItem],
+        line_items,
+    )
 
     try:
         session = stripe.checkout.Session.create(

@@ -14,10 +14,13 @@ router = APIRouter()
 @router.get("/", response_model=About)
 async def get_abouts():
     try:
-        about = await database.get_abouts()
+        abouts = await database.get_abouts()
 
-        if about is not None:
-            return JSONResponse(status_code=200, content={"about": about})
+        if abouts is not None:
+            return JSONResponse(
+                status_code=200,
+                content={"abouts": [about.model_dump() for about in abouts]},
+            )
         else:
             raise HTTPException(
                 200, {"error": "An error occurred while getting the content"}
@@ -45,7 +48,7 @@ async def create_about(about: AboutMutation, request: Request):
         if response is not None:
             return JSONResponse(
                 status_code=200,
-                content={"about": about, "presigned_url": presigned_url},
+                content={"about": about.model_dump(), "presigned_url": presigned_url},
             )
         else:
             raise HTTPException(
@@ -75,7 +78,7 @@ async def update_about(id: str, about: AboutMutation, request: Request):
         if response is not None:
             return JSONResponse(
                 status_code=200,
-                content={"about": about, "presigned_url": presigned_url},
+                content={"about": about.model_dump(), "presigned_url": presigned_url},
             )
         else:
             raise HTTPException(

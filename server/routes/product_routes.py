@@ -17,7 +17,10 @@ async def get_products():
         products = await database.get_products()
 
         if products is not None:
-            return JSONResponse(status_code=200, content={"products": products})
+            return JSONResponse(
+                status_code=200,
+                content={"products": [product.model_dump() for product in products]},
+            )
         else:
             raise HTTPException(
                 200, {"error": "An error occurred while getting the content"}
@@ -32,7 +35,9 @@ async def get_product_by_id(id: str):
         product = await database.get_product_by_id(id)
 
         if product is not None:
-            return JSONResponse(status_code=200, content={"product": product})
+            return JSONResponse(
+                status_code=200, content={"product": product.model_dump()}
+            )
         else:
             raise HTTPException(
                 200, {"error": "An error occurred while getting the content"}
@@ -46,6 +51,12 @@ async def create_product(product: ProductMutation, request: Request):
     await verify_token_admin(request)
 
     try:
+        if product is None:
+            raise HTTPException(400, {"error": "The request body is required"})
+
+        if product.image is None or product.image.lower() == "null":
+            raise HTTPException(400, {"error": "The image is required"})
+
         image_url, presigned_url = generate_presigned_url("products", product.image)
         product.image = image_url
 
@@ -54,7 +65,10 @@ async def create_product(product: ProductMutation, request: Request):
         if response is not None:
             return JSONResponse(
                 status_code=200,
-                content={"product": product, "presigned_url": presigned_url},
+                content={
+                    "product": product.model_dump(),
+                    "presigned_url": presigned_url,
+                },
             )
         else:
             raise HTTPException(
@@ -68,8 +82,9 @@ async def create_product(product: ProductMutation, request: Request):
 async def update_product(id: str, product: ProductMutation, request: Request):
     await verify_token_admin(request)
 
+    presigned_url = None
     try:
-        if product.image != "" and product.image.lower() != "null":
+        if product.image != "null" and product.image is not None:
             image_url, presigned_url = generate_presigned_url("products", product.image)
             product.image = image_url
 
@@ -78,7 +93,10 @@ async def update_product(id: str, product: ProductMutation, request: Request):
         if response is not None:
             return JSONResponse(
                 status_code=200,
-                content={"product": product, "presigned_url": presigned_url},
+                content={
+                    "product": product.model_dump(),
+                    "presigned_url": presigned_url,
+                },
             )
         else:
             raise HTTPException(

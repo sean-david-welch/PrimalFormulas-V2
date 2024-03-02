@@ -17,7 +17,10 @@ async def get_assets():
         assets = await database.get_assets()
 
         if assets is not None:
-            return JSONResponse(status_code=200, content={"assets": assets})
+            return JSONResponse(
+                status_code=200,
+                content={"assets": [asset.model_dump() for asset in assets]},
+            )
         else:
             raise HTTPException(
                 200, {"error": "An error occurred while getting the content"}
@@ -54,7 +57,10 @@ async def create_asset(asset: Asset, request: Request):
         if response is not None:
             return JSONResponse(
                 status_code=200,
-                content={"asset": asset, "presigned_url": presigned_url},
+                content={
+                    "asset": asset.model_dump(),
+                    "presigned_url": presigned_url,
+                },
             )
         else:
             raise HTTPException(

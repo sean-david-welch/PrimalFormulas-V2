@@ -7,7 +7,7 @@ pool = get_async_pool()
 logger = logging.getLogger()
 
 
-async def get_products() -> list[Product]:
+async def get_products() -> list[Product] | None:
     query = "SELECT * FROM products"
 
     try:
@@ -15,10 +15,17 @@ async def get_products() -> list[Product]:
             await cursor.execute(query)
 
             rows = await cursor.fetchall()
-            columns = [desc[0] for desc in cursor.description]
+            if rows is None:
+                return None
 
             products = [
-                Product(**dict(zip(columns, row))).model_dump(mode="json")
+                Product(
+                    id=row[0],
+                    name=row[1],
+                    description=row[2],
+                    price=row[3],
+                    image=row[4],
+                )
                 for row in rows
             ]
 
@@ -28,16 +35,24 @@ async def get_products() -> list[Product]:
         return None
 
 
-async def get_product_by_id(id: str) -> Product:
+async def get_product_by_id(id: str) -> Product | None:
     query = "SELECT * FROM products WHERE id = %s"
 
     try:
         async with pool.connection() as conn, conn.cursor() as cursor:
             await cursor.execute(query, [id])
             row = await cursor.fetchone()
-            columns = [desc[0] for desc in cursor.description]
 
-            return Product(**dict(zip(columns, row))).model_dump(mode="json")
+            if row is None:
+                return None
+
+            return Product(
+                id=row[0],
+                name=row[1],
+                description=row[2],
+                price=row[3],
+                image=row[4],
+            )
     except Exception as error:
         logger.error(f"An error occurred in get_products_by_id: {error}", exc_info=True)
         return None

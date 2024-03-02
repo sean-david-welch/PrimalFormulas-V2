@@ -3,6 +3,9 @@ from pydantic import BaseModel, Field
 
 
 class CartItem(BaseModel):
+    name: str = Field(default="item")
+    description: str = Field(default="item description")
+    image: str = Field(default="https://via.placeholder.com/150")
     price: float = Field(default=1.0)
     quantity: int = Field(default=1)
 

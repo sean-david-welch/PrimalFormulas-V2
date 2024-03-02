@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.post("/login", response_model=dict)
-async def login(response: Response, request: Request) -> dict:
+async def login(response: Response, request: Request) -> JSONResponse:
     try:
         auth_header = request.headers.get("Authorization")
 
@@ -32,7 +32,7 @@ async def login(response: Response, request: Request) -> dict:
             auth.verify_id_token(token)
             expires_in = 60 * 60 * 24 * 3
             access_token = auth.create_session_cookie(token, expires_in)
-        except auth.AuthError as e:
+        except Exception as e:
             raise HTTPException(status_code=401, detail=str(e))
 
         response.set_cookie(
@@ -40,7 +40,7 @@ async def login(response: Response, request: Request) -> dict:
             value=access_token,
             httponly=True,
             secure=True,
-            samesite="None",
+            samesite="none",
         )
 
         return JSONResponse(status_code=200, content={"message": "login successfu"})
@@ -86,7 +86,7 @@ async def register(user: User, request: Request):
             "admin": custom_claims["admin"],
         }
 
-    except auth.AuthError as error:
+    except Exception as error:
         raise HTTPException(status_code=400, detail=str(error))
 
 
