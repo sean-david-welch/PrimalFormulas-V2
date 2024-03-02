@@ -1,0 +1,89 @@
+.form {
+    @apply flex flex-col bg-zinc-800 text-center px-10 items-center;
+    @apply rounded-2xl border-4 border-zinc-600;
+}
+
+.form > * {
+    @apply my-4;
+}
+
+.form label {
+    @apply my-2 block text-lg font-medium text-zinc-200;
+}
+
+.form textarea,
+.form input,
+.form select {
+    @apply block w-2/3 rounded-lg border border-gray-300 bg-zinc-600 p-2.5 text-sm text-gray-900 mx-auto;
+    @apply border-zinc-600 bg-zinc-700 text-white placeholder-gray-400 focus:border-red-700 focus:ring-red-700;
+}
+
+/* Headings */
+.page-heading {
+    @apply flex flex-col;
+    @apply mx-auto my-5 items-center;
+}
+
+.page-heading > * {
+    @apply my-2;
+}
+
+.section-heading {
+    @apply mx-auto font-normal text-center;
+    @apply text-4xl text-zinc-900;
+    @apply underline decoration-yellow-500 decoration-2 underline-offset-8;
+}
+
+.item-heading {
+    @apply section-heading;
+    @apply text-zinc-200;
+}
+
+/* Buttons */
+.btn {
+    @apply rounded-xl text-gray-200 py-2 px-10 bg-zinc-900 min-w-[150px];
+    @apply transition-all duration-700 ease-in-out;
+    @apply hover:bg-yellow-600 hover:text-zinc-900 hover:scale-105;
+}
+
+.buttons-grid {
+    @apply mx-auto items-center;
+}
+
+.buttons-grid > * {
+    @apply mx-2;
+}
+
+/* not found */
+.not-found {
+    @apply flex flex-col items-center;
+    @apply my-20 mx-32 p-20;
+    @apply bg-zinc-700 rounded-2xl border-4 border-zinc-600;
+    @apply transition-all duration-700 ease-in-out;
+    @apply hover:border-yellow-500 hover:bg-zinc-800;
+}
+
+.not-found > * {
+    @apply my-5;
+}
+
+/* Animations */
+.hidden {
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+.show {
+    animation: slideIn 800ms ease-in-out forwards;
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

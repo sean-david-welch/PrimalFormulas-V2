@@ -1,0 +1,47 @@
+.about {
+    @apply my-10 flex flex-col items-center;
+}
+
+.about-card {
+    @apply mx-20 my-10 cursor-default;
+    @apply transition-all duration-700 ease-in-out;
+    @apply rounded-2xl border-4 border-zinc-600 bg-zinc-800;
+    @apply hover:border-yellow-500 hover:bg-zinc-700;
+}
+
+.about-card:nth-child(even) {
+    @apply flex flex-row;
+}
+
+.about-card:nth-child(odd) {
+    @apply flex flex-row-reverse;
+}
+
+.about-info {
+    @apply flex flex-col my-5;
+}
+
+.about-info > :nth-child(2) {
+    @apply my-5 mx-24 text-2xl font-light;
+}
+
+.about-image {
+    @apply max-w-[32rem] object-cover;
+    @apply transition-all duration-700 ease-in-out;
+}
+
+.about-card:nth-child(even) .about-image {
+    @apply border-l-4 border-zinc-600 rounded-r-2xl;
+}
+
+.about-card:nth-child(even):hover .about-image {
+    @apply border-yellow-500;
+}
+
+.about-card:nth-child(odd) .about-image {
+    @apply border-r-4 border-zinc-600 rounded-l-2xl;
+}
+
+.about-card:nth-child(odd):hover .about-image {
+    @apply border-yellow-500;
+}

@@ -2,3 +2,11 @@
     @apply bg-zinc-300 text-gray-200;
     @apply mx-auto my-0 min-h-screen max-w-full items-center text-center;
 }
+
+body {
+    @apply bg-gradient-to-br from-zinc-400 via-zinc-500 to-zinc-600;
+}
+
+main {
+    @apply flex flex-col min-h-screen;
+}
