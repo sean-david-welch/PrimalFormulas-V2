@@ -3,6 +3,11 @@ import Loading from '../layouts/Loading';
 import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import Layout from '../layouts/Layout';
+
+const Home = lazy(() => import('../pages/Home'));
+const About = lazy(() => import('../pages/About'));
+const Products = lazy(() => import('../pages/Products'));
 
 const AppRoutes = () => {
 	const ScrollToTopPage = () => {
@@ -18,16 +23,20 @@ const AppRoutes = () => {
 	return (
 		<Router>
 			<Suspense fallback={<Loading />}>
-				<ScrollToTopPage />
-				<Routes>
-					<div>
-						<h1>hi</h1>
-					</div>
-				</Routes>
+				<Layout>
+					<ScrollToTopPage />
+					<Routes>
+						<Route path="/" element={<Home />} />
+						<Route path="/about" element={<About />} />
+						<Route path="/products" element={<Products />} />
+					</Routes>
+				</Layout>
 			</Suspense>
 		</Router>
 	);
 };
+
+export default AppRoutes;
 
 // const routes: Routes = [
 //     { path: '', component: HomeComponent },
