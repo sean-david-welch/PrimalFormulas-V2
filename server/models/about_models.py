@@ -8,7 +8,7 @@ class About(BaseModel):
     id: UUID
     title: str
     description: Optional[str] = None
-    image: Optional[str] = None
+    image: str = "null"
     created: Optional[datetime] = None
 
 

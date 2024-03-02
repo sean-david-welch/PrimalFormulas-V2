@@ -1,9 +1,9 @@
-import time
 import logging
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request, status
+
+from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -40,50 +40,23 @@ app.add_middleware(
 )
 
 
-@app.middleware("http")
-async def log_response_time(request: Request, call_next):
-    start_time = time.time()
-
-    response = await call_next(request)
-    process_time = (time.time() - start_time) * 1000
-
-    logging.info(
-        f"Request path: {request.url.path}, Response time: {process_time:.2f} ms"
-    )
-    return response
-
-
-@app.get("/")
-def root() -> RedirectResponse:
+@app.get("/")  # type: ignore
+def root() -> Response:
     try:
         return RedirectResponse(url="/docs")
     except Exception as e:
         logging.error(e)
-        return JSONResponse(
-            content={"error": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
-@app.get("/api")
-def root_api() -> RedirectResponse:
+@app.get("/api")  # type: ignore
+def root_api() -> Response:
     logging.info("Root endpoint accessed")
     try:
         return RedirectResponse(url="/docs")
     except Exception as e:
         logging.error(f"Exception in root: {e}")
-        return JSONResponse(
-            content={"error": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-
-
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
-    logging.error(f"HTTP Exception: {exc.detail}")
-
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"message": exc.detail},
-    )
+        return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
 app.include_router(about_router, prefix="/api/about", tags=["About"])

@@ -31,6 +31,12 @@ async def create_about(about: AboutMutation, request: Request):
     await verify_token_admin(request)
 
     try:
+        if about is None:
+            raise HTTPException(400, {"error": "The request body is required"})
+
+        if about.image is None or about.image.lower() == "null":
+            raise HTTPException(400, {"error": "The image is required"})
+
         image_url, presigned_url = generate_presigned_url("about", about.image)
         about.image = image_url
 
@@ -54,8 +60,13 @@ async def create_about(about: AboutMutation, request: Request):
 async def update_about(id: str, about: AboutMutation, request: Request):
     await verify_token_admin(request)
 
+    presigned_url = None
+
     try:
-        if about.image != "" and about.image.lower() != "null":
+        if about is None:
+            raise HTTPException(400, {"error": "The request body is required"})
+
+        if about.image != "null" and about.image is not None:
             image_url, presigned_url = generate_presigned_url("about", about.image)
             about.image = image_url
 

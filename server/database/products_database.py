@@ -43,7 +43,7 @@ async def get_product_by_id(id: str) -> Product:
         return None
 
 
-async def create_product(product: ProductMutation) -> bool:
+async def create_product(product: ProductMutation) -> bool | None:
     query = (
         "INSERT INTO products (name, description, price, image) VALUES (%s, %s, %s, %s)"
     )
@@ -63,7 +63,7 @@ async def create_product(product: ProductMutation) -> bool:
         return None
 
 
-async def update_product(id: str, product: ProductMutation) -> bool:
+async def update_product(id: str, product: ProductMutation) -> bool | None:
     if product.image and product.image.lower() != "null":
         query = "UPDATE products SET name = %s, description = %s, price = %s, image = %s WHERE id = %s"
         values = (
@@ -93,7 +93,7 @@ async def update_product(id: str, product: ProductMutation) -> bool:
         return None
 
 
-async def delete_product(id: str) -> bool:
+async def delete_product(id: str) -> bool | None:
     query = "DELETE FROM products WHERE id = %s"
 
     try:

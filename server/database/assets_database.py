@@ -40,7 +40,7 @@ async def get_asset_by_title(title: str) -> Asset:
         return None
 
 
-async def create_asset(asset: Asset) -> bool:
+async def create_asset(asset: Asset) -> bool | None:
     query = "INSERT INTO assets (title, media) VALUES (%s, %s)"
     values = (asset.title, asset.media)
 
@@ -54,7 +54,7 @@ async def create_asset(asset: Asset) -> bool:
         )
 
 
-async def update_asset(id: str, asset: Asset) -> bool:
+async def update_asset(id: str, asset: Asset) -> bool | None:
     if asset.media and asset.media.lower() != "null":
         query = "UPDATE assets SET title = %s, media = %s WHERE id = %s"
         values = (
@@ -75,7 +75,7 @@ async def update_asset(id: str, asset: Asset) -> bool:
         return None
 
 
-async def delete_asset(id: str) -> bool:
+async def delete_asset(id: str) -> bool | None:
     query = "DELETE FROM assets WHERE id = %s"
 
     try:
