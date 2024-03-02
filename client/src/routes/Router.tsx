@@ -28,3 +28,15 @@ const AppRoutes = () => {
         </Router>
     );
 };
+
+// const routes: Routes = [
+//     { path: '', component: HomeComponent },
+//     { path: 'about', component: AboutComponent },
+//     { path: 'account', component: AccountComponent },
+//     { path: 'cart', component: CartComponent },
+//     { path: 'products', component: ProductsComponent },
+//     { path: 'products/:id', component: ProductDetailComponent },
+//     { path: 'checkout', component: CheckoutComponent },
+//     { path: 'not-found', component: NotFoundComponent },
+//     { path: '**', redirectTo: '/not-found' },
+// ];
