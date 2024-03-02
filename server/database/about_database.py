@@ -16,11 +16,19 @@ async def get_abouts() -> list[About] | None:
 
             rows = await cursor.fetchall()
 
-            columns = []
-            if cursor.description is not None:
-                columns = [desc[0] for desc in cursor.description]
+            if rows is None:
+                return None
 
-            return [About(**dict(zip(columns, row))) for row in rows]
+            return [
+                About(
+                    id=row[0],
+                    title=row[1],
+                    description=row[2],
+                    image=row[3],
+                    created=row[4],
+                )
+                for row in rows
+            ]
     except Exception as error:
         logger.error(f"An error occurred in get abouts: {error}", exc_info=True)
         return None

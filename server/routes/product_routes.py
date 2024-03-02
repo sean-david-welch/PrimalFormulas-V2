@@ -11,7 +11,7 @@ import database.products_database as database
 router = APIRouter()
 
 
-@router.get("/", response_model=Product)
+@router.get("/", response_model=list[Product])
 async def get_products():
     try:
         products = await database.get_products()
@@ -19,7 +19,11 @@ async def get_products():
         if products is not None:
             return JSONResponse(
                 status_code=200,
-                content={"products": [product.model_dump() for product in products]},
+                content={
+                    "products": [
+                        product.model_dump(mode="json") for product in products
+                    ]
+                },
             )
         else:
             raise HTTPException(
@@ -36,7 +40,7 @@ async def get_product_by_id(id: str):
 
         if product is not None:
             return JSONResponse(
-                status_code=200, content={"product": product.model_dump()}
+                status_code=200, content={"product": product.model_dump(mode="json")}
             )
         else:
             raise HTTPException(
@@ -66,7 +70,7 @@ async def create_product(product: ProductMutation, request: Request):
             return JSONResponse(
                 status_code=200,
                 content={
-                    "product": product.model_dump(),
+                    "product": product.model_dump(mode="json"),
                     "presigned_url": presigned_url,
                 },
             )
@@ -94,7 +98,7 @@ async def update_product(id: str, product: ProductMutation, request: Request):
             return JSONResponse(
                 status_code=200,
                 content={
-                    "product": product.model_dump(),
+                    "product": product.model_dump(mode="json"),
                     "presigned_url": presigned_url,
                 },
             )

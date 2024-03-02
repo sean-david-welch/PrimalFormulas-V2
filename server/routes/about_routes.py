@@ -19,7 +19,7 @@ async def get_abouts():
         if abouts is not None:
             return JSONResponse(
                 status_code=200,
-                content={"abouts": [about.model_dump() for about in abouts]},
+                content={"abouts": [about.model_dump(mode="json") for about in abouts]},
             )
         else:
             raise HTTPException(
@@ -48,7 +48,10 @@ async def create_about(about: AboutMutation, request: Request):
         if response is not None:
             return JSONResponse(
                 status_code=200,
-                content={"about": about.model_dump(), "presigned_url": presigned_url},
+                content={
+                    "about": about.model_dump(mode="json"),
+                    "presigned_url": presigned_url,
+                },
             )
         else:
             raise HTTPException(
@@ -78,7 +81,10 @@ async def update_about(id: str, about: AboutMutation, request: Request):
         if response is not None:
             return JSONResponse(
                 status_code=200,
-                content={"about": about.model_dump(), "presigned_url": presigned_url},
+                content={
+                    "about": about.model_dump(mode="json"),
+                    "presigned_url": presigned_url,
+                },
             )
         else:
             raise HTTPException(

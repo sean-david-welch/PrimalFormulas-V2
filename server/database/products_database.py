@@ -25,6 +25,7 @@ async def get_products() -> list[Product] | None:
                     description=row[2],
                     price=row[3],
                     image=row[4],
+                    created=row[5],
                 )
                 for row in rows
             ]
@@ -52,6 +53,7 @@ async def get_product_by_id(id: str) -> Product | None:
                 description=row[2],
                 price=row[3],
                 image=row[4],
+                created=row[5],
             )
     except Exception as error:
         logger.error(f"An error occurred in get_products_by_id: {error}", exc_info=True)
