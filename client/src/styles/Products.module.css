@@ -1,75 +1,75 @@
 .products {
-    @apply flex flex-col items-center;
-    @apply my-10 mx-32;
+	@apply flex flex-col items-center;
+	@apply my-10 mx-32;
 }
 
-.products-grid {
-    @apply grid grid-cols-3 gap-x-20 my-5;
+.productsGrid {
+	@apply grid grid-cols-3 gap-x-20 my-5;
 }
 
-.product-card {
-    @apply flex flex-col;
-    @apply p-6 m-4;
-    @apply rounded-2xl border-4 border-zinc-600;
-    @apply bg-zinc-900;
-    @apply transition-all duration-700 ease-in-out;
-    @apply hover:border-yellow-500 hover:scale-105;
+.productCard {
+	@apply flex flex-col;
+	@apply p-6 m-4;
+	@apply rounded-2xl border-4 border-zinc-600;
+	@apply bg-zinc-900;
+	@apply transition-all duration-700 ease-in-out;
+	@apply hover:border-yellow-500 hover:scale-105;
 }
 
-.product-card > * {
-    @apply my-2;
+.productCard > * {
+	@apply my-2;
 }
 
-.product-card h1 {
-    @apply font-light text-2xl underline underline-offset-8 decoration-yellow-500 mx-auto my-2;
+.productCard h1 {
+	@apply font-light text-2xl underline underline-offset-8 decoration-yellow-500 mx-auto my-2;
 }
 
-.product-card img {
-    @apply w-full h-auto object-contain mx-auto;
-    @apply rounded-2xl border-2 border-zinc-600 cursor-pointer;
-    @apply transition-all duration-700 ease-in-out;
-    @apply hover:border-yellow-500;
+.productCard img {
+	@apply w-full h-auto object-contain mx-auto;
+	@apply rounded-2xl border-2 border-zinc-600 cursor-pointer;
+	@apply transition-all duration-700 ease-in-out;
+	@apply hover:border-yellow-500;
 }
 
 /* Product Detail */
-.product-section {
-    @apply flex flex-col mx-10 my-10 items-center;
+.productSection {
+	@apply flex flex-col mx-10 my-10 items-center;
 }
 
-.product-detail {
-    @apply flex flex-row;
-    @apply mx-32 my-2;
-    @apply bg-zinc-800 border-zinc-700 border-2 rounded-2xl;
-    @apply transition-all duration-700 ease-in-out;
-    @apply hover:border-yellow-500 hover:scale-105 hover:bg-zinc-900;
+.productDetail {
+	@apply flex flex-row;
+	@apply mx-32 my-2;
+	@apply bg-zinc-800 border-zinc-700 border-2 rounded-2xl;
+	@apply transition-all duration-700 ease-in-out;
+	@apply hover:border-yellow-500 hover:scale-105 hover:bg-zinc-900;
 }
 
-.product-detail img {
-    @apply rounded-l-2xl border-r-2 border-zinc-700 object-contain h-[500px];
+.productDetail img {
+	@apply rounded-l-2xl border-r-2 border-zinc-700 object-contain h-[500px];
 }
 
-.product-info {
-    @apply flex flex-col items-center mx-auto;
-    @apply p-4;
+.productInfo {
+	@apply flex flex-col items-center mx-auto;
+	@apply p-4;
 }
 
-.product-info > * {
-    @apply my-2;
+.productInfo > * {
+	@apply my-2;
 }
 
-.product-info p {
-    @apply mx-14 text-center;
+.productInfo p {
+	@apply mx-14 text-center;
 }
 
-.input-nav {
-    @apply flex flex-col items-center w-4/5;
-    @apply py-5 border-t-2 border-b-2 border-yellow-500;
+.inputNav {
+	@apply flex flex-col items-center w-4/5;
+	@apply py-5 border-t-2 border-b-2 border-yellow-500;
 }
 
-.input-nav label {
-    @apply text-2xl;
+.inputNav label {
+	@apply text-2xl;
 }
 
-.input-nav input {
-    @apply w-[10rem] mx-auto my-2 bg-zinc-800 border-2 border-yellow-500 rounded-md text-center;
+.inputNav input {
+	@apply w-[10rem] mx-auto my-2 bg-zinc-800 border-2 border-yellow-500 rounded-md text-center;
 }

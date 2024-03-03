@@ -1,11 +1,14 @@
+import styles from '../styles/Header.module.css';
+
 import Loading from './Loading';
 import NavItem from '../components/NavItem';
 import NavButton from '../components/NavButton';
 
-import { Asset } from '../types/assetTypes';
 import { Link } from 'react-router-dom';
-import { useGetResourceById } from '../hooks/dataHooks';
+import { Asset } from '../types/assetTypes';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useGetResourceById } from '../hooks/dataHooks';
 import { useTransparentHeader } from '../hooks/navigationHooks';
 import { faCartShopping, faCircleUser, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
@@ -18,13 +21,13 @@ function Navbar() {
 	if (isError) return <div>error...</div>;
 
 	return logo ? (
-		<nav id="navbar" className={isTransparent ? 'transparent' : ''}>
-			<ul className="nav-list">
-				<Link className="logo" to="/">
-					<img src={logo?.media} className="logo" id="logo" alt="Logo" />
+		<nav id="navbar" className={isTransparent ? styles.navbarTransparent : ''}>
+			<ul className={styles.navList}>
+				<Link to="/">
+					<img src={logo?.media} className={styles.logo} id="logo" alt="Logo" />
 				</Link>
-				<div className="nav-list-side">
-					<ul className="nav-list">
+				<div className={styles.navList}>
+					<ul className={styles.navList}>
 						<NavButton to="/shop" icon={<FontAwesomeIcon icon={faArrowRight} />} label="Products" />
 						<NavItem id="cart" aria-label="cart-nav" to="/cart">
 							<FontAwesomeIcon icon={faCartShopping} size="xl" />

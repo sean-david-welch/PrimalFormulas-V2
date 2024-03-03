@@ -1,3 +1,5 @@
+import styles from '../styles/Footer.module.css';
+
 import { Link } from 'react-router-dom';
 import { Asset } from '../types/assetTypes';
 import { useGetResourceById } from '../hooks/dataHooks';
@@ -16,38 +18,38 @@ function Footer() {
 
 	return (
 		<footer>
-			<div className="footer-navigation">
-				<ul className="nav-list">
+			<div className={styles.footerNavigation}>
+				<ul className={styles.navList}>
 					<NavItem to="/about">About</NavItem>
 					<NavItem to="/shop">Products</NavItem>
 					<NavItem to="/cart">Cart</NavItem>
 					<NavItem to="/login">Login</NavItem>
 				</ul>
 			</div>
-			<div className="footer-information">
+			<div className={styles.footerInformation}>
 				<Link to="/">
 					<img src={logo?.media} alt="Logo" id="logo" />
 				</Link>
-				<ul className="address-list">
-					<li className="address-item">Primal Formulas Ltd.</li>
-					<li className="address-item">Clonross, Drumree</li>
-					<li className="address-item">Co. Meath,</li>
-					<li className="address-item">A85 PK30</li>
-					<li className="address-item">Tel: 01 - 8259289</li>
-					<li className="address-item">Email: info@primalformulas.ie</li>
+				<ul className={styles.addressList}>
+					<li className={styles.addressItem}>Primal Formulas Ltd.</li>
+					<li className={styles.addressItem}>Clonross, Drumree</li>
+					<li className={styles.addressItem}>Co. Meath,</li>
+					<li className={styles.addressItem}>A85 PK30</li>
+					<li className={styles.addressItem}>Tel: 01 - 8259289</li>
+					<li className={styles.addressItem}>Email: info@primalformulas.ie</li>
 				</ul>
 			</div>
-			<div className="social-links">
-				<Link to="#" target="_blank" className="facebook socials">
+			<div className={styles.socialLinks}>
+				<Link to="#" target="_blank" className={styles.facebookSocials}>
 					<FontAwesomeIcon icon={faFacebook} size="2xl" />
 				</Link>
-				<Link to="#" target="_blank" className="twitter socials">
+				<Link to="#" target="_blank" className={styles.twitterSocials}>
 					<FontAwesomeIcon icon={faTwitter} size="2xl" />
 				</Link>
-				<Link to="#" target="_blank" className="instagram socials">
+				<Link to="#" target="_blank" className={styles.instagramSocials}>
 					<FontAwesomeIcon icon={faInstagram} size="2xl" />
 				</Link>
-				<Link to="#" target="_blank" className="youtube socials">
+				<Link to="#" target="_blank" className={styles.youtubeSocials}>
 					<FontAwesomeIcon icon={faYoutube} size="2xl" />
 				</Link>
 			</div>

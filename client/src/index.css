@@ -5,38 +5,43 @@
 @tailwind utilities;
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Dosis', sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Dosis', sans-serif;
 }
 
 html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-    max-width: 100%;
+	scroll-behavior: smooth;
+	overflow-x: hidden;
+	max-width: 100%;
 }
 
 body {
-    height: 100vh;
+	height: 100vh;
+	@apply bg-gradient-to-br from-zinc-400 via-zinc-500 to-zinc-600;
 }
 
 html::-webkit-scrollbar {
-    width: 0.3vw;
+	width: 0.3vw;
 }
 
 html::-webkit-scrollbar-thumb {
-    background-color: #333;
-    border-radius: 10px;
+	background-color: #333;
+	border-radius: 10px;
 }
 
 html::-webkit-scrollbar-track {
-    background-color: #333;
+	background-color: #333;
 }
 
 .form .btn,
 .loginForm .btn,
 button[type='submit'] {
-    background-color: #b91c1c !important;
-    background-image: none !important;
+	background-color: gold !important;
+	background-image: none !important;
+}
+
+main {
+	@apply flex flex-col min-h-screen;
 }

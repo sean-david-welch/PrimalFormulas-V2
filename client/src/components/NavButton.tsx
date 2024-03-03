@@ -1,3 +1,5 @@
+import utils from '../styles/Utils.module.css';
+
 import { useNavigate } from 'react-router-dom';
 import { NavButtonProps } from '../types/miscTypes';
 
@@ -14,13 +16,11 @@ function NavButton({ to, label, icon, onClick }: NavButtonProps) {
 	};
 
 	return (
-		<>
-			<li className="nav-button">
-				<button className="btn btn-nav btn-primary" onClick={handleClick}>
-					{label} <i className="icon">{icon}</i>
-				</button>
-			</li>
-		</>
+		<li className={utils.navButton}>
+			<button className={utils.btn} onClick={handleClick}>
+				{label} <i>{icon}</i>
+			</button>
+		</li>
 	);
 }
 

@@ -3,7 +3,7 @@
 	@apply min-w-full h-screen;
 }
 
-.hero video {
+.heroVideo {
 	@apply w-screen h-full object-cover;
 }
 
@@ -16,44 +16,44 @@
 	@apply my-2;
 }
 
-.overlay-heading {
+.overlayHeading {
 	@apply text-6xl text-white font-light;
 }
 
-.overlay-subheading {
+.overlaySubheading {
 	@apply text-4xl text-white font-light;
 }
 
 /* Benefits item */
-.benefits-home {
+.benefitsHome {
 	@apply flex flex-col justify-center mx-auto items-center;
 	@apply my-16 mx-4 p-4;
 	@apply border-t-2 border-b-2 border-zinc-950;
 }
 
-.benefits-home h1 {
+.benefitsHome h1 {
 	@apply my-6;
 }
 
-.benefits-list {
+.benefitsList {
 	@apply grid grid-cols-4 gap-16 w-[90%];
 	@apply justify-items-center items-center;
 }
 
-.benefits-list:nth-child(2) {
+.benefitsList:nth-child(2) {
 	animation-delay: 300ms;
 }
 
-.benefits-list:nth-child(3) {
+.benefitsList:nth-child(3) {
 	animation-delay: 600ms;
 }
 
-.benefits-list:nth-child(4) {
+.benefitsList:nth-child(4) {
 	animation-delay: 900ms;
 }
 
 /* Benefits item */
-.benefits-list-item {
+.benefitsListItem {
 	@apply p-2 my-2 mx-4 h-[40vh];
 	@apply flex flex-col mx-auto;
 	@apply border-2 rounded-xl border-zinc-950 bg-zinc-600;
@@ -62,17 +62,17 @@
 	@apply hover:bg-zinc-800 hover:border-yellow-500;
 }
 
-.benefits-list-item > * {
+.benefitsListItem > * {
 	@apply my-2 cursor-default;
 	@apply transition-all duration-1000 ease-in-out;
 }
 
-.benefits-list-item h1 {
+.benefitsListItem h1 {
 	@apply text-zinc-900 text-xl font-medium;
 	@apply underline decoration-yellow-500 decoration-2 underline-offset-8;
 }
 
-.benefits-list-item p {
+.benefitsListItem p {
 	@apply text-zinc-900 text-lg;
 }
 
@@ -80,11 +80,11 @@
 	@apply text-zinc-200;
 }
 
-.benefits-list-item:hover h1,
-.benefits-list-item:hover p {
+.benefitsListItem:hover h1,
+.benefitsListItem:hover p {
 	@apply text-zinc-300;
 }
 
-.benefits-list-item:hover .icon {
+.benefitsListItem:hover .icon {
 	@apply text-yellow-500;
 }

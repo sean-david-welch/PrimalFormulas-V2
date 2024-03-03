@@ -1,5 +1,3 @@
-import styles from '../styles/Header.module.css';
-
 import Header from './Header';
 import Footer from './Footer';
 import Sidebar from './Sidebar';
@@ -17,10 +15,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
 	return (
 		<div className="flex max-w-full flex-col overflow-x-hidden">
-			<header className={styles.header}>
-				<Header />
-				<Sidebar />
-			</header>
+			<Header />
+			<Sidebar />
 			<main className={mainClass}>{children}</main>
 			<Footer />
 		</div>

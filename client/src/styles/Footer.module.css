@@ -6,62 +6,62 @@
 	@apply hover:border-yellow-500;
 }
 
-.footer-info {
+.footerInfo {
 	@apply flex flex-col;
 }
 
-.address-list {
+.addressList {
 	@apply my-2;
 }
 
-.address-list > * {
+.addressList > * {
 	@apply my-2 text-xl;
 }
 
-.footer-links {
+.footerLinks {
 	@apply flex flex-col;
 }
 
-.footer-links > :first-child {
+.footerLinks > :firstchild {
 	@apply mx-auto;
 }
 
-.social-links {
+.socialLinks {
 	@apply flex flex-row my-10;
 }
 
-.social-links > * {
+.socialLinks > * {
 	@apply mx-4 p-2;
 	@apply border-4 border-zinc-200  rounded-lg;
 	@apply transition-all duration-700 ease-in-out;
 	@apply hover:text-yellow-500 hover:border-yellow-500 hover:scale-105;
 }
 
-.footer-nav {
+.footerNav {
 	@apply flex flex-col;
 }
 
-.footer-nav > * {
+.footerNav > * {
 	@apply my-2 mx-10;
 }
 
-.footer-nav.nav-button {
+.footerNav.navButton {
 	@apply w-[250px];
 }
 
 /* To top  */
-.to-top-button {
+.toTopButton {
 	@apply fixed right-5 bottom-5 z-20;
 	@apply bg-zinc-900 rounded-full p-2;
 	@apply transition-all duration-500 ease-in-out;
 	@apply border-2 border-zinc-900 hover:border-yellow-600 hover:bg-zinc-800;
 }
 
-.to-top-button .to-top-icon {
+.toTopButton.toTopIcon {
 	@apply text-white;
 	@apply transition-all duration-500 ease-in-out;
 }
 
-.to-top-button:hover .to-top-icon {
+.toTopButton:hover.toTopIcon {
 	@apply text-yellow-500;
 }

@@ -6,39 +6,39 @@
 	@apply hover:bg-zinc-900 hover:border-yellow-500;
 }
 
-.cart-item {
+.cartItem {
 	@apply grid grid-cols-2 gap-4 my-10 mx-24;
 }
 
-.cart-item > :first-child {
+.cartItem > :first-child {
 	@apply w-auto h-auto object-contain mx-auto;
 	@apply rounded-2xl border-2 border-zinc-600 cursor-pointer;
 	@apply transition-all duration-700 ease-in-out;
 	@apply hover:border-yellow-500;
 }
 
-.cart-item img {
+.cartItemImg {
 	@apply rounded-2xl;
 }
 
-.cart-item > :last-child {
+.cartItem > :last-child {
 	@apply flex flex-col items-center;
 }
 
-.cart-item > :last-child > * {
+.cartItem > :last-child > * {
 	@apply my-2;
 }
 
-.input-nav {
+.inputNav {
 	@apply flex flex-col items-center w-4/5;
 	@apply py-2 border-b-2 border-yellow-500;
 }
 
-.input-nav label {
+.inputNavLabel {
 	@apply text-2xl;
 }
 
-.input-nav input {
+.inputNavInput {
 	@apply w-[10rem] mx-auto my-2 bg-zinc-800 border-2 border-yellow-500 rounded-md text-center;
 }
 

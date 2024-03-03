@@ -7,34 +7,34 @@
 	@apply my-4;
 }
 
-.form label {
+.formLabel {
 	@apply my-2 block text-lg font-medium text-zinc-200;
 }
 
 .form textarea,
 .form input,
-.form select {
+.formSelect {
 	@apply block w-2/3 rounded-lg border border-gray-300 bg-zinc-600 p-2.5 text-sm text-gray-900 mx-auto;
 	@apply border-zinc-600 bg-zinc-700 text-white placeholder-gray-400 focus:border-red-700 focus:ring-red-700;
 }
 
 /* Headings */
-.page-heading {
+.pageHeading {
 	@apply flex flex-col;
 	@apply mx-auto my-5 items-center;
 }
 
-.page-heading > * {
+.pageHeading > * {
 	@apply my-2;
 }
 
-.section-heading {
+.sectionHeading {
 	@apply mx-auto font-normal text-center;
 	@apply text-4xl text-zinc-900;
 	@apply underline decoration-yellow-500 decoration-2 underline-offset-8;
 }
 
-.item-heading {
+.itemHeading {
 	@apply section-heading;
 	@apply text-zinc-200;
 }
@@ -46,21 +46,21 @@
 	@apply hover:bg-yellow-600 hover:text-zinc-900 hover:scale-105;
 }
 
-.buttons-grid {
+.buttonsGrid {
 	@apply mx-auto items-center;
 }
 
-.buttons-grid > * {
+.buttonsGrid > * {
 	@apply mx-2;
 }
 
-.nav-button {
+.navButton {
 	@apply rounded-xl text-gray-200 py-2 px-10 bg-zinc-900 min-w-[150px];
 	@apply transition-all duration-700 ease-in-out;
 	@apply hover:bg-yellow-600 hover:text-zinc-900 hover:scale-105;
 }
 
-.nav-link {
+.navLink {
 	@apply no-underline;
 	@apply hover:outline-none hover:decoration-inherit;
 }
@@ -76,11 +76,11 @@
 	@apply opacity-0;
 }
 
-.dialog-visible {
+.dialogVisible {
 	@apply opacity-100;
 }
 
-.dialog-btn {
+.dialogBtn {
 	@apply fixed top-5 left-5 cursor-pointer px-3 py-2;
 	@apply rounded-full bg-zinc-800 border-2 border-zinc-800;
 	@apply transition-all duration-300 ease-in-out z-30;
@@ -88,7 +88,7 @@
 }
 
 /* not found */
-.not-found {
+.notFound {
 	@apply flex flex-col items-center;
 	@apply my-20 mx-32 p-20;
 	@apply bg-zinc-700 rounded-2xl border-4 border-zinc-600;
@@ -96,7 +96,7 @@
 	@apply hover:border-yellow-500 hover:bg-zinc-800;
 }
 
-.not-found > * {
+.notFound > * {
 	@apply my-5;
 }
 
@@ -110,7 +110,7 @@
 	animation: slideIn 800ms ease-in-out forwards;
 }
 
-@keyframes slideIn {
+@keyframesslidein {
 	0% {
 		opacity: 0;
 		transform: translateX(-100%);
@@ -121,13 +121,13 @@
 	}
 }
 
-.loading-spinner {
+.loadingSpinner {
 	@apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20;
 }
 
-.loading-spinner::before,
-.loading-spinner::after,
-.loading-spinner div {
+.loadingSpinner::before,
+.loadingSpinner::after,
+.loadingSpinnerDiv {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -136,22 +136,22 @@
 	animation: spin 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-.loading-spinner div {
+.loadingSpinnerDiv {
 	border-color: gold;
 	animation-delay: -0.3s;
 }
 
-.loading-spinner::before {
+.loadingSpinner::before {
 	border-color: gold;
 	animation-delay: -0.6s;
 }
 
-.loading-spinner::after {
+.loadingSpinner::after {
 	border-color: gold;
 	animation-delay: -0.9s;
 }
 
-@keyframes spin {
+@keyframesspin {
 	100% {
 		transform: rotate(360deg);
 	}

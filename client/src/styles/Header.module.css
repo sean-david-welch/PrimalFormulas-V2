@@ -10,30 +10,30 @@
 	@apply flex my-auto;
 }
 
-.navbar > :first-child {
+.navbar > :firstchild {
 	@apply justify-start;
 }
 
-.navbar > :nth-child(2) {
+.navbar > :nthchild(2) {
 	@apply justify-center;
 }
 
-.navbar > :last-child {
+.navbar > :lastchild {
 	@apply justify-end;
 }
 
-.navbar-transparent {
+.navbarTransparent {
 	@apply navbar;
 	@apply bg-transparent border-0 text-black;
 	@apply fixed !important;
 }
 
 /* nav logo */
-.nav-logo {
+.navLogo {
 	@apply cursor-pointer;
 }
 
-.logo-link {
+.logoLink {
 	@apply no-underline;
 	@apply hover:outline-none hover:decoration-inherit;
 }
@@ -44,12 +44,12 @@
 }
 
 /* nav link */
-.navbar-link {
+.navbarLink {
 	@apply transition-all duration-700 ease-in-out;
 	@apply hover:text-yellow-500 hover:scale-105;
 }
 
-.navbar-link .icon {
+.navbarLink.icon {
 	@apply text-white;
 	@apply transition-all duration-700 ease-in-out;
 	@apply hover:text-yellow-500 hover:scale-105;

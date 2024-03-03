@@ -1,3 +1,5 @@
+import styles from '../styles/Footer.module.css';
+
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -9,7 +11,7 @@ const ToTopButton: React.FC = () => {
 		});
 	};
 	return (
-		<button id="toTopButton" aria-label="scroll-to-top-button" className="toTopButton" onClick={scrollToTop}>
+		<button id="toTopButton" aria-label="scroll-to-top-button" className={styles.toTopButton} onClick={scrollToTop}>
 			<FontAwesomeIcon icon={faArrowUp} size="2x" />
 		</button>
 	);
