@@ -1,10 +1,12 @@
-import SectionHeading from '../components/SectionHeading';
+import styles from '../styles/About.module.css';
 
 import { About } from '../types/aboutTypes';
 import { useGetResource } from '../hooks/dataHooks';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import SectionHeading from '../components/SectionHeading';
 
 export const AboutPage = () => {
 	const { data: abouts, isError, isLoading } = useGetResource<About[]>('about');
@@ -22,14 +24,14 @@ export const AboutPage = () => {
 				buttonIcon={<FontAwesomeIcon icon={faArrowRight} className="icon" />}
 			/>
 
-			<div className="company-info">
-				<ul className="info-list">
+			<div className={styles.about}>
+				<ul className={styles.infoList}>
 					{abouts &&
 						abouts.map(about => (
-							<li className="info-list-item hidden">
+							<li className={styles.aboutCard}>
 								<img src={about.image} alt="Info-Item" />
-								<div className="info-description">
-									<h2 className="section-heading">{about.title}:</h2>
+								<div className={styles.aboutInfo}>
+									<h2 className={styles.sectionHeading}>{about.title}:</h2>
 									<p>{about.description}</p>
 								</div>
 							</li>

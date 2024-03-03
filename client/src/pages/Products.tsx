@@ -1,3 +1,5 @@
+import styles from '../styles/Products.module.css';
+
 import Loading from '../layouts/Loading';
 import ErrorPage from '../layouts/Error';
 import NavButton from '../components/NavButton';
@@ -15,12 +17,12 @@ function ProductsList() {
 
 	return (
 		<section id="products">
-			<div className="products">
+			<div className={styles.products}>
 				<ul>
 					{products &&
 						products.map(product => (
 							<li key={product.id} className="hidden">
-								<div className="product-card">
+								<div className={styles.productsCard}>
 									<h2>{product.name}</h2>
 									<img src={product.image} alt={product.name} />
 									<h2>Price: €{product.price}</h2>

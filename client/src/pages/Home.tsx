@@ -1,3 +1,6 @@
+import utils from '../styles/Utils.module.css';
+import styles from '../styles/Products.module.css';
+
 import Hero from '../templates/Hero';
 import Loading from '../layouts/Loading';
 import ErrorPage from '../layouts/Error';
@@ -30,12 +33,12 @@ export const Home = () => {
 				{products &&
 					products.map(product => (
 						<li key={product.id} className="hidden">
-							<div className="product-card">
+							<div className={styles.productCard}>
 								<h2>{product.name}</h2>
 								<img src={product.image} alt={product.name} />
 								<h2>Price: €{product.price}</h2>
 
-								<ul className="product-nav">
+								<ul className={utils.btnGrid}>
 									<NavButton
 										to={`/product/${product.id}`}
 										icon={<FontAwesomeIcon icon={faArrowRight} />}
