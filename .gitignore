@@ -19,3 +19,4 @@ infrastructure/
 server/service.account.json
 terraform/.terraform
 server/service-account.json
+service-account.json
