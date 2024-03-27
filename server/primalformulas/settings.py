@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "products.apps.ProductsConfig",
     "assets.apps.AssetsConfig",
     "about.apps.AboutConfig",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
