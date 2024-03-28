@@ -8,3 +8,7 @@ class Products(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.TextField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = "products"

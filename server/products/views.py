@@ -1,17 +1,18 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.response import Response
 
-from .models import Products
-from .serializers import ProductSerializer
+from primalformulas.permissions import IsAdminOrReadOnly
+from products.models import Products
+from products.serializers import ProductSerializer
 
 
 class ProductList(generics.ListCreateAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
 
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -23,7 +24,7 @@ class ProductList(generics.ListCreateAPIView):
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self):
         product_id = self.kwargs.get("pk")

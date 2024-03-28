@@ -1,21 +1,21 @@
 from django.test import TestCase
+from rest_framework.fields import datetime, uuid
 
 from products.models import Products
 
 
 class ProductViewTest(TestCase):
-    def setupProduct(self):
-        Products.objects.create(
+    def setUp(self):
+        self.product = Products.objects.create(
+            id=uuid.uuid4(),
             name="Test Product",
             description="description",
             price=10.99,
             image="image.url",
+            created=datetime.datetime.now(),
         )
 
     def test_product_content(self):
-        product = Products.objects.get(id=1)
-        expected_name = f"{product.name}"
-        expected_price = product.price
-
-        self.assertEqual(expected_name, "Test Product")
-        self.assertEqual(expected_price, 10.99)
+        product = Products.objects.get(id=self.product.id)
+        self.assertEqual(product.name, "Test Product")
+        self.assertEqual(product.price, 10.99)
