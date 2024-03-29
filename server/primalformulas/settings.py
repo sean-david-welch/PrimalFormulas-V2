@@ -16,7 +16,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "drf_yasg",
+    "rest_framework.authtoken",
     "products.apps.ProductsConfig",
     "assets.apps.AssetsConfig",
     "about.apps.AboutConfig",
@@ -25,6 +25,9 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
     ],
 }
 
