@@ -1,10 +1,11 @@
-from rest_framework.schemas.coreapi import serializers
 from django.contrib.auth.models import User
+from rest_framework import serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, min_length=8)
 
+    # type: ignore[reportIncompatibleVariableOverride]
     class Meta:
         model = User
         fields = (
