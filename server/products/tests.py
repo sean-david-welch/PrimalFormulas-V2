@@ -1,5 +1,7 @@
+import uuid
+import datetime
+
 from django.test import TestCase
-from rest_framework.fields import datetime, uuid
 
 from products.models import Products
 
