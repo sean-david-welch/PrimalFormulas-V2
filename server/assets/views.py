@@ -16,7 +16,7 @@ class AssetsList(APIView):
         assets = Assets.objects.all()
         serializers = AssetSerializer(assets, many=True)
 
-        return Response(serializers.data)
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
 
     def post(self, request: Request) -> Response:
         serializer = AssetSerializer(data=request.data)

@@ -10,7 +10,7 @@ from primalformulas.permissions import IsAdminOrReadOnly
 
 
 class AboutList(APIView):
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request: Request) -> Response:
         about = About.objects.all()
@@ -29,7 +29,7 @@ class AboutList(APIView):
 
 
 class AboutDetail(APIView):
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk: str) -> About | None:
         try:
