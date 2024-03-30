@@ -10,7 +10,7 @@ from primalformulas.permissions import IsAdminOrReadOnly
 
 
 class AboutList(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request: Request) -> Response:
         about = About.objects.all()
@@ -19,7 +19,7 @@ class AboutList(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request: Request) -> Response:
-        serializer = AboutSerializer(request.data)
+        serializer = AboutSerializer(data=request.data)
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -29,7 +29,7 @@ class AboutList(APIView):
 
 
 class AboutDetail(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk: str) -> About | None:
         try:
