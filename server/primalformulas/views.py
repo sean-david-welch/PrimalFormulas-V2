@@ -24,6 +24,18 @@ class HomeView(APIView):
         )
 
 
+class CatchAllView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request, **kwargs) -> Response:
+        return Response(
+            {
+                "Message": f"The requested route is not available. You have been redirected from {request.path}"
+            },
+            status=status.HTTP_301_MOVED_PERMANENTLY,
+        )
+
+
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 

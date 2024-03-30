@@ -3,7 +3,13 @@ from django.urls import include, path
 
 from rest_framework import routers
 
-from views import LoginView, RegisterView
+from primalformulas.views import (
+    CatchAllView,
+    HomeView,
+    LoginView,
+    LogoutView,
+    RegisterView,
+)
 
 router = routers.DefaultRouter()
 
@@ -17,4 +23,10 @@ urlpatterns = [
 urlpatterns += [
     path("register", RegisterView.as_view(), name="register"),
     path("login", LoginView.as_view(), name="login"),
+    path("logout", LogoutView.as_view(), name="logout"),
+]
+
+urlpatterns += [
+    path("", HomeView.as_view(), name="home"),
+    path("<path:resource>", CatchAllView.as_view(), name="catch-all"),
 ]
