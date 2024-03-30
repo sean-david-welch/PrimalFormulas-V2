@@ -9,6 +9,8 @@ from primalformulas.permissions import IsAdminOrReadOnly
 from products.models import Products
 from products.serializers import ProductSerializer
 
+from primalformulas.utils import generate_presigned_url
+
 
 class ProductList(APIView):
     permission_classes = [IsAdminOrReadOnly]
@@ -25,8 +27,22 @@ class ProductList(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        product = serializer.save()
+
+        image_url, presigned_url = generate_presigned_url("products", product.image)
+
+        if image_url != "":
+            product.image = image_url
+            product.save()
+
+        return Response(
+            {
+                **serializer.data,
+                "image": image_url,
+                "presigned_url": presigned_url,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class ProductDetail(APIView):
