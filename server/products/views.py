@@ -14,15 +14,10 @@ class ProductList(APIView):
     permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request: Request) -> Response:
-        if request.headers.get("Accept") != "application/json":
-            return Response(
-                {"Message": "Invalid content type"}, status=status.HTTP_400_BAD_REQUEST
-            )
-
         products = Products.objects.all()
         serializer = ProductSerializer(products, many=True)
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request: Request) -> Response:
         serializer = ProductSerializer(data=request.data)
@@ -44,22 +39,12 @@ class ProductDetail(APIView):
             raise Http404
 
     def get(self, request: Request, pk: str) -> Response:
-        if request.headers.get("Content-Type") != "application/json":
-            return Response(
-                {"Message": "Invalid content type"}, status=status.HTTP_400_BAD_REQUEST
-            )
-
         product = self.get_object(pk)
-        serializer = ProductSerializer(product)
+        serializer = ProductSerializer(instance=product)
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request: Request, pk: str) -> Response:
-        if request.headers.get("Accept") != "application/json":
-            return Response(
-                {"Message": "Invalid content type"}, status=status.HTTP_400_BAD_REQUEST
-            )
-
         product = self.get_object(pk)
         serializer = ProductSerializer(product, data=request.data)
 
@@ -67,15 +52,17 @@ class ProductDetail(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def delete(self, request: Request, pk: str) -> Response:
-        if request.headers.get("Accept") != "application/json":
+        product = self.get_object(pk)
+
+        if product is None:
             return Response(
-                {"Message": "Invalid content type"}, status=status.HTTP_400_BAD_REQUEST
+                {"Message": "Product with the specified id was not found"},
+                status=status.HTTP_404_NOT_FOUND,
             )
 
-        product = self.get_object(pk)
         product.delete()
 
         return Response(

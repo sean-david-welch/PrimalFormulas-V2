@@ -1,8 +1,8 @@
 from typing import cast
 
 from rest_framework import status
-from django.contrib.auth.models import User
-from rest_framework.permissions import AllowAny
+from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,6 +12,16 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from django.contrib.auth import authenticate
 
 from primalformulas.serializers import UserSerializer
+
+
+class HomeView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        return Response(
+            {"Message": "Welcome to primal formulas API service"},
+            status=status.HTTP_200_OK,
+        )
 
 
 class RegisterView(APIView):
@@ -57,6 +67,25 @@ class LoginView(APIView):
         token, _ = Token.objects.get_or_create(user=user)
         serializer = UserSerializer(instance=user)
         return Response({"token": token.key, "user": serializer.data})
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+
+    def post(self, request: Request) -> Response:
+        if isinstance(request.user, (AnonymousUser, AbstractBaseUser)):
+            return Response(
+                {"Message": "User is not authenticated."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        request.user.auth_token.delete()
+
+        return Response(
+            {"Message": "User successfully logged out"},
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
 
 class TestTokenView(APIView):

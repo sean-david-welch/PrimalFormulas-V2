@@ -3,6 +3,8 @@ from django.urls import include, path
 
 from rest_framework import routers
 
+from views import LoginView, RegisterView
+
 router = routers.DefaultRouter()
 
 urlpatterns = [
@@ -10,4 +12,9 @@ urlpatterns = [
     path("api/", include("products.urls")),
     path("api/", include("assets.urls")),
     path("api/", include("about.urls")),
+]
+
+urlpatterns += [
+    path("register", RegisterView.as_view(), name="register"),
+    path("login", LoginView.as_view(), name="login"),
 ]
