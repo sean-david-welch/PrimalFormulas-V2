@@ -3,12 +3,12 @@ import datetime
 
 from django.test import TestCase
 
-from products.models import Products
+from products.models import Product
 
 
 class ProductViewTest(TestCase):
     def setUp(self):
-        self.product = Products.objects.create(
+        self.product = Product.objects.create(
             id=uuid.uuid4(),
             name="Test Product",
             description="description",
@@ -18,6 +18,6 @@ class ProductViewTest(TestCase):
         )
 
     def test_product_content(self):
-        product = Products.objects.get(id=self.product.id)
+        product = Product.objects.get(id=self.product.id)
         self.assertEqual(product.name, "Test Product")
         self.assertEqual(product.price, 10.99)

@@ -5,15 +5,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from primalformulas.permissions import IsAdminOrReadOnly
-from assets.models import Assets
+from assets.models import Asset
 from assets.serializers import AssetSerializer
 
 
-class AssetsList(APIView):
+class AssetList(APIView):
     permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request: Request) -> Response:
-        assets = Assets.objects.all()
+        assets = Asset.objects.all()
         serializers = AssetSerializer(assets, many=True)
 
         return Response(data=serializers.data, status=status.HTTP_200_OK)
@@ -31,10 +31,10 @@ class AssetsList(APIView):
 class AssetDetail(APIView):
     permission_classes = [IsAdminOrReadOnly]
 
-    def get_object(self, name: str) -> Assets | None:
+    def get_object(self, name: str) -> Asset | None:
         try:
-            return Assets.objects.get(name=name)
-        except Assets.DoesNotExist:
+            return Asset.objects.get(name=name)
+        except Asset.DoesNotExist:
             raise Http404
 
     def get(self, request: Request, name: str) -> Response:
