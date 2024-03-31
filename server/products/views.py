@@ -13,7 +13,7 @@ from primalformulas.utils import generate_presigned_url
 
 
 class ProductList(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request: Request) -> Response:
         products = Products.objects.all()
@@ -34,10 +34,11 @@ class ProductList(APIView):
         if image_url != "":
             product.image = image_url
             product.save()
+            serializer = ProductSerializer(instance=product)
 
         return Response(
             {
-                **serializer.data,
+                "product": serializer.data,
                 "image": image_url,
                 "presigned_url": presigned_url,
             },
