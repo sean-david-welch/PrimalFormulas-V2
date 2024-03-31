@@ -53,7 +53,7 @@ class ProductList(APIView):
 
 
 class ProductDetail(APIView):
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
     def setup(self, request: Request, *args: Any, **kwargs: Any) -> None:
         super().setup(request, *args, **kwargs)
