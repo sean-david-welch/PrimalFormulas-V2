@@ -13,7 +13,7 @@ from primalformulas.utils import generate_presigned_url
 
 
 class ProductList(APIView):
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request: Request) -> Response:
         products = Products.objects.all()
@@ -47,7 +47,7 @@ class ProductList(APIView):
 
 
 class ProductDetail(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk: str) -> Products | None:
         try:
@@ -62,14 +62,30 @@ class ProductDetail(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request: Request, pk: str) -> Response:
-        product = self.get_object(pk)
-        serializer = ProductSerializer(product, data=request.data)
+        product = self.get_object(pk=pk)
+        data = request.data.copy()
 
+        image_field = data.get("image", "")
+        image_url, presigned_url = None, None
+
+        if image_field not in ["", "null"] and image_field != str(product.image):
+            image_url, presigned_url = generate_presigned_url("products", image_field)
+            data["image"] = image_url
+        else:
+            data.pop("image")
+
+        serializer = ProductSerializer(instance=product, data=data, partial=True)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        response_data = {
+            "product": serializer.data,
+            "image": image_url if image_url else product.image,
+            "presigned_url": presigned_url,
+        }
+
+        return Response(response_data, status=status.HTTP_202_ACCEPTED)
 
     def delete(self, request: Request, pk: str) -> Response:
         product = self.get_object(pk)
