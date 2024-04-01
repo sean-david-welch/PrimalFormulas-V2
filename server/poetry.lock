@@ -984,6 +984,21 @@ doc = ["sphinx"]
 test = ["pytest", "pytest-cov"]
 
 [[package]]
+name = "stripe"
+version = "8.9.0"
+description = "Python bindings for the Stripe API"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "stripe-8.9.0-py2.py3-none-any.whl", hash = "sha256:ee0280bbc82264e8067d0754272de76bed3b368743a912f9bf0ba2b3fbe4ede4"},
+    {file = "stripe-8.9.0.tar.gz", hash = "sha256:71f7c1bdda0f3e568aa29d275910a14834115a58ae21eb0479b3b26745875d0e"},
+]
+
+[package.dependencies]
+requests = {version = ">=2.20", markers = "python_version >= \"3.0\""}
+typing-extensions = {version = ">=4.5.0", markers = "python_version >= \"3.7\""}
+
+[[package]]
 name = "types-awscrt"
 version = "0.20.5"
 description = "Type annotations and code completion for awscrt"
@@ -1105,4 +1120,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "8960da4f18481a87469a4ac24889b9232a11c584908591df1300025e103a2033"
+content-hash = "607d5259f23a70625abf62faa8fa8fc8262276debed4c7ec04a7aeb1d0fa5666"

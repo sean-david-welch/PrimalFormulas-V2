@@ -104,11 +104,8 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 
-STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY")
-STRIPE_PRIVATE_KEY = os.environ.get("STRIPE_PRIVATE_KEY")
-
-TEST_SECRET_KEY = os.environ.get("TEST_SECRET_KEY")
-TEST_PUBLIC_KEY = os.environ.get("TEST_PUBLIC_KEY")
+STRIPE_SECRET_TEST_KEY = os.environ.get("STRIPE_SECRET_TEST_KEY")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
 
 # DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
@@ -120,9 +117,6 @@ AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 
-YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")
-GOOGLE_OAUTH2_CLIENT_ID = os.environ.get("CLIENT_ID")
-GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False

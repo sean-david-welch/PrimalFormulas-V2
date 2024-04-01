@@ -1,6 +1,6 @@
-import os
 import boto3
 
+from django.conf import settings
 from urllib.parse import urlparse
 from botocore.exceptions import ClientError
 
@@ -11,8 +11,8 @@ class S3ImageHandler:
         self.s3_client = boto3.client(
             service_name="s3",
             region_name=region_name,
-            aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
         )
 
     def generate_presigned_url(self, folder: str, image: str) -> tuple:

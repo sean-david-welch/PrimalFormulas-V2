@@ -46,6 +46,7 @@ types-stripe = "3.5.2.20240106"
 typing-extensions = "4.10.0"
 uritemplate = "4.1.1"
 urllib3 = "2.2.1"
+stripe = "^8.9.0"
 
 
 [build-system]
