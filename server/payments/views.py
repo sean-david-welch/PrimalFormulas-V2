@@ -17,7 +17,7 @@ logger = logging.getLogger()
 stripe_api_key = settings.SECRET_TEST_KEY
 
 
-class CreateCheckoutSession(APIView):
+class CreateCheckoutSessionView(APIView):
     permission_classes = [AllowAny]
     frontend_url: str = "http://localhost:5173/"
 

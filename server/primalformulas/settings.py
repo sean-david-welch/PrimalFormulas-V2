@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -15,11 +15,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+INSTALLED_APPS += [
     "rest_framework",
     "rest_framework.authtoken",
+]
+
+INSTALLED_APPS += [
     "products.apps.ProductsConfig",
     "assets.apps.AssetsConfig",
     "about.apps.AboutConfig",
+    "payments.apps.PaymentsConfig",
 ]
 
 REST_FRAMEWORK = {
@@ -116,7 +123,6 @@ STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
-
 
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False

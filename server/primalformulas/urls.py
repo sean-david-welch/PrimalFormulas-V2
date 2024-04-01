@@ -18,6 +18,7 @@ urlpatterns = [
     path("api/", include("products.urls")),
     path("api/", include("assets.urls")),
     path("api/", include("about.urls")),
+    path("api/", include("payments.urls")),
 ]
 
 urlpatterns += [
