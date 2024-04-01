@@ -12,8 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "email",
             "password",
-            "is_staff",
-            "is_active",
             "is_superuser",
             "last_login",
         )
@@ -24,8 +22,6 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data["username"],
             email=validated_data["email"],
             password=validated_data["password"],
-            is_staff=validated_data["is_staff"],
-            is_active=validated_data["is_active"],
             is_superuser=validated_data["is_superuser"],
         )
         return user
