@@ -1,4 +1,7 @@
-from django.http import Http404
+from typing import Any
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
+
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -6,6 +9,7 @@ from rest_framework.views import APIView
 
 from about.models import About
 from about.serializers import AboutSerializer
+from primalformulas.images import S3ImageHandler
 from primalformulas.permissions import IsAdminOrReadOnly
 
 
@@ -24,47 +28,86 @@ class AboutList(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        about = serializer.save()
+        s3_handler = S3ImageHandler()
+
+        if "image" in request.data and request.data["image"]:
+            image_url, presigned_url = s3_handler.generate_presigned_url(
+                "about", str(about.image)
+            )
+
+            if image_url != "":
+                about.image = image_url
+                about.save(update_fields=["image"])
+                serializer = AboutSerializer(instance=about)
+
+            response_data = {
+                "about": serializer.data,
+                "image": image_url,
+                "presigned_url": presigned_url,
+            }
+        else:
+            response_data = {"about": serializer.data}
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class AboutDetail(APIView):
     permission_classes = [IsAdminOrReadOnly]
 
-    def get_object(self, pk: str) -> About | None:
-        try:
-            return About.objects.get(pk=pk)
-        except About.DoesNotExist:
-            raise Http404
+    def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
+        super().setup(request, *args, **kwargs)
+        self.s3_handler = S3ImageHandler()
 
     def get(self, request: Request, pk: str) -> Response:
-        about = self.get_object(pk)
+        about = get_object_or_404(About, pk=pk)
         serializer = AboutSerializer(instance=about)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request: Request, pk: str) -> Response:
-        about = self.get_object(pk)
-        serializer = AboutSerializer(instance=about, data=request.data)
+        about = get_object_or_404(About, pk=pk)
+        data = request.data.copy()
 
+        image_field = data.get("image", "")
+        image_url, presigned_url = None, None
+
+        if image_field not in ["", "null"] and image_field != str(about.image):
+            image_url, presigned_url = self.s3_handler.generate_presigned_url(
+                "about", str(about.image)
+            )
+            data["image"] = image_url
+        else:
+            data.pop("image")
+
+        serializer = AboutSerializer(instance=about, data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        response_data = {
+            "about": serializer.data,
+            "image": image_url if image_url else about.image,
+            "presigned_url": presigned_url,
+        }
+
+        return Response(response_data, status=status.HTTP_202_ACCEPTED)
 
     def delete(self, request: Request, pk: str) -> Response:
-        about = self.get_object(pk)
-
-        if about is None:
-            return Response(
-                {"Message": "About content with id not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        about = get_object_or_404(About, pk=pk)
+        result = self.s3_handler.delete_image_from_s3(about.image)
 
         about.delete()
 
+        if not result:
+            return Response(
+                {
+                    "Message": "About deleted successfully, but failed to delete image from S3."
+                },
+                status=status.HTTP_200_OK,
+            )
+
         return Response(
-            {"Message": "About content deleted successfully"},
+            {"Message": "About content and image deleted successfully"},
             status=status.HTTP_204_NO_CONTENT,
         )
