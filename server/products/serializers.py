@@ -3,8 +3,7 @@ from products.models import Product
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    # type: ignore
-    class Meta:
+    class Meta:  # type: ignore
         model = Product
         fields = "__all__"
         read_only_fields = ["id", "created"]

@@ -5,7 +5,7 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, min_length=8)
 
-    class Meta:
+    class Meta:  # type: ignore
         model = User
         fields = (
             "id",

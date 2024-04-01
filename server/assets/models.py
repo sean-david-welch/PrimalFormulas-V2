@@ -9,7 +9,7 @@ class Asset(models.Model):
     content = models.TextField(default="default.jpg")
     created = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 
-    class Meta:
+    class Meta:  # type: ignore
         managed = True
         ordering = ["created"]
         db_table = "assets"
