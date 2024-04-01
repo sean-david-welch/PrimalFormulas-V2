@@ -1,4 +1,5 @@
 from typing import Any
+from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status
@@ -55,7 +56,7 @@ class ProductList(APIView):
 class ProductDetail(APIView):
     permission_classes = [IsAdminOrReadOnly]
 
-    def setup(self, request: Request, *args: Any, **kwargs: Any) -> None:
+    def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
         super().setup(request, *args, **kwargs)
         self.s3_handler = S3ImageHandler()
 
@@ -95,6 +96,7 @@ class ProductDetail(APIView):
 
     def delete(self, request: Request, pk: str) -> Response:
         product = get_object_or_404(Product, pk=pk)
+
         result = self.s3_handler.delete_image_from_s3(product.image)
 
         product.delete()
