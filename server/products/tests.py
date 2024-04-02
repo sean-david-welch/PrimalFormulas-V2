@@ -1,18 +1,18 @@
 from django.urls import reverse
 from rest_framework import status
-from unittest.mock import Mock, patch
 
 from rest_framework.response import Response
 from rest_framework.test import APIClient, APITestCase
-from django.contrib.auth.models import User
 
+from primalformulas.mixins import TestUtilityMixin
 from products.models import Product
 
 
-class BaseTestMock(APITestCase):
+class BaseTestMock(APITestCase, TestUtilityMixin):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
+
         cls.url = reverse("product-list")
         cls.product_data = {
             "name": "new product",
@@ -20,6 +20,7 @@ class BaseTestMock(APITestCase):
             "price": 20.99,
             "image": "new_image_placeholder",
         }
+
         product = Product.objects.create(
             name="Detail Test Product",
             description="Detail Test Description",
@@ -30,33 +31,15 @@ class BaseTestMock(APITestCase):
         cls.detail_url = reverse("product-detail", kwargs={"pk": cls.product_id})
 
     def setUp(self):
+        super().setUp()
         self.client = APIClient()
 
-        self.mock_s3_handler_setup()
+        self.mock_s3_handler_setup("products")
         self.create_test_users()
         self.create_test_products()
 
-    def mock_s3_handler_setup(self):
-        mock_s3_handler = Mock(
-            generate_presigned_url=Mock(
-                return_value=("mock_image_url", "mock_presigned_url")
-            )
-        )
-        self.patcher = patch(
-            "products.views.S3ImageHandler", return_value=mock_s3_handler
-        )
-        self.patcher.start()
-        self.mock_s3_handler = mock_s3_handler
-
-    def create_test_users(self):
-        self.superuser = User.objects.create_superuser(
-            username="testsuperuser",
-            password="testpassword",
-            email="testemail@email.com",
-        )
-        self.user = User.objects.create_user(
-            username="testuser", password="testpassword"
-        )
+    def tearDown(self):
+        super().tearDown()
 
     def create_test_products(self):
         Product.objects.bulk_create(
@@ -75,9 +58,6 @@ class BaseTestMock(APITestCase):
                 ),
             ]
         )
-
-    def tearDown(self):
-        self.patcher.stop()
 
 
 class ProductListTest(BaseTestMock):
