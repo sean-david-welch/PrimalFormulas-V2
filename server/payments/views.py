@@ -14,7 +14,7 @@ from payments.serializers import PaymentDataSerializer
 
 
 logger = logging.getLogger()
-stripe_api_key = settings.SECRET_TEST_KEY
+stripe_api_key = settings.STRIPE_SECRET_TEST_KEY
 
 
 class CreateCheckoutSessionView(APIView):

@@ -1,6 +1,7 @@
-from unittest.mock import Mock, patch
 from django.urls import reverse
 from rest_framework import status
+from unittest.mock import Mock, patch
+
 from rest_framework.response import Response
 from rest_framework.test import APIClient, APITestCase
 from django.contrib.auth.models import User
@@ -8,7 +9,7 @@ from django.contrib.auth.models import User
 from products.models import Product
 
 
-class ProductListTest(APITestCase):
+class BaseTestMock(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.url = reverse("products-list")
@@ -19,7 +20,7 @@ class ProductListTest(APITestCase):
             "image": "image_placeholder",
         }
 
-    def setUp(self) -> None:
+    def setUp(self):
         self.client = APIClient()
 
         self.mock_s3_handler_setup()
@@ -50,33 +51,43 @@ class ProductListTest(APITestCase):
         Product.objects.bulk_create(
             [
                 Product(
-                    name="Test Product 1", description="Test Description 1", price=39.99
+                    name="Test Product 1",
+                    description="Test Description 1",
+                    price=39.99,
                 ),
                 Product(
-                    name="Test Product 2", description="Test Description 2", price=45.99
+                    name="Test Product 2",
+                    description="Test Description 2",
+                    price=45.99,
                 ),
             ]
         )
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         self.patcher.stop()
 
-    def test_get_products(self) -> None:
-        response = self.client.get(self.url)
 
+class ProductListTest(BaseTestMock):
+    def test_get_products(self):
+        response: Response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), Product.objects.count())
 
-    def test_post_product_with_auth(self) -> None:
+    def test_post_product_with_auth(self):
         self.client.login(username="testsuperuser", password="testpassword")
 
-        response: Response = self.client.post(
-            self.url, data=self.product_data, format="json"
-        )
+        response = self.client.post(self.url, data=self.product_data, format="json")
 
         self.assertPostProductSuccess(response)
 
-    def assertPostProductSuccess(self, response: Response) -> None:
+    def test_post_product_without_auth(self):
+        response = self.client.post(self.url, self.product_data, format="json")
+
+        self.assertPostProductFailure(
+            response, expected_status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    def assertPostProductSuccess(self, response: Response):
         product_data = response.data.get("product")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -88,13 +99,9 @@ class ProductListTest(APITestCase):
         self.assertIn("image", product_data)
         self.assertEqual(product_data["image"], "mock_image_url")
 
-    def test_post_product_without_auth(self):
-        url = reverse("product-list")
-        data = {
-            "name": "Unauthorized Product",
-            "description": "Should not be created",
-            "price": 400,
-        }
-        response = self.client.post(url, data, format="json")
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    def assertPostProductFailure(self, response: Response, expected_status: int):
+        self.assertEqual(
+            response.status_code,
+            expected_status,
+            msg=f"Expected status code {expected_status}, got {response.status_code}",
+        )

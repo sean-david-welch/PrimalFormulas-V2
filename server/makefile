@@ -12,3 +12,8 @@ prep:
 
 migrate:
 	python manage.py migrate
+
+test:
+	make start
+	python manage.py test
+	make stop

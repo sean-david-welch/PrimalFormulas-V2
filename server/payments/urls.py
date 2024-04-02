@@ -2,9 +2,9 @@ from django.urls import path
 
 from payments.views import CreateCheckoutSessionView
 
-urlpatters = [
+urlpatterns = [
     path(
-        "/create-checkout-session",
+        "create-checkout-session/",
         CreateCheckoutSessionView.as_view(),
         name="create-checkout-session",
     )
