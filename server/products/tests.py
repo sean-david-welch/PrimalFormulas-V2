@@ -12,7 +12,7 @@ from products.models import Product
 class BaseTestMock(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.url = reverse("products-list")
+        cls.url = reverse("product-list")
         cls.product_data = {
             "name": "new product",
             "description": "new description",
@@ -41,7 +41,9 @@ class BaseTestMock(APITestCase):
 
     def create_test_users(self):
         self.superuser = User.objects.create_superuser(
-            username="testsuperuser", password="testpassword"
+            username="testsuperuser",
+            password="testpassword",
+            email="testemail@email.com",
         )
         self.user = User.objects.create_user(
             username="testuser", password="testpassword"
