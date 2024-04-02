@@ -1,4 +1,3 @@
-from re import L
 from django.urls import reverse
 from rest_framework import status
 from unittest.mock import Mock, patch
@@ -13,13 +12,22 @@ from products.models import Product
 class BaseTestMock(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        super().setUpTestData()
         cls.url = reverse("product-list")
         cls.product_data = {
             "name": "new product",
             "description": "new description",
             "price": 20.99,
-            "image": "image_placeholder",
+            "image": "new_image_placeholder",
         }
+        product = Product.objects.create(
+            name="Detail Test Product",
+            description="Detail Test Description",
+            price=59.99,
+            image="image_placeholder",
+        )
+        cls.product_id = product.id
+        cls.detail_url = reverse("product-detail", kwargs={"pk": cls.product_id})
 
     def setUp(self):
         self.client = APIClient()
@@ -57,11 +65,13 @@ class BaseTestMock(APITestCase):
                     name="Test Product 1",
                     description="Test Description 1",
                     price=39.99,
+                    image="image_placeholder",
                 ),
                 Product(
                     name="Test Product 2",
                     description="Test Description 2",
                     price=45.99,
+                    image="image_placeholder",
                 ),
             ]
         )
@@ -111,4 +121,41 @@ class ProductListTest(BaseTestMock):
 
 
 class ProductDetailTest(BaseTestMock):
-    pass
+    def test_get_product_by_id(self):
+        response: Response = self.client.get(self.detail_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(str(response.data["id"]), str(self.product_id))
+
+        self.assertEqual(response.data["name"], "Detail Test Product")
+
+    def test_put_product(self):
+        self.client.login(username="testsuperuser", password="testpassword")
+
+        response = self.client.put(self.detail_url, self.product_data, format="json")
+
+        self.assertPutProductSuccess(response)
+
+    def test_delete_product(self):
+        self.client.login(username="testsuperuser", password="testpassword")
+
+        response = self.client.delete(self.detail_url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        with self.assertRaises(Product.DoesNotExist):
+            Product.objects.get(id=self.product_id)
+
+    def assertPutProductSuccess(self, response: Response):
+        product_data = response.data.get("product")
+
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertTrue("product" in response.data)
+
+        self.assertTrue(self.mock_s3_handler.generate_presigned_url.called)
+        self.assertEqual(response.data.get("presigned_url"), "mock_presigned_url")
+
+        self.assertIsNotNone(product_data)
+        self.assertIn("image", product_data)
+        self.assertEqual(product_data["image"], "mock_image_url")
