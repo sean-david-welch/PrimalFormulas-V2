@@ -15,7 +15,7 @@ class TestUtilityMixin:
         self.patcher.start()
         self.mock_s3_handler = mock_s3_handler
 
-    def create_test_users(self):
+    def create_test_users(self) -> None:
         self.superuser = User.objects.create_superuser(
             username="testsuperuser",
             password="testpassword",
@@ -25,5 +25,5 @@ class TestUtilityMixin:
             username="testuser", password="testpassword"
         )
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         self.patcher.stop()
