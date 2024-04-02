@@ -1,4 +1,6 @@
 from django.urls import reverse
+from django.utils.text import slugify
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.test import APIClient, APITestCase
@@ -12,11 +14,13 @@ class BaseTestMock(APITestCase, TestUtilityMixin):
         super().setUpTestData()
 
         cls.url = reverse("asset-list")
-        cls.asset_data = {"name": "New name", "content": "new content"}
+        cls.asset_data = {"name": "name", "content": "newcontent"}
 
-        asset = Asset.objects.create(name="Detail Asset", content="Detail Content")
+        asset = Asset.objects.create(name="assetdetail", content="DetailContent")
         cls.asset_name = asset.name
-        cls.detail_url = reverse("asset-detail", kwargs={"name": cls.asset_name})
+        cls.detail_url = reverse(
+            "asset-detail", kwargs={"name": slugify(cls.asset_name)}
+        )
 
     def setUp(self) -> None:
         super().setUp()
@@ -32,8 +36,8 @@ class BaseTestMock(APITestCase, TestUtilityMixin):
     def create_test_assets(self):
         Asset.objects.bulk_create(
             [
-                Asset(name="Test Asset 1", content="Test_Content_1"),
-                Asset(name="Test Asset 2", content="Test_Content_2"),
+                Asset(name="asset1", content="Test_Content_1"),
+                Asset(name="asset2", content="Test_Content_2"),
             ]
         )
 
@@ -81,12 +85,14 @@ class AssetListTest(BaseTestMock):
         )
 
 
-class AboutDetailTest(BaseTestMock):
+class AssetDetailTest(BaseTestMock):
     def test_get_asset_by_name(self):
         response: Response = self.client.get(self.detail_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(str(response.data["name"]), str(self.asset_name))
+
+        self.assertEqual(response.data["name"], "assetdetail")
 
     def test_put_asset(self):
         self.client.login(username="testsuperuser", password="testpassword")

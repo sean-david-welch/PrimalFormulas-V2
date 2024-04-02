@@ -74,13 +74,13 @@ class AboutDetail(APIView):
 
         if image_field not in ["", "null"] and image_field != str(about.image):
             image_url, presigned_url = self.s3_handler.generate_presigned_url(
-                "about", str(about.image)
+                "about", image_field
             )
             data["image"] = image_url
         else:
             data.pop("image")
 
-        serializer = AboutSerializer(instance=about, data=request.data)
+        serializer = AboutSerializer(instance=about, data=data, partial=True)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

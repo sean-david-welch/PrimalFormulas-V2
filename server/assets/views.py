@@ -7,7 +7,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from about.serializers import AboutSerializer
 from primalformulas.images import S3ImageHandler
 from primalformulas.permissions import IsAdminOrReadOnly
 from assets.models import Asset
@@ -39,8 +38,8 @@ class AssetList(APIView):
 
             if image_url != "":
                 asset.content = image_url
-                asset.save(update_fiels=["content"])
-                serializer = AboutSerializer(instance=asset)
+                asset.save(update_fields=["content"])
+                serializer = AssetSerializer(instance=asset)
 
             response_data = {
                 "asset": serializer.data,
@@ -64,24 +63,24 @@ class AssetDetail(APIView):
         asset = get_object_or_404(Asset, name=name)
         serializer = AssetSerializer(instance=asset)
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request: Request, name: str) -> Response:
         asset = get_object_or_404(Asset, name=name)
         data = request.data.copy()
 
-        image_fied = data.get("content", {})
+        image_fied = data.get("content", "")
         image_url, presigned_url = None, None
 
         if image_fied not in ["", "null"] and image_fied != str(asset.content):
             image_url, presigned_url = self.s3_handler.generate_presigned_url(
                 "assets", image_fied
             )
-            data["content"] = image_fied
+            data["content"] = image_url
         else:
             data.pop("content")
 
-        serializer = AssetSerializer(instance=asset, data=request.data, partial=True)
+        serializer = AssetSerializer(instance=asset, data=data, partial=True)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -91,6 +90,7 @@ class AssetDetail(APIView):
             "image_url": image_url if image_url else asset.content,
             "presigned_url": presigned_url,
         }
+
         return Response(response_data, status=status.HTTP_202_ACCEPTED)
 
     def delete(self, request: Request, name: str) -> Response:

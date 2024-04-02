@@ -12,6 +12,7 @@ class BaseTestMock(APITestCase, TestUtilityMixin):
     @classmethod
     def setUpTestData(cls) -> None:
         super().setUpTestData()
+
         cls.url = reverse("about-list")
         cls.about_data = {
             "title": "new about",
@@ -19,10 +20,12 @@ class BaseTestMock(APITestCase, TestUtilityMixin):
             "image": "new_image_placeholder",
         }
 
-        about: About = About.objects.create(
-            title="Detail about", description="Detail description", image="Detail image"
+        about = About.objects.create(
+            title="Detail about",
+            description="Detail description",
+            image="image_placeholder",
         )
-        cls.about_id = (about.id,)
+        cls.about_id = about.id
         cls.detail_url = reverse("about-detail", kwargs={"pk": cls.about_id})
 
     def setUp(self) -> None:
@@ -78,7 +81,7 @@ class AboutListTest(BaseTestMock):
         about_data = response.data.get("about")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue("about" in about_data)
+        self.assertTrue("about" in response.data)
 
         self.assertTrue(self.mock_s3_handler.generate_presigned_url.called)
         self.assertEqual(response.data.get("presigned_url"), "mock_presigned_url")
@@ -100,15 +103,15 @@ class AboutDetailTest(BaseTestMock):
         response: Response = self.client.get(self.detail_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
         self.assertEqual(str(response.data["id"]), str(self.about_id))
-        self.assertEqual(response.data["title"], "Detail About")
+
+        self.assertEqual(response.data["title"], "Detail about")
 
     def test_put_about(self):
         self.client.login(username="testsuperuser", password="testpassword")
 
-        response: Response = self.client.put(
-            self.detail_url, self.about_data, format="json"
-        )
+        response = self.client.put(self.detail_url, self.about_data, format="json")
 
         self.assertPutAboutSuccess(response)
 
