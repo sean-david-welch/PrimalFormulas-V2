@@ -1,3 +1,4 @@
+from re import L
 from django.urls import reverse
 from rest_framework import status
 from unittest.mock import Mock, patch
@@ -34,7 +35,7 @@ class BaseTestMock(APITestCase):
             )
         )
         self.patcher = patch(
-            "primalformulas.images.S3ImageHandler", return_value=mock_s3_handler
+            "products.views.S3ImageHandler", return_value=mock_s3_handler
         )
         self.patcher.start()
         self.mock_s3_handler = mock_s3_handler
@@ -107,3 +108,7 @@ class ProductListTest(BaseTestMock):
             expected_status,
             msg=f"Expected status code {expected_status}, got {response.status_code}",
         )
+
+
+class ProductDetailTest(BaseTestMock):
+    pass
