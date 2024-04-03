@@ -30,4 +30,3 @@ export interface User {
   is_superuser: boolean;
   last_login: string;
 }
-

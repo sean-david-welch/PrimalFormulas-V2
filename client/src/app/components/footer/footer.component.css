@@ -1,0 +1,50 @@
+.footer {
+  @apply grid grid-cols-3 justify-items-center;
+  @apply py-10 px-5 z-20;
+  @apply bg-zinc-700 border-t-2 border-zinc-900;
+  @apply transition-all duration-700 ease-in-out;
+  @apply hover:border-yellow-500;
+}
+
+.footer-info {
+  @apply flex flex-col;
+}
+
+.address-list {
+  @apply my-2;
+}
+
+.address-list > * {
+  @apply my-2 text-xl;
+}
+
+.footer-links {
+  @apply flex flex-col;
+}
+
+.footer-links > :first-child {
+  @apply mx-auto;
+}
+
+.social-links {
+  @apply flex flex-row my-10;
+}
+
+.social-links > * {
+  @apply mx-4 p-2;
+  @apply border-4 border-zinc-200  rounded-lg;
+  @apply transition-all duration-700 ease-in-out;
+  @apply hover:text-yellow-500 hover:border-yellow-500 hover:scale-105;
+}
+
+.footer-nav {
+  @apply flex flex-col;
+}
+
+.footer-nav > * {
+  @apply my-2 mx-10;
+}
+
+.footer-nav.nav-button {
+  @apply w-[250px];
+}

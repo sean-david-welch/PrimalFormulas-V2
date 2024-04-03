@@ -1,0 +1,13 @@
+.nav-logo {
+  @apply cursor-pointer;
+}
+
+.logo-link {
+  @apply no-underline;
+  @apply hover:outline-none hover:decoration-inherit;
+}
+
+.logo {
+  @apply transition-all duration-700 ease-in-out;
+  @apply hover:scale-105;
+}

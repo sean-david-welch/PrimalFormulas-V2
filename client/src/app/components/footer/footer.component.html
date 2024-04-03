@@ -1,1 +1,30 @@
-<p>footer works!</p>
+<footer class="footer">
+    <div class="footer-info">
+        <h1 class="section-heading">Primal Formulas Ltd.</h1>
+        <ul class="address-list">
+            <li class="address-item">Clonross, Drumree</li>
+            <li class="address-item">Co. Meath,</li>
+            <li class="address-item">A85 PK30</li>
+            <li class="address-item">Tel: 01 - 8259289</li>
+            <li class="address-item">
+                Email: info&#64;primalformulas.ie
+            </li>
+        </ul>
+    </div>
+    <div class="footer-links">
+        <app-nav-logo class="footer-logo" [logoWidth]="150" [logoHeight]="150" />
+        <div class="social-links">
+            <fa-icon [icon]="facebook" class="icon" size="2x" />
+            <fa-icon [icon]="twitter" class="icon" size="2x" />
+            <fa-icon [icon]="youtube" class="icon" size="2x" />
+            <fa-icon [icon]="instagram" class="icon" size="2x" />
+        </div>
+    </div>
+    <div class="footer-nav">
+        <app-nav-button link="/about" text="About Us" iconName="bracket-right" />
+        <app-nav-button link="/products" text="Products" iconName="bracket-right" />
+        <app-nav-button link="/cart" text="Cart" iconName="bracket-right" />
+        <app-nav-button link="/account" text="Account" iconName="bracket-right" />
+    </div>
+    <app-to-top-button />
+</footer>

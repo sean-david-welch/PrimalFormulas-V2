@@ -1,0 +1,15 @@
+.to-top-button {
+  @apply fixed right-5 bottom-5 z-20;
+  @apply bg-zinc-900 rounded-full p-2;
+  @apply transition-all duration-500 ease-in-out;
+  @apply border-2 border-zinc-900 hover:border-yellow-600 hover:bg-zinc-800;
+}
+
+.to-top-button .to-top-icon {
+  @apply text-white;
+  @apply transition-all duration-500 ease-in-out;
+}
+
+.to-top-button:hover .to-top-icon {
+  @apply text-yellow-500;
+}
