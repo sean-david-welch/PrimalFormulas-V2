@@ -1,14 +1,14 @@
 <nav class="navbar {{ isHomePage ? 'navbar-transparent' : '' }}">
     <!-- <app-sidebar /> -->
     <div class="nav-list">
-        <!-- <app-nav-button link="/products" text="Products" iconName="bracket-right" /> -->
+        <app-nav-button link="/products" text="Products" iconName="bracket-right" />
         <div class="nav-links">
 
             <a routerLink="/cart" class="navbar-link">
-                <fa-icon [icon]="icon" iconName="cartShopping" class="icon" size="2x"></fa-icon>
+                <fa-icon [icon]="icon" iconName="cartShopping" class="icon" size="2x" />
             </a>
-            <a routerLink="/profile" class="navbar-link"> <fa-icon [icon]="icon"
-                    iconName="userCircle" class="icon" size="2x"></fa-icon>
+            <a routerLink="/profile" class="navbar-link">
+                <fa-icon [icon]="icon" iconName="userCircle" class="icon" size="2x" />
             </a>
         </div>
     </div>

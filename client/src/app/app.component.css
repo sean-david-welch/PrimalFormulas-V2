@@ -1,0 +1,3 @@
+.container {
+  @apply min-h-screen min-w-full;
+}

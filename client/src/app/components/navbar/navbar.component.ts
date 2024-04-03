@@ -6,11 +6,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { navbarLinkIcons } from './navbar.constants';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NavButtonComponent } from '../nav-button/nav-button.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [FontAwesomeModule],
+  imports: [FontAwesomeModule, NavButtonComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
