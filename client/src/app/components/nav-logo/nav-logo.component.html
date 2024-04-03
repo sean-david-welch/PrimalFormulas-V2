@@ -5,7 +5,7 @@
 <ng-container *ngIf="!isLoading">
     <div class="nav-logo">
         <a [routerLink]="['/']" class="logo-link">
-            <img [src]="data.content" [style.width.px]="logoWidth" [style.height.px]="logoHeight"
+            <img [src]="data?.content" [style.width.px]="logoWidth" [style.height.px]="logoHeight"
                 class="logo" alt="logo" />
         </a>
     </div>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, shareReplay, throwError } from 'rxjs';
+import { Observable, catchError, of, shareReplay, throwError } from 'rxjs';
 import { Asset } from '../../models/models';
 import { HttpClient } from '@angular/common/http';
 
@@ -11,13 +11,13 @@ export class AssetService {
     return `http://127.0.0.1:8000/assets/${name}`;
   }
 
-  private cache: Record<string, Observable<Asset>> = {};
+  private cache: Record<string, Observable<Asset | null>> = {};
 
   constructor(private http: HttpClient) {
     this.http = http;
   }
 
-  public fetchAsset(name: string): Observable<Asset> {
+  public fetchAsset(name: string): Observable<Asset | null> {
     if (this.cache[name]) {
       return this.cache[name];
     }
@@ -29,6 +29,10 @@ export class AssetService {
         return throwError(() => new Error('Fetch Failed', error));
       })
     ));
+
+    if (!asset) {
+      return of(null);
+    }
 
     return asset;
   }

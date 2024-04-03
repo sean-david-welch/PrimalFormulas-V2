@@ -15,7 +15,7 @@ export class NavLogoComponent {
   @Input() logoWidth?: number = 112;
   @Input() logoHeight?: number = 112;
 
-  data: Asset = {
+  data: Asset | null = {
     id: '',
     name: '',
     content: '',
