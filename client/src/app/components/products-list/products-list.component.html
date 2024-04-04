@@ -14,8 +14,8 @@
                 @for (product of products; track $index) {
                 <div class="product-card hidden" aria-hidden="true" appIntersection>
                     <h1>{{product.name}}</h1>
-                    <a [routerLink]="['/products', product.id]"><img src="{{product.image}}"
-                            alt="/assets/default.jpg"></a>
+                    <a [routerLink]="['/products', product.id]"><img src={{product.image}}
+                            alt="/assets/default.jpg" [alt]=""></a>
 
                     <h1>€{{product.price}}</h1>
                     <div class="buttons-grid">
