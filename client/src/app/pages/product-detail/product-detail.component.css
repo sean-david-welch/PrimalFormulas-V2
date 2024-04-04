@@ -1,0 +1,41 @@
+.product-section {
+    @apply flex flex-col mx-10 my-10 items-center;
+}
+
+.product-detail {
+    @apply flex flex-row;
+    @apply mx-32 my-2;
+    @apply bg-zinc-800 border-zinc-700 border-2 rounded-2xl;
+    @apply transition-all duration-700 ease-in-out;
+    @apply hover:border-yellow-500 hover:scale-105 hover:bg-zinc-900;
+}
+
+.product-detail img {
+    @apply rounded-l-2xl border-r-2 border-zinc-700 object-contain h-[500px];
+}
+
+.product-info {
+    @apply flex flex-col items-center mx-auto;
+    @apply p-4;
+}
+
+.product-info > * {
+    @apply my-2;
+}
+
+.product-info p {
+    @apply mx-14 text-center;
+}
+
+.input-nav {
+    @apply flex flex-col items-center w-4/5;
+    @apply py-5 border-t-2 border-b-2 border-yellow-500;
+}
+
+.input-nav label {
+    @apply text-2xl;
+}
+
+.input-nav input {
+    @apply w-[10rem] mx-auto my-2 bg-zinc-800 border-2 border-yellow-500 rounded-md text-center;
+}

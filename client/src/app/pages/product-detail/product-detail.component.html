@@ -1,1 +1,41 @@
-<p>product-detail works!</p>
+<section id="product-detail">
+    @if (isLoading) {
+    <app-loading-spinner />
+    } @else {
+    <ng-container>
+        <div class="product-section">
+
+            <div class="page-heading">
+                <h1 class="section-heading">{{product.name}}</h1>
+                <app-nav-button link="/products" text="View Other Formulas"
+                    iconName="arrow-right" />
+            </div>
+
+            <div class="product-detail">
+                <img src="{{product.image}}" alt="product-image" alt="image">
+                <div class="product-info">
+                    <h1 class="item-heading">Price: €{{product.price}}</h1>
+                    <p>{{product.description}}</p>
+                    <div class="input-nav">
+                        <label for="qauntity">Qauntity:</label>
+                        <input type="number" value="quantity"
+                            [attr.disabled]="isLoading ? true : null" [defaultValue]="0">
+                    </div>
+                    <div class="buttons-grid">
+                        <app-nav-button link="/" text="Buy Now" iconName="bracket-right" />
+                        <app-nav-button link="/" text="Add To Cart" iconName="cart-plus" />
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- <div class="buttons-grid" *isSuperUser="true">
+                    <app-product-form text="Update Product" mode="update" [selectedProduct]="product" />
+                    <app-delete-button text="Delete Product" [id]="product.id" endpoint="products"
+                        returnPath="/products" />
+                </div> -->
+
+        </div>
+    </ng-container>
+    }
+</section>

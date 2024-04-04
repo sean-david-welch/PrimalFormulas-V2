@@ -9,58 +9,57 @@ import { IntersectionDirective } from '../../lib/intersection.directive';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
-  selector: 'app-products-list',
-  standalone: true,
-  imports: [
-    LoadingSpinnerComponent,
-    NavButtonComponent,
-    RouterModule,
-    IntersectionDirective,
-    FontAwesomeModule,
-  ],
-  templateUrl: './products-list.component.html',
-  styleUrl: './products-list.component.css',
+    selector: 'app-products-list',
+    standalone: true,
+    imports: [
+        LoadingSpinnerComponent,
+        NavButtonComponent,
+        RouterModule,
+        IntersectionDirective,
+        FontAwesomeModule,
+    ],
+    templateUrl: './products-list.component.html',
+    styleUrl: './products-list.component.css',
 })
 export class ProductsListComponent implements OnInit, OnDestroy {
-  public loading: boolean = false;
-  public error: Error | null = null;
-  public products: Product[] = [];
+    public loading: boolean = false;
+    public error: Error | null = null;
+    public products: Product[] = [];
 
-  public getProductLink(id: string): string {
-    return `/products/${id}`;
-  }
+    public getProductLink(id: string): string {
+        return `/products/${id}`;
+    }
 
-  private productSubscription: Subscription = new Subscription();
+    private productSubscription: Subscription = new Subscription();
 
-  constructor(private productsService: ProductsService) {}
+    constructor(private productsService: ProductsService) {}
 
-  ngOnInit(): void {
-    this.getProducts();
-    this.productSubscription = this.productsService.productUpdate$.subscribe(
-      (newProduct) => {
-        if (newProduct) this.getProducts();
-      }
-    );
-  }
+    ngOnInit(): void {
+        this.getProducts();
+        this.productSubscription =
+            this.productsService.productUpdate$.subscribe((newProduct) => {
+                if (newProduct) this.getProducts();
+            });
+    }
 
-  ngOnDestroy(): void {
-    this.productSubscription.unsubscribe();
-  }
+    ngOnDestroy(): void {
+        this.productSubscription.unsubscribe();
+    }
 
-  private getProducts(): void {
-    this.loading = true;
-    this.error = null;
+    private getProducts(): void {
+        this.loading = true;
+        this.error = null;
 
-    this.productsService.fetchProducts().subscribe({
-      next: (response) => {
-        this.products = response;
-        this.loading = false;
-      },
-      error: (error: Error) => {
-        this.loading = false;
-        this.error = error;
-        console.log(error.message);
-      },
-    });
-  }
+        this.productsService.fetchProducts().subscribe({
+            next: (response) => {
+                this.products = response;
+                this.loading = false;
+            },
+            error: (error: Error) => {
+                this.loading = false;
+                this.error = error;
+                console.log(error.message);
+            },
+        });
+    }
 }
