@@ -1,1 +1,9 @@
-<p>dialog works!</p>
+<app-nav-button text={{text}} iconName="bracket-right" (onClick)="toggleDialog()" />
+
+<dialog #dialog class=" dialog">
+    <button class="dialog-btn" (click)="closeDialog()">
+        <fa-icon [icon]="faX" />
+    </button>
+
+    <ng-content></ng-content>
+</dialog>

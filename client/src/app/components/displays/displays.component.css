@@ -1,0 +1,64 @@
+.benefits-home {
+  @apply flex flex-col justify-center mx-auto items-center;
+  @apply my-16 mx-4 p-4;
+  @apply border-t-2 border-b-2 border-zinc-950;
+}
+
+.benefits-home h1 {
+  @apply my-6;
+}
+
+.benefits-list {
+  @apply grid grid-cols-4 gap-16 w-[90%];
+  @apply justify-items-center items-center;
+}
+
+.benefits-list:nth-child(2) {
+  animation-delay: 300ms;
+}
+
+.benefits-list:nth-child(3) {
+  animation-delay: 600ms;
+}
+
+.benefits-list:nth-child(4) {
+  animation-delay: 900ms;
+}
+
+/* Items */
+
+.benefits-list-item {
+  @apply p-2 my-2 mx-4 h-[40vh];
+  @apply flex flex-col mx-auto;
+  @apply border-2 rounded-xl border-zinc-950 bg-zinc-600;
+  @apply justify-center items-center text-center;
+  @apply transition-all duration-1000 ease-in-out;
+  @apply hover:bg-zinc-800 hover:border-yellow-500;
+}
+
+.benefits-list-item > * {
+  @apply my-2 cursor-default;
+  @apply transition-all duration-1000 ease-in-out;
+}
+
+.benefits-list-item h1 {
+  @apply text-zinc-900 text-xl font-medium;
+  @apply underline decoration-yellow-500 decoration-2 underline-offset-8;
+}
+
+.benefits-list-item p {
+  @apply text-zinc-900 text-lg;
+}
+
+.icon {
+  @apply text-zinc-200;
+}
+
+.benefits-list-item:hover h1,
+.benefits-list-item:hover p {
+  @apply text-zinc-300;
+}
+
+.benefits-list-item:hover .icon {
+  @apply text-yellow-500;
+}

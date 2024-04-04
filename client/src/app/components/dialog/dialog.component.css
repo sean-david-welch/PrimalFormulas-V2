@@ -1,0 +1,20 @@
+.dialog {
+  @apply w-[85vw] max-h-[70vh];
+  @apply fixed top-1/2 left-1/2 z-50;
+  @apply bg-zinc-900 text-gray-200 rounded-2xl shadow-lg;
+  @apply border-4 border-zinc-600;
+  @apply transform -translate-x-1/2 -translate-y-1/2;
+  @apply transition-all duration-700 ease-in-out;
+  @apply opacity-0;
+}
+
+.dialog-visible {
+  @apply opacity-100;
+}
+
+.dialog-btn {
+  @apply fixed top-5 left-5 cursor-pointer px-3 py-2;
+  @apply rounded-full bg-zinc-800 border-2 border-zinc-800;
+  @apply transition-all duration-300 ease-in-out z-30;
+  @apply hover:text-yellow-500 hover:scale-105;
+}

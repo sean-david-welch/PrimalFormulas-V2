@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
+import { NavigationStart, Router, RouterModule } from '@angular/router';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import {
   faCartShopping,
@@ -13,7 +13,12 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [FontAwesomeModule, NavButtonComponent, SidebarComponent],
+  imports: [
+    FontAwesomeModule,
+    NavButtonComponent,
+    SidebarComponent,
+    RouterModule,
+  ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })

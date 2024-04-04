@@ -1,1 +1,12 @@
-<p>displays works!</p>
+<div class="benefits-home">
+    <h1 class="section-heading">Benefits of Consistent Supplementation:</h1>
+    <ul class="benefits-list">
+        @for (item of benefits; track $index) {
+        <li class="benefits-list-item hidden" appIntersection>
+            <fa-icon [icon]="item.icon" size="4x" class="icon" />
+            <h1>{{ item.title }}</h1>
+            <p>{{ item.description }}</p>
+        </li>
+        }
+    </ul>
+</div>
