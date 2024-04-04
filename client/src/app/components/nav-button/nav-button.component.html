@@ -1,11 +1,15 @@
 <button class="nav-button" [attr.type]="buttonType" [attr.formmethod]="formMethod"
     (click)="onClick.emit()">
 
-    <a *if="link" class="nav-link" [routerLink]="[link]">
+    @if (link) {
+    <a class="nav-link" [routerLink]="[link]">
         {{ text }} <fa-icon [icon]="icon" class="icon" />
     </a>
-
-    <ng-container *if="!link">
+    } @else {
+    <ng-container>
         {{ text }} <fa-icon [icon]="icon" class="icon" />
     </ng-container>
+    }
+
+
 </button>
