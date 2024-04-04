@@ -1,1 +1,17 @@
-<p>about-form works!</p>
+<app-dialog text={{text}}>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form" method="dialog">
+        <app-nav-logo />
+
+        <div class="page-heading">
+            <h1 class="item-heading">About Form:</h1>
+        </div>
+
+        <input id="title" type="text" formControlName="title" placeholder="about title" />
+        <input id="description" formControlName="description" placeholder="about description" />
+        <input id="image" type="text" formControlName="image" placeholder="about image" />
+
+
+        <app-nav-button buttonType="submit" formMethod="dialog" text="Submit About"
+            iconName="arrow-right" />
+    </form>
+</app-dialog>

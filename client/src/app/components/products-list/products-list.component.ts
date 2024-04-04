@@ -7,6 +7,7 @@ import { NavButtonComponent } from '../nav-button/nav-button.component';
 import { RouterModule } from '@angular/router';
 import { IntersectionDirective } from '../../lib/intersection.directive';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ProductFormComponent } from '../../forms/product-form/product-form.component';
 
 @Component({
     selector: 'app-products-list',
@@ -17,6 +18,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         RouterModule,
         IntersectionDirective,
         FontAwesomeModule,
+        ProductFormComponent,
     ],
     templateUrl: './products-list.component.html',
     styleUrl: './products-list.component.css',

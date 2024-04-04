@@ -1,1 +1,16 @@
-<p>asset-form works!</p>
+<app-dialog text={{text}}>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form" method="dialog">
+        <app-nav-logo />
+
+        <div class="page-heading">
+            <h1 class="item-heading">Asset Form:</h1>
+        </div>
+
+        <input id="name" type="text" formControlName="name" placeholder="asset name" />
+        <input id="content" type="text" formControlName="content" placeholder="asset content" />
+
+
+        <app-nav-button buttonType="submit" formMethod="dialog" text="Submit Asset"
+            iconName="arrow-right" />
+    </form>
+</app-dialog>

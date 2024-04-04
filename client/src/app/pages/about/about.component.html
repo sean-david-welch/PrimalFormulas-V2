@@ -17,17 +17,19 @@
                 <div class="about-info">
                     <h1 class="item-heading">{{ about.title }}:</h1>
                     <p>{{ about.description }}</p>
-                    <div class="buttons-grid" *isSuperUser>
-                        <!-- <app-about-form text="Update Item" mode="update" [selectedModel]="about" />
-                            <app-delete-button text="Delete Item" [id]="about.id" endpoint="about"
-                                returnPath="/about" /> -->
+
+                    <!-- @if (superuser) {} -->
+                    <div class="buttons-grid">
+                        <app-about-form text="Update Item" mode="update" [selectedAbout]="about" />
+                        <app-delete-button text="Delete Item" [id]="about.id" endpoint="about"
+                            returnPath="/about" />
                     </div>
                 </div>
                 <img [src]="about.image" alt="{{ about.title }}" class="about-image">
             </div>
 
             }
-            <!-- <app-about-form text="About Form" mode="create" *isSuperUser /> -->
+            <app-about-form text="About Form" mode="create" *isSuperUser />
         </div>
     </ng-container>
     }
