@@ -39,7 +39,10 @@ export class ProductsService {
     return this.http.get<Product>(url).pipe(catchError(this.handleError));
   }
 
-  public mutateProduct(product: Product, id?: string): Observable<Product> {
+  public mutateProduct(
+    product: Partial<Product>,
+    id?: string
+  ): Observable<Product> {
     if (id) {
       const url = this.constructUrl(id);
 

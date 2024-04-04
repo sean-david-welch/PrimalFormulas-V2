@@ -28,7 +28,7 @@ export class HeroComponent {
     this.error = null;
 
     this.assetService
-      .fetchAsset('Hero')
+      .fetchAssetByName('Hero')
       .pipe(
         catchError((err: Error) => {
           this.error = 'Error loading asset';

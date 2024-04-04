@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, of, shareReplay, throwError } from 'rxjs';
+import { Observable, catchError, shareReplay, throwError } from 'rxjs';
 import { Asset } from '../../models/models';
 import { HttpClient } from '@angular/common/http';
 
@@ -7,33 +7,63 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AssetService {
-  private constructUrl(name: string): string {
-    return `http://127.0.0.1:8000/assets/${name}`;
-  }
-
   private cache: Record<string, Observable<Asset | null>> = {};
 
   constructor(private http: HttpClient) {
     this.http = http;
   }
 
-  public fetchAsset(name: string): Observable<Asset | null> {
+  private constructUrl(name?: string): string {
+    return name
+      ? `http://127.0.0.1:8000/assets/${name}`
+      : 'http://127.0.0.1:8000/assets/';
+  }
+
+  private handleError(error: Error) {
+    console.log('An error occurred', error.message);
+    return throwError(() => new Error('An error occurred', error));
+  }
+
+  public fetchAssets(): Observable<Asset[]> {
+    const url = this.constructUrl();
+
+    return this.http.get<Asset[]>(url).pipe(catchError(this.handleError));
+  }
+
+  public fetchAssetByName(name: string): Observable<Asset | null> {
     if (this.cache[name]) {
       return this.cache[name];
     }
     const url = this.constructUrl(name);
 
-    const asset = (this.cache[name] = this.http.get<Asset>(url).pipe(
-      shareReplay(1),
-      catchError((error) => {
-        return throwError(() => new Error('Fetch Failed', error));
-      })
-    ));
-
-    if (!asset) {
-      return of(null);
-    }
+    const asset = (this.cache[name] = this.http
+      .get<Asset>(url)
+      .pipe(shareReplay(1), catchError(this.handleError)));
 
     return asset;
+  }
+
+  public mutateAsset(asset: Partial<Asset>, name?: string): Observable<Asset> {
+    if (name) {
+      const url = this.constructUrl(name);
+
+      return this.http
+        .put<Asset>(url, asset, { withCredentials: true })
+        .pipe(catchError(this.handleError));
+    } else {
+      const url = this.constructUrl();
+
+      return this.http
+        .post<Asset>(url, asset, { withCredentials: true })
+        .pipe(catchError(this.handleError));
+    }
+  }
+
+  public deleteAsset(name: string): Observable<Asset> {
+    const url = this.constructUrl(name);
+
+    return this.http
+      .delete<Asset>(url, { withCredentials: true })
+      .pipe(catchError(this.handleError));
   }
 }

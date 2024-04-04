@@ -28,7 +28,7 @@ export class NavLogoComponent {
     this.error = null;
 
     this.assetService
-      .fetchAsset('Logo')
+      .fetchAssetByName('Logo')
       .pipe(
         catchError((err) => {
           this.error = 'Error loading asset';
