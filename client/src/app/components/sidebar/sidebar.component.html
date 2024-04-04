@@ -1,1 +1,43 @@
-<p>sidebar works!</p>
+<div [ngClass]="{'open': (open$ | async)}" class="sidebar">
+
+    <div class="sidebar-icon-open">
+        <fa-icon [icon]="faX" class="navigation" size="2x" (click)="toggleSidebar()" />
+        <app-nav-logo />
+    </div>
+
+    <nav class="sidebar-menu">
+        <h1 class="section-heading"> <a [routerLink]="['/']">Primal Formulas</a></h1>
+
+        <ul class="sidebar-list">
+            <li class="sidebar-list-item"><a [routerLink]="['/about']" (click)="toggleSidebar()">Our
+                    Story</a>
+            </li>
+            <li class="sidebar-list-item"><a [routerLink]="['/products']"
+                    (click)="toggleSidebar()">Products</a>
+            </li>
+            <li class="sidebar-list-item"><a [routerLink]="['/account']"
+                    (click)="toggleSidebar()">Account</a>
+            </li>
+        </ul>
+        <div class="sidebar-nav">
+            <div class="icon-link">
+                <a routerLink="/account">
+                    <fa-icon [icon]="faUserCircle" class="icon" size="2x"
+                        (click)="toggleSidebar()" />
+                </a>
+            </div>
+
+            <div class="icon-link">
+                <a routerLink="/cart">
+                    <fa-icon [icon]="faShopping" class="icon" size="2x" (click)="toggleSidebar()" />
+                </a>
+            </div>
+        </div>
+    </nav>
+
+</div>
+
+<div class="sidebar-icon">
+    <fa-icon [icon]="faBars" class="navigation" size="2x" (click)="toggleSidebar()" />
+    <app-nav-logo />
+</div>
