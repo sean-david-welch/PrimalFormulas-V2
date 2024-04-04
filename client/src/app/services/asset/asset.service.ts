@@ -24,7 +24,7 @@ export class AssetService {
 
   private constructUrl(name?: string): string {
     return name
-      ? `http://127.0.0.1:8000/api/assets/${name}`
+      ? `http://127.0.0.1:8000/api/assets/${name}/`
       : 'http://127.0.0.1:8000/api/assets/';
   }
 
