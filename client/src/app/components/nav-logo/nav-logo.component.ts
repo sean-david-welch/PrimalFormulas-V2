@@ -1,9 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Asset } from '../../models/models';
 import { AssetService } from '../../services/asset/asset.service';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { catchError, finalize, of, switchMap, tap } from 'rxjs';
+import { RouterModule } from '@angular/router';
+import { catchError, finalize, of } from 'rxjs';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 @Component({
@@ -18,7 +17,7 @@ export class NavLogoComponent {
   data: Asset | null = null;
   error: string | null = null;
 
-  constructor(private assetService: AssetService, private router: Router) {}
+  constructor(private assetService: AssetService) {}
 
   ngOnInit(): void {
     this.loadAsset();

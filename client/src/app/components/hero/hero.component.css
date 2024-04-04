@@ -1,0 +1,25 @@
+.hero {
+  @apply min-w-full h-screen;
+}
+
+.hero video {
+  @apply w-screen h-full object-cover;
+}
+
+/* overlay */
+.overlay {
+  @apply absolute inset-0 z-10;
+  @apply flex flex-col items-center justify-center;
+}
+
+.overlay > * {
+  @apply my-2;
+}
+
+.overlay-heading {
+  @apply text-6xl text-white font-light;
+}
+
+.overlay-subheading {
+  @apply text-4xl text-white font-light;
+}

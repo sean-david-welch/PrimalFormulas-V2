@@ -1,1 +1,19 @@
-<p>hero works!</p>
+<section id="hero-section">
+
+    <div class="overlay">
+        <h1 class="overlay-heading">The Foundation for health & performance</h1>
+        <p class="overlay-subheading">Reach your wellness potential with our comprehensive formulas
+        </p>
+        <app-nav-button link="/products" text="Shop Primal Formulas" iconName="arrow-right" />
+    </div>
+
+    <div class="hero">
+        @if (loading) {
+        <app-loading-spinner />
+        } @else if (data?.content) {
+        <video [src]="data?.content" autoplay loop playsInline preload="auto"></video>
+        }
+
+    </div>
+
+</section>
