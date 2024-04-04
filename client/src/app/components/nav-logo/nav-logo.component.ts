@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Asset } from '../../models/models';
 import { AssetService } from '../../services/asset/asset.service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
@@ -9,7 +9,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 @Component({
   selector: 'app-nav-logo',
   standalone: true,
-  imports: [RouterModule, LoadingSpinnerComponent, CommonModule],
+  imports: [LoadingSpinnerComponent, RouterModule],
   templateUrl: './nav-logo.component.html',
   styleUrl: './nav-logo.component.css',
 })
@@ -18,7 +18,7 @@ export class NavLogoComponent {
   data: Asset | null = null;
   error: string | null = null;
 
-  constructor(private assetService: AssetService) {}
+  constructor(private assetService: AssetService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadAsset();

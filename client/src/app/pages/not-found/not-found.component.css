@@ -1,0 +1,11 @@
+.not-found {
+  @apply flex flex-col items-center;
+  @apply my-20 mx-32 p-20;
+  @apply bg-zinc-700 rounded-2xl border-4 border-zinc-600;
+  @apply transition-all duration-700 ease-in-out;
+  @apply hover:border-yellow-500 hover:bg-zinc-800;
+}
+
+.not-found > * {
+  @apply my-5;
+}
