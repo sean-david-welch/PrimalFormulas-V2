@@ -1,1 +1,18 @@
-<p>product-form works!</p>
+<app-dialog text={{text}}>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form" method="dialog">
+        <app-nav-logo />
+
+        <div class="page-heading">
+            <h1 class="item-heading">Product Form:</h1>
+        </div>
+
+        <input id="name" type="text" formControlName="name" placeholder="product name" />
+        <input id="description" formControlName="description" placeholder="product description" />
+        <input id="price" type="number" formControlName="price" placeholder="product price" />
+        <input id="image" type="text" formControlName="image" placeholder="product image" />
+
+
+        <app-nav-button buttonType="submit" formMethod="dialog" text="Submit Product"
+            iconName="arrow-right" />
+    </form>
+</app-dialog>
