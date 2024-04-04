@@ -26,7 +26,7 @@ export class NavLogoComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.assetService.fetchAssetByName('Logo').subscribe({
+    this.assetService.fetchAssetByName('logo-small').subscribe({
       next: (response) => {
         this.data = response;
         this.isLoading = false;

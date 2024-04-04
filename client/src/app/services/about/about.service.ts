@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AboutService {
   private aboutUpdate = new BehaviorSubject<About | null>(null);
-  private aboutUpdate$ = this.aboutUpdate.asObservable();
+  public aboutUpdate$ = this.aboutUpdate.asObservable();
 
   constructor(private http: HttpClient) {
     this.http = http;

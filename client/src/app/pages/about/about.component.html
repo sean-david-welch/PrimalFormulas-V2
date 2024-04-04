@@ -1,1 +1,26 @@
-<p>about works!</p>
+<section id="about">
+    <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+
+    <div class="about" *ngIf="!isLoading">
+        <div class="page-heading">
+            <h1 class="section-heading">Company Values & History:</h1>
+            <app-nav-button link="/products" text="Shop Primal Formulas" iconName="arrow-right" />
+        </div>
+
+        <div *ngFor="let item of abouts" class="about-card">
+            <div class="about-info">
+                <h1 class="item-heading">{{ item.title }}:</h1>
+                <p>{{ item.description }}</p>
+                <div class="buttons-grid" *isSuperUser>
+                    <!-- <app-about-form text="Update Item" mode="update" [selectedModel]="item" />
+                    <app-delete-button text="Delete Item" [id]="item.id" endpoint="about"
+                        returnPath="/about" /> -->
+                </div>
+            </div>
+            <img [src]="item.image" alt="{{ item.title }}" class="about-image">
+        </div>
+
+        <!-- <app-about-form text="About Form" mode="create" *isSuperUser /> -->
+    </div>
+</section>

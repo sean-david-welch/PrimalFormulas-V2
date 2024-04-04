@@ -51,7 +51,7 @@ export class AssetService {
 
     const asset = (this.cache[name] = this.http
       .get<Asset>(url)
-      .pipe(shareReplay(1), catchError(this.handleError)));
+      .pipe(catchError(this.handleError)));
 
     return asset;
   }
