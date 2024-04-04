@@ -5,18 +5,26 @@ import { Product } from '../../models/models';
 import { ProductsService } from '../../services/products/products.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ProductFormComponent } from '../../forms/product-form/product-form.component';
+import { DeleteButtonComponent } from '../../components/delete-button/delete-button.component';
 
 @Component({
     selector: 'app-product-detail',
     standalone: true,
-    imports: [LoadingSpinnerComponent, NavButtonComponent, CommonModule],
+    imports: [
+        LoadingSpinnerComponent,
+        NavButtonComponent,
+        CommonModule,
+        ProductFormComponent,
+        DeleteButtonComponent,
+    ],
     templateUrl: './product-detail.component.html',
     styleUrl: './product-detail.component.css',
 })
 export class ProductDetailComponent implements OnInit {
     public isLoading: boolean = false;
     public error: Error | null = null;
-    public product: Partial<Product> = {};
+    public product: Product | undefined;
 
     constructor(
         private productService: ProductsService,

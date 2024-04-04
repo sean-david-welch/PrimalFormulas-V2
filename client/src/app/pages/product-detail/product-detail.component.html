@@ -1,7 +1,7 @@
 <section id="product-detail">
     @if (isLoading) {
     <app-loading-spinner />
-    } @else {
+    } @else if (product) {
     <ng-container>
         <div class="product-section">
 
@@ -29,11 +29,13 @@
 
             </div>
 
-            <!-- <div class="buttons-grid" *isSuperUser="true">
-                    <app-product-form text="Update Product" mode="update" [selectedProduct]="product" />
-                    <app-delete-button text="Delete Product" [id]="product.id" endpoint="products"
-                        returnPath="/products" />
-                </div> -->
+
+            <!-- @if (isSupperuser == true) {} -->
+            <div class="buttons-grid">
+                <app-product-form text="Update Product" mode="update" [selectedProduct]="product" />
+                <app-delete-button text="Delete Product" [id]="product.id" endpoint="products"
+                    returnPath="/products" />
+            </div>
 
         </div>
     </ng-container>
