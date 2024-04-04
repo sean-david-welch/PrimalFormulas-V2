@@ -1,12 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, shareReplay, throwError } from 'rxjs';
-import { Asset } from '../../models/models';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  shareReplay,
+  throwError,
+} from 'rxjs';
+import { Asset, MutationResponse } from '../../models/models';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AssetService {
+  private assetUpdate = new BehaviorSubject<Asset | null>(null);
+  public assetUpdate$ = this.assetUpdate.asObservable();
+
   private cache: Record<string, Observable<Asset | null>> = {};
 
   constructor(private http: HttpClient) {
@@ -22,6 +31,10 @@ export class AssetService {
   private handleError(error: Error) {
     console.log('An error occurred', error.message);
     return throwError(() => new Error('An error occurred', error));
+  }
+
+  public notifyAssetAdded(asset: Asset): void {
+    this.assetUpdate.next(asset);
   }
 
   public fetchAssets(): Observable<Asset[]> {
@@ -43,18 +56,21 @@ export class AssetService {
     return asset;
   }
 
-  public mutateAsset(asset: Partial<Asset>, name?: string): Observable<Asset> {
+  public mutateAsset(
+    asset: Partial<Asset>,
+    name?: string
+  ): Observable<MutationResponse<Asset>> {
     if (name) {
       const url = this.constructUrl(name);
 
       return this.http
-        .put<Asset>(url, asset, { withCredentials: true })
+        .put<MutationResponse<Asset>>(url, asset, { withCredentials: true })
         .pipe(catchError(this.handleError));
     } else {
       const url = this.constructUrl();
 
       return this.http
-        .post<Asset>(url, asset, { withCredentials: true })
+        .post<MutationResponse<Asset>>(url, asset, { withCredentials: true })
         .pipe(catchError(this.handleError));
     }
   }

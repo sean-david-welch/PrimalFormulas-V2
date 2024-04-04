@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
-import { Product } from '../../models/models';
+import { Product, MutationResponse } from '../../models/models';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -14,8 +14,8 @@ export class ProductsService {
 
   private constructUrl(params?: string): string {
     return params
-      ? 'http://127.0.0.1:8000/products/'
-      : `http://127.0.0.1:8000/products/${params}`;
+      ? `http://127.0.0.1:8000/products/${params}`
+      : 'http://127.0.0.1:8000/products/';
   }
 
   private handleError(error: Error) {
@@ -42,18 +42,20 @@ export class ProductsService {
   public mutateProduct(
     product: Partial<Product>,
     id?: string
-  ): Observable<Product> {
+  ): Observable<MutationResponse<Product>> {
     if (id) {
       const url = this.constructUrl(id);
 
       return this.http
-        .put<Product>(url, product, { withCredentials: true })
+        .put<MutationResponse<Product>>(url, product, { withCredentials: true })
         .pipe(catchError(this.handleError));
     } else {
       const url = this.constructUrl();
 
       return this.http
-        .post<Product>(url, product, { withCredentials: true })
+        .post<MutationResponse<Product>>(url, product, {
+          withCredentials: true,
+        })
         .pipe(catchError(this.handleError));
     }
   }
