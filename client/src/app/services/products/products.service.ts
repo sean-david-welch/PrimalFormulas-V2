@@ -14,8 +14,8 @@ export class ProductsService {
 
   private constructUrl(params?: string): string {
     return params
-      ? `http://127.0.0.1:8000/products/${params}`
-      : 'http://127.0.0.1:8000/products/';
+      ? `http://127.0.0.1:8000/api/products/${params}`
+      : 'http://127.0.0.1:8000/api/products/';
   }
 
   private handleError(error: Error) {

@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Asset } from '../../models/models';
 import { AssetService } from '../../services/asset/asset.service';
 import { RouterModule } from '@angular/router';
-import { catchError, finalize, of } from 'rxjs';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 @Component({
@@ -12,10 +11,10 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
   templateUrl: './nav-logo.component.html',
   styleUrl: './nav-logo.component.css',
 })
-export class NavLogoComponent {
+export class NavLogoComponent implements OnInit {
   isLoading = false;
   data: Asset | null = null;
-  error: string | null = null;
+  error: Error | string | null = null;
 
   constructor(private assetService: AssetService) {}
 
@@ -27,16 +26,17 @@ export class NavLogoComponent {
     this.isLoading = true;
     this.error = null;
 
-    this.assetService
-      .fetchAssetByName('Logo')
-      .pipe(
-        catchError((err) => {
-          this.error = 'Error loading asset';
-          return of(null);
-        }),
-        finalize(() => (this.isLoading = false))
-      )
-      .subscribe((data) => (this.data = data));
+    this.assetService.fetchAssetByName('Logo').subscribe({
+      next: (response) => {
+        this.data = response;
+        this.isLoading = false;
+      },
+      error: (error: Error) => {
+        this.isLoading = false;
+        this.error = error;
+        console.log(error.message);
+      },
+    });
   }
 
   @Input() logoWidth?: number = 112;

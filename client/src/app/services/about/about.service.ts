@@ -16,8 +16,8 @@ export class AboutService {
 
   private constructUrl(params?: string): string {
     return params
-      ? `http://127.0.0.1:8000/about/${params}`
-      : 'http://127.0.0.1:8000/about/';
+      ? `http://127.0.0.1:8000/api/about/${params}`
+      : 'http://127.0.0.1:8000/api/about/';
   }
 
   private handleError(error: Error) {
