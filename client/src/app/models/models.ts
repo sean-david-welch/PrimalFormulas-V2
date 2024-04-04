@@ -36,3 +36,8 @@ export interface MutationResponse<T> {
     image: string;
     presigned_url: string;
 }
+
+export interface ImageData {
+    imageFile: File;
+    presignedUrl: string;
+}

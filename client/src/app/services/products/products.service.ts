@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 import { Product, MutationResponse } from '../../models/models';
 import { HttpClient } from '@angular/common/http';
+import { UploadsService } from '../../../services/uploads/uploads.service';
 
 @Injectable({
     providedIn: 'root',
@@ -10,7 +11,10 @@ export class ProductsService {
     private productUpdate = new BehaviorSubject<Product | null>(null);
     public productUpdate$ = this.productUpdate.asObservable();
 
-    constructor(private http: HttpClient) {}
+    constructor(
+        private http: HttpClient,
+        private uploadService: UploadsService
+    ) {}
 
     private constructUrl(params?: string): string {
         return params
