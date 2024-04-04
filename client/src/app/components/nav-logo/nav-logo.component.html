@@ -1,8 +1,5 @@
-<ng-container *ngIf="isLoading">
-    <p>Loading...</p>
-</ng-container>
-
-<ng-container *ngIf="!isLoading">
+@if (!isLoading) {
+<ng-container>
     <div class="nav-logo">
         <a [routerLink]="['/']" class="logo-link">
             <img [src]="data?.content" [style.width.px]="logoWidth" [style.height.px]="logoHeight"
@@ -10,3 +7,6 @@
         </a>
     </div>
 </ng-container>
+} @else {
+<app-loading-spinner />
+}
