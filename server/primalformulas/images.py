@@ -1,9 +1,12 @@
-import mimetypes
+import logging
 import boto3
+import mimetypes
 
 from django.conf import settings
 from urllib.parse import urlparse
 from botocore.exceptions import ClientError
+
+logger = logging.getLogger()
 
 
 class S3ImageHandler:
@@ -45,7 +48,12 @@ class S3ImageHandler:
         try:
             parsed_url = urlparse(image_url)
             image_key = parsed_url.path.lstrip("/")
+            print(
+                f"Attempting to delete image from S3 with URL: {image_url} and Key: {image_key}"
+            )
+
             self.s3_client.delete_object(Bucket=self.bucket_name, Key=image_key)
+            print("Successfully deleted object from S3.")
         except ClientError as error:
             print(f"Error deleting object from S3: {error}")
             return False

@@ -5,12 +5,20 @@ from products.models import Product
 
 
 class CartItemSerializer(serializers.Serializer):
-    product_id = serializers.UUIDField()
-    product_name = serializers.StringRelatedField()
-    product_description = serializers.StringRelatedField()
-    product_price = serializers.DecimalField(max_digits=10, decimal_places=2)
-    product_image = serializers.StringRelatedField()
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     quantity = serializers.IntegerField(min_value=1)
+
+    def get_product_name(self, obj):
+        return obj.product.name
+
+    def get_product_description(self, obj):
+        return obj.product.description
+
+    def get_product_price(self, obj):
+        return obj.product.price
+
+    def get_product_image(self, obj):
+        return obj.product.image.url
 
     def validate_product_id(self, pk: str) -> bool:
         try:

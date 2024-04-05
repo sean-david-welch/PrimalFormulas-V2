@@ -1,1 +1,40 @@
-<p>cart works!</p>
+<section id="cart">
+    <div class="page-heading">
+        <h1 class="section-heading">Shopping Cart:</h1>
+        <app-nav-button link="/products" text="Continue Shopping" iconName="bracket-right" />
+    </div>
+
+    @if (cartItems) {
+    <div class="cart">
+        <h1 class="item-heading">Cart Items:</h1>
+
+        @for (item of cartItems; track item.product.id) {
+        <div class="cart-item">
+            <a [routerLink]="['/products', item.product.id]"><img src="{{item.product.image}}"
+                    alt="product-image"></a>
+            <div class="cart-item-info">
+                <h1 class="item-heading">{{ item.product.name }}: €{{ item.product.price }}</h1>
+
+                <div class="input-nav">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" appCart [updateQuantity]="item.product.id"
+                        [value]="item.quantity">
+
+                </div>
+
+                <button class="btn" (click)="removeItem(item.product.id)">
+                    Remove Item <fa-icon [icon]="faTrash" />
+                </button>
+            </div>
+        </div>
+
+        <div class="checkout">
+            <h1 class="item-heading">Total: €{{getTotalPrice()}}</h1>
+            <app-nav-button link="/shipping" text="Checkout" iconName="bracket-right" />
+        </div>
+        }
+
+    </div>
+    }
+
+</section>
