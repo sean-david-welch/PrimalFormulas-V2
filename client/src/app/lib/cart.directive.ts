@@ -1,5 +1,6 @@
 import { Directive, HostListener, Input } from '@angular/core';
 import { CartService } from '../services/cart/cart.service';
+import { Product } from '../models/models';
 
 @Directive({
     selector: '[appCart]',

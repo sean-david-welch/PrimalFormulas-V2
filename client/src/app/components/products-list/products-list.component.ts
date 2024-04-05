@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { IntersectionDirective } from '../../lib/intersection.directive';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ProductFormComponent } from '../../forms/product-form/product-form.component';
+import { AddToCartDirective } from '../../lib/add-to-cart.directive';
 
 @Component({
     selector: 'app-products-list',
@@ -19,6 +20,7 @@ import { ProductFormComponent } from '../../forms/product-form/product-form.comp
         IntersectionDirective,
         FontAwesomeModule,
         ProductFormComponent,
+        AddToCartDirective,
     ],
     templateUrl: './products-list.component.html',
     styleUrl: './products-list.component.css',
