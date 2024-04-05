@@ -9,7 +9,9 @@
         <input id="name" type="text" formControlName="name" placeholder="product name" />
         <input id="description" formControlName="description" placeholder="product description" />
         <input id="price" type="number" formControlName="price" placeholder="product price" />
-        <input id="image" type="text" formControlName="image" placeholder="product image" />
+        <input id="image" type="file" (change)="onFileSelected($event)"
+            placeholder="product image" />
+
 
 
         <app-nav-button buttonType="submit" formMethod="dialog" text="Submit Product"

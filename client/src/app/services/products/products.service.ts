@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
+import {
+    BehaviorSubject,
+    Observable,
+    catchError,
+    firstValueFrom,
+    map,
+    of,
+    switchMap,
+    throwError,
+} from 'rxjs';
 import { Product, MutationResponse } from '../../models/models';
 import { HttpClient } from '@angular/common/http';
 import { UploadsService } from '../../../services/uploads/uploads.service';
@@ -45,25 +54,49 @@ export class ProductsService {
 
     public mutateProduct(
         product: Partial<Product>,
+        imageData?: { imageFile: File },
         id?: string
     ): Observable<MutationResponse<Product>> {
-        if (id) {
-            const url = this.constructUrl(id);
+        const mutationObservable = id
+            ? this.http.put<MutationResponse<Product>>(
+                  this.constructUrl(id),
+                  product,
+                  {
+                      withCredentials: true,
+                  }
+              )
+            : this.http.post<MutationResponse<Product>>(
+                  this.constructUrl(),
+                  product,
+                  {
+                      withCredentials: true,
+                  }
+              );
 
-            return this.http
-                .put<MutationResponse<Product>>(url, product, {
-                    withCredentials: true,
-                })
-                .pipe(catchError(this.handleError));
-        } else {
-            const url = this.constructUrl();
-
-            return this.http
-                .post<MutationResponse<Product>>(url, product, {
-                    withCredentials: true,
-                })
-                .pipe(catchError(this.handleError));
-        }
+        return mutationObservable.pipe(
+            switchMap((response) => {
+                if (imageData && response.presigned_url) {
+                    return this.uploadService
+                        .uploadImage({
+                            imageFile: imageData.imageFile,
+                            presignedUrl: response.presigned_url,
+                        })
+                        .pipe(
+                            map((uploadResponse) => {
+                                return {
+                                    ...response,
+                                    uploadResponse,
+                                };
+                            })
+                        );
+                } else {
+                    if (!response.presigned_url) {
+                    }
+                    return of(response);
+                }
+            }),
+            catchError(this.handleError)
+        );
     }
 
     public deleteProduct(id: string): Observable<Product> {

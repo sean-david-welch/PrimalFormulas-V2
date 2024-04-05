@@ -15,7 +15,7 @@ from primalformulas.images import S3ImageHandler
 
 
 class ProductList(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request: Request) -> Response:
         products = Product.objects.all()
@@ -25,6 +25,7 @@ class ProductList(APIView):
 
     def post(self, request: Request) -> Response:
         serializer = ProductSerializer(data=request.data)
+        print("request data: ", request.data)
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -47,14 +48,16 @@ class ProductList(APIView):
                 "image": image_url,
                 "presigned_url": presigned_url,
             }
+            print("response data with image", response_data)
         else:
             response_data = {"product": serializer.data}
+            print("response data without image", response_data)
 
         return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class ProductDetail(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
         super().setup(request, *args, **kwargs)

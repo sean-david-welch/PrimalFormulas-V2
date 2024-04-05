@@ -30,7 +30,8 @@
                 }
             </div>
 
-            <app-product-form text="Product Form" mode="create" *isSuperUser />
+            <!-- @if (superuser) {} -->
+            <app-product-form text="Product Form" mode="create" />
         </div>
     </ng-container>
     }

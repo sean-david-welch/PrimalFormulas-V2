@@ -29,6 +29,7 @@ export class ProductFormComponent implements OnChanges {
     @Input() selectedProduct?: Product;
 
     public form: FormGroup;
+    public selectedFile: File | null = null;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -38,7 +39,6 @@ export class ProductFormComponent implements OnChanges {
             name: ['', Validators.required],
             description: ['', Validators.required],
             price: ['', Validators.required],
-            image: ['', Validators.required],
         });
     }
 
@@ -48,13 +48,22 @@ export class ProductFormComponent implements OnChanges {
 
     private handleProduct(
         action: 'create' | 'update',
-        product: Product,
+        product: Partial<Product>,
         id?: string
     ): void {
+        const imageData = this.selectedFile
+            ? { imageFile: this.selectedFile }
+            : undefined;
+
+        const productData = {
+            ...product,
+            image: this.selectedFile ? this.selectedFile.name : undefined,
+        };
+
         const apiCall =
             id && action === 'update'
-                ? this.productService.mutateProduct(product, id)
-                : this.productService.mutateProduct(product);
+                ? this.productService.mutateProduct(productData, imageData, id)
+                : this.productService.mutateProduct(productData, imageData);
 
         apiCall.subscribe({
             next: (reponse: MutationResponse<Product>) => {
@@ -67,12 +76,23 @@ export class ProductFormComponent implements OnChanges {
         });
     }
 
+    onFileSelected(event: Event): void {
+        const element = event.currentTarget as HTMLInputElement;
+        let fileList: FileList | null = element.files;
+        if (fileList && fileList.length > 0) {
+            this.selectedFile = fileList.item(0);
+        } else {
+            this.selectedFile = null;
+        }
+    }
+
     public onSubmit(): void {
         if (this.form.invalid) {
             alert('Form is not valid');
+            return;
         }
 
-        const product: Product = this.form.getRawValue();
+        const product: Partial<Product> = this.form.value;
 
         if (this.mode === 'update' && product.id) {
             this.handleProduct('update', product, product.id);

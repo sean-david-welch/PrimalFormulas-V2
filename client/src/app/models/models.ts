@@ -3,7 +3,7 @@ export interface Product {
     name: string;
     description: string;
     price: number;
-    image: string;
+    image: string | File | undefined;
     created: string;
 }
 
@@ -11,14 +11,14 @@ export interface About {
     id: string;
     title: string;
     description: string;
-    image: string;
+    image: string | File | undefined;
     created: string;
 }
 
 export interface Asset {
     id: string;
     name: string;
-    content: string;
+    content: string | File | undefined;
     created: string;
 }
 

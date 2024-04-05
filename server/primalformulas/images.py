@@ -1,3 +1,4 @@
+import mimetypes
 import boto3
 
 from django.conf import settings
@@ -16,7 +17,11 @@ class S3ImageHandler:
         )
 
     def generate_presigned_url(self, folder: str, image: str) -> tuple:
-        cloudfront_name = "www.primalformulas.ie"
+        content_type, _ = mimetypes.guess_type(image)
+        if content_type is None:
+            content_type = "application/octet-stream"
+
+        cloudfront_name = "s3.eu-west-1.amazonaws.com/primalformulas.ie"
 
         image_key = f"images/{folder}/{image}"
         image_url = f"https://{cloudfront_name}/{image_key}"
@@ -24,8 +29,12 @@ class S3ImageHandler:
         try:
             presigned_url = self.s3_client.generate_presigned_url(
                 "put_object",
-                Params={"Bucket": self.bucket_name, "Key": image_key},
-                ExpiresIn=300,
+                Params={
+                    "Bucket": self.bucket_name,
+                    "Key": image_key,
+                    "ContentType": content_type,
+                },
+                ExpiresIn=3000,
             )
         except Exception as error:
             raise Exception(f"Error generating presigned URL: {error}") from error

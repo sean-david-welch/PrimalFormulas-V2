@@ -1,4 +1,4 @@
-import { HttpClient, HttpHandler, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ImageData } from '../../app/models/models';
 import { Observable, catchError, map, throwError } from 'rxjs';
@@ -17,6 +17,10 @@ export class UploadsService {
             'Content-Type': imageFile.type,
         });
 
+        console.log('Uploading to URL:', presignedUrl);
+        console.log('With headers:', headers);
+        console.log('Uploading file:', imageFile.name, 'Type:', imageFile.type);
+
         return this.http
             .put(presignedUrl, imageFile, {
                 headers,
@@ -28,7 +32,6 @@ export class UploadsService {
                 }),
                 catchError((error) => {
                     console.error('Error in uploadImage:', error);
-                    console.error('Failed imageData:', imageData);
                     return throwError(
                         () => new Error('Failed to upload image')
                     );
