@@ -32,7 +32,8 @@
 
             <!-- @if (isSupperuser == true) {} -->
             <div class="buttons-grid">
-                <app-product-form text="Update Product" mode="update" [selectedProduct]="product" />
+                <app-product-form text="Update Product" mode="update" [id]="product.id"
+                    [selectedProduct]="product" />
                 <app-delete-button text="Delete Product" [id]="product.id" endpoint="products"
                     returnPath="/products" />
             </div>

@@ -8,7 +8,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 export class DeleteButtonService {
     private constructUrl(endpoint: string, params: string): string {
         return String(
-            new URL(endpoint + '/' + params + '/', 'http://127/0.0.1:8000/')
+            new URL(endpoint + '/' + params + '/', 'http://127.0.0.1:8000/api/')
         );
     }
 

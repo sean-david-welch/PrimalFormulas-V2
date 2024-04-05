@@ -25,7 +25,6 @@ class ProductList(APIView):
 
     def post(self, request: Request) -> Response:
         serializer = ProductSerializer(data=request.data)
-        print("request data: ", request.data)
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -72,6 +71,7 @@ class ProductDetail(APIView):
     def put(self, request: Request, pk: str) -> Response:
         product = get_object_or_404(Product, pk=pk)
         data = request.data.copy()
+        print("request data: ", data)
 
         image_field = data.get("image", "")
         image_url, presigned_url = None, None
@@ -81,8 +81,6 @@ class ProductDetail(APIView):
                 "products", image_field
             )
             data["image"] = image_url
-        else:
-            data.pop("image")
 
         serializer = ProductSerializer(instance=product, data=data, partial=True)
         if not serializer.is_valid():

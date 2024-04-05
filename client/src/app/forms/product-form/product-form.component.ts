@@ -26,6 +26,7 @@ import { ProductsService } from '../../services/products/products.service';
 export class ProductFormComponent implements OnChanges {
     @Input() text: string = '';
     @Input() mode: 'create' | 'update' = 'create';
+    @Input() id?: string = '';
     @Input() selectedProduct?: Product;
 
     public form: FormGroup;
@@ -94,8 +95,8 @@ export class ProductFormComponent implements OnChanges {
 
         const product: Partial<Product> = this.form.value;
 
-        if (this.mode === 'update' && product.id) {
-            this.handleProduct('update', product, product.id);
+        if (this.mode === 'update' && this.id) {
+            this.handleProduct('update', product, this.id);
         } else {
             this.handleProduct('create', product);
         }

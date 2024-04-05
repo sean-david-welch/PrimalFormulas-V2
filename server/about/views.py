@@ -77,8 +77,6 @@ class AboutDetail(APIView):
                 "about", image_field
             )
             data["image"] = image_url
-        else:
-            data.pop("image")
 
         serializer = AboutSerializer(instance=about, data=data, partial=True)
         if not serializer.is_valid():

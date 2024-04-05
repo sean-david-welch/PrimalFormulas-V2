@@ -77,8 +77,6 @@ class AssetDetail(APIView):
                 "assets", image_fied
             )
             data["content"] = image_url
-        else:
-            data.pop("content")
 
         serializer = AssetSerializer(instance=asset, data=data, partial=True)
         if not serializer.is_valid():
