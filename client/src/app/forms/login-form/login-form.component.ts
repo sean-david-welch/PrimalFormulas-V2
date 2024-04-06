@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { NavButtonComponent } from '../../components/nav-button/nav-button.component';
 import { NavLogoComponent } from '../../components/nav-logo/nav-logo.component';
-import { AuthService } from '../../services/login/login.service';
+import { LoginService } from '../../services/login/login.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
@@ -17,7 +17,7 @@ export class LoginFormComponent {
     @Input() text: string = '';
     @Output() LoginSuccess = new EventEmitter<void>();
 
-    private authService = inject(AuthService);
+    private LoginService = inject(LoginService);
 
     public form: FormGroup = new FormGroup({
         username: new FormControl('', Validators.required),
@@ -32,7 +32,7 @@ export class LoginFormComponent {
 
         const { username, password } = this.form.value;
 
-        this.authService.loginUser(username, password).subscribe({
+        this.LoginService.loginUser(username, password).subscribe({
             next: (response) => {
                 console.log('Response:', response);
                 if (response.token && response.user) {

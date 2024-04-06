@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { NavButtonComponent } from '../../components/nav-button/nav-button.component';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -23,11 +23,8 @@ import { CommonModule } from '@angular/common';
 })
 export class CartComponent implements OnInit {
     public cartItems: CartItem[] = [];
+    private cartService = inject(CartService);
 
-
-    constructor(private cartService: CartService) {
-
-    }
 
     ngOnInit(): void {
         this.cartService.loadFromLocalStorage();

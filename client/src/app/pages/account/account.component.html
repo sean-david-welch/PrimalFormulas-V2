@@ -4,12 +4,16 @@
         <app-nav-button link="/products" text="Continue Shopping" iconName="bracket-right" />
     </div>
 
-    <div class="login-section" *ngIf="!isLoggedIn">
-        <app-nav-logo [logoHeight]="200" [logoWidth]="200" />
-        <h1 class="item-heading">You're not Logged In:</h1>
-        <!-- <app-login-form text="Login Form" (LoginSuccess)="handleLoginSuccess()" /> -->
+
+    <!-- @if (user) {} -->
+    <div class="account-section">
     </div>
 
-    <div class="account-section" *ngIf="isLoggedIn">
+    <!-- @else {} -->
+    <div class="login-section">
+        <app-nav-logo [logoHeight]="200" [logoWidth]="200" />
+        <h1 class="item-heading">You're not Logged In:</h1>
+        <app-login-form text="Login Form" />
     </div>
+
 </section>

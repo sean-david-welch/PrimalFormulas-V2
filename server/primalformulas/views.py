@@ -81,7 +81,18 @@ class LoginView(APIView):
 
         token, _ = Token.objects.get_or_create(user=user)
         serializer = UserSerializer(instance=user)
-        return Response({"token": token.key, "user": serializer.data})
+        response = Response({"token": token.key, "user": serializer.data})
+
+        response.set_cookie(
+            "access_token",
+            value=token.key,
+            max_age=3600 * 24 * 3,
+            httponly=True,
+            secure=True,
+            samesite="Lax",
+        )
+
+        return response
 
 
 class LogoutView(APIView):
