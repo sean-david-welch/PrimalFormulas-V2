@@ -48,5 +48,5 @@ export interface CartItem {
 }
 
 export interface Cart {
-    items: CartItem[];
+    cartItems: CartItem[];
 }

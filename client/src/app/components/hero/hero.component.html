@@ -10,10 +10,9 @@
     <div class="hero">
         @if (loading) {
         <app-loading-spinner />
-        } @else if (data?.content) {
-        <video [src]="data?.content" autoplay loop playsInline preload="auto"></video>
+        } @else if (data) {
+        <video muted autoplay loop playsInline [src]="data.content"></video>
         }
-
     </div>
 
 </section>

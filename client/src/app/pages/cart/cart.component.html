@@ -4,21 +4,19 @@
         <app-nav-button link="/products" text="Continue Shopping" iconName="bracket-right" />
     </div>
 
-    @if (cartItems) {
+    @if (this.getTotalItems() > 0) {
     <div class="cart">
         <h1 class="item-heading">Cart Items:</h1>
 
         @for (item of cartItems; track item.product.id) {
         <div class="cart-item">
-            <a [routerLink]="['/products', item.product.id]"><img src="{{item.product.image}}"
-                    alt="product-image"></a>
+            <a [routerLink]="['/products', item.product.id]"><img src="{{item.product.image}}" alt="product-image"></a>
             <div class="cart-item-info">
                 <h1 class="item-heading">{{ item.product.name }}: €{{ item.product.price }}</h1>
 
                 <div class="input-nav">
                     <label for="quantity">Quantity:</label>
-                    <input type="number" appCart [updateQuantity]="item.product.id"
-                        [value]="item.quantity">
+                    <input type="number" appCart [updateQuantity]="item.product.id" [value]="item.quantity">
 
                 </div>
 
@@ -28,12 +26,18 @@
             </div>
         </div>
 
+        }
+
+        @if (this.getTotalItems() > 0) {
         <div class="checkout">
-            <h1 class="item-heading">Total: €{{getTotalPrice()}}</h1>
+            <h1 class="item-heading">Total: €{{ this.getTotalPrice() }}</h1>
             <app-nav-button link="/shipping" text="Checkout" iconName="bracket-right" />
         </div>
         }
-
+    </div>
+    } @else {
+    <div class="cart">
+        <h1 class="cart">Cart Is Empty</h1>
     </div>
     }
 
