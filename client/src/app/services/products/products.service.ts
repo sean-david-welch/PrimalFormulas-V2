@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
     BehaviorSubject,
     Observable,
     catchError,
-    firstValueFrom,
     map,
     of,
     switchMap,
@@ -20,10 +19,8 @@ export class ProductsService {
     private productUpdate = new BehaviorSubject<Product | null>(null);
     public productUpdate$ = this.productUpdate.asObservable();
 
-    constructor(
-        private http: HttpClient,
-        private uploadService: UploadsService
-    ) {}
+    private http = inject(HttpClient);
+    private uploadService = inject(UploadsService);
 
     private constructUrl(params?: string): string {
         return params
@@ -59,19 +56,19 @@ export class ProductsService {
     ): Observable<MutationResponse<Product>> {
         const mutationObservable = id
             ? this.http.put<MutationResponse<Product>>(
-                  this.constructUrl(id),
-                  product,
-                  {
-                      withCredentials: true,
-                  }
-              )
+                this.constructUrl(id),
+                product,
+                {
+                    withCredentials: true,
+                }
+            )
             : this.http.post<MutationResponse<Product>>(
-                  this.constructUrl(),
-                  product,
-                  {
-                      withCredentials: true,
-                  }
-              );
+                this.constructUrl(),
+                product,
+                {
+                    withCredentials: true,
+                }
+            );
 
         return mutationObservable.pipe(
             switchMap((response) => {

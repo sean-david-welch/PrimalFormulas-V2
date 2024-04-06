@@ -7,8 +7,7 @@
 
             <div class="page-heading">
                 <h1 class="section-heading">{{product.name}}</h1>
-                <app-nav-button link="/products" text="View Other Formulas"
-                    iconName="arrow-right" />
+                <app-nav-button link="/products" text="View Other Formulas" iconName="arrow-right" />
             </div>
 
             <div class="product-detail">
@@ -18,8 +17,8 @@
                     <p>{{product.description}}</p>
                     <div class="input-nav">
                         <label for="qauntity">Qauntity:</label>
-                        <input type="number" value="quantity"
-                            [attr.disabled]="isLoading ? true : null" [defaultValue]="0">
+                        <input type="number" value="quantity" [attr.disabled]="isLoading ? true : null"
+                            [defaultValue]="0">
                     </div>
                     <div class="buttons-grid">
                         <app-nav-button link="/" text="Buy Now" iconName="bracket-right" />
@@ -32,10 +31,8 @@
 
             <!-- @if (isSupperuser == true) {} -->
             <div class="buttons-grid">
-                <app-product-form text="Update Product" mode="update" [id]="product.id"
-                    [selectedProduct]="product" />
-                <app-delete-button text="Delete Product" [id]="product.id" endpoint="products"
-                    returnPath="/products" />
+                <app-product-form text="Update Product" mode="update" [id]="product.id" [selectedProduct]="product" />
+                <app-delete-button text="Delete Product" [id]="product.id" endpoint="products" returnPath="/products" />
             </div>
 
         </div>

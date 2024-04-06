@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import {
-    FormBuilder,
+    FormControl,
     FormGroup,
     ReactiveFormsModule,
     Validators,
@@ -24,27 +24,19 @@ import { ProductsService } from '../../services/products/products.service';
     styleUrl: './product-form.component.css',
 })
 export class ProductFormComponent implements OnChanges {
-    @Input()
-    text: string = '';
-    mode: 'create' | 'update' = 'create';
-    id?: string = '';
+    @Input() text: string = '';
+    @Input() mode: 'create' | 'update' = 'create';
+    @Input() id?: string = '';
+    @Input() selectedProduct?: Product;
 
-    @Input()
-    selectedProduct?: Product;
-
-    public form: FormGroup;
     public selectedFile: File | null = null;
+    private productService = inject(ProductsService)
 
-    constructor(
-        private formBuilder: FormBuilder,
-        private productService: ProductsService
-    ) {
-        this.form = this.formBuilder.group({
-            name: ['', Validators.required],
-            description: ['', Validators.required],
-            price: ['', Validators.required],
-        });
-    }
+    public form: FormGroup = new FormGroup({
+        name: new FormControl('', Validators.required),
+        description: new FormControl('', Validators.required),
+        price: new FormControl('', Validators.required),
+    });
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.selectedProduct) this.form.patchValue(this.selectedProduct);
@@ -80,7 +72,7 @@ export class ProductFormComponent implements OnChanges {
         });
     }
 
-    onFileSelected(event: Event): void {
+    public onFileSelected(event: Event): void {
         const element = event.currentTarget as HTMLInputElement;
         let fileList: FileList | null = element.files;
         if (fileList && fileList.length > 0) {

@@ -29,13 +29,13 @@ export class ProductDetailComponent implements OnInit {
     constructor(
         private productService: ProductsService,
         private route: ActivatedRoute
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.getProduct();
 
-        this.productService.productUpdate$.subscribe((newProduct) => {
-            if (newProduct) this.getProduct();
+        this.productService.productUpdate$.subscribe(() => {
+            this.getProduct();
         });
     }
 

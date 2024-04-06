@@ -36,13 +36,13 @@ export class ProductsListComponent implements OnInit, OnDestroy {
 
     private productSubscription: Subscription = new Subscription();
 
-    constructor(private productsService: ProductsService) {}
+    constructor(private productsService: ProductsService) { }
 
     ngOnInit(): void {
         this.getProducts();
         this.productSubscription =
-            this.productsService.productUpdate$.subscribe((newProduct) => {
-                if (newProduct) this.getProducts();
+            this.productsService.productUpdate$.subscribe(() => {
+                this.getProducts();
             });
     }
 
