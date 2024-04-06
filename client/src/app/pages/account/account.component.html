@@ -5,15 +5,17 @@
     </div>
 
 
-    <!-- @if (user) {} -->
+    @if (user) {
     <div class="account-section">
     </div>
+    }
 
-    <!-- @else {} -->
+    @else {
     <div class="login-section">
         <app-nav-logo [logoHeight]="200" [logoWidth]="200" />
         <h1 class="item-heading">You're not Logged In:</h1>
         <app-login-form text="Login Form" />
     </div>
+    }
 
 </section>
