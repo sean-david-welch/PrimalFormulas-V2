@@ -1,1 +1,15 @@
-<p>account works!</p>
+<section id="account">
+    <div class="page-heading">
+        <h1 class="section-heading">Account Dashboard:</h1>
+        <app-nav-button link="/products" text="Continue Shopping" iconName="bracket-right" />
+    </div>
+
+    <div class="login-section" *ngIf="!isLoggedIn">
+        <app-nav-logo [logoHeight]="200" [logoWidth]="200" />
+        <h1 class="item-heading">You're not Logged In:</h1>
+        <!-- <app-login-form text="Login Form" (LoginSuccess)="handleLoginSuccess()" /> -->
+    </div>
+
+    <div class="account-section" *ngIf="isLoggedIn">
+    </div>
+</section>

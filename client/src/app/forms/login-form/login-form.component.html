@@ -1,1 +1,14 @@
-<p>login-form works!</p>
+<app-dialog text={{text}}>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form" method="dialog">
+        <app-nav-logo />
+
+        <div class="page-heading">
+            <h1 class="item-heading">Login Form:</h1>
+        </div>
+
+        <input formControlName="username" placeholder="Username">
+        <input formControlName="password" placeholder="Password" type="password">
+
+        <app-nav-button buttonType="submit" formMethod="dialog" text="Login" iconName="arrow-right" />
+    </form>
+</app-dialog>

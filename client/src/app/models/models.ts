@@ -26,9 +26,19 @@ export interface User {
     id: string;
     username: string;
     email: string;
-    password: string;
     is_superuser: boolean;
     last_login: string;
+}
+
+export interface UserData {
+    email: string;
+    username: string;
+    password: string;
+}
+
+export interface LoginResponse {
+    token: string,
+    user: User,
 }
 
 export interface MutationResponse<T> {
