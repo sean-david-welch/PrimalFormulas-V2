@@ -23,4 +23,20 @@ export class AccountComponent {
         this.authService.loadFromLocalStorage();
         this.user = this.authService.user();
     }
+
+
+    public logout() {
+        this.loginService.logoutUser().subscribe({
+            next: () => {
+                // Handle successful logout, e.g., navigate to the login page or set the user to null
+                this.user = null;
+                // Navigate or update UI as needed
+            },
+            error: (error) => {
+                // Handle any errors, such as showing a message
+                console.error('Logout failed', error);
+            }
+        });
+    }
+
 }
