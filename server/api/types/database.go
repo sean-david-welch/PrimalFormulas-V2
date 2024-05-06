@@ -6,7 +6,7 @@ import (
 )
 
 type DynamoDBClient struct {
-	database *dynamodb.DynamoDB
+	Database *dynamodb.DynamoDB
 }
 
 func NewDynamoDBClient() DynamoDBClient {
@@ -14,6 +14,6 @@ func NewDynamoDBClient() DynamoDBClient {
 	database := dynamodb.New(dbSession)
 
 	return DynamoDBClient{
-		database: database,
+		Database: database,
 	}
 }
