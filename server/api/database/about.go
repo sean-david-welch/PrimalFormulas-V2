@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	TABLE_NAME = "about"
+	AboutTable = "about"
 )
 
 type AboutStore interface {
@@ -28,7 +28,7 @@ func NewAboutStore(database *types.DynamoDBClient) *AboutStoreImpl {
 }
 
 func (store *AboutStoreImpl) GetAbouts() ([]*types.About, error) {
-	input := &dynamodb.ScanInput{TableName: aws.String(TABLE_NAME)}
+	input := &dynamodb.ScanInput{TableName: aws.String(AboutTable)}
 	result, err := store.database.Database.Scan(input)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (store *AboutStoreImpl) GetAbouts() ([]*types.About, error) {
 }
 
 func (store *AboutStoreImpl) GetAboutByID(id string) (*types.About, error) {
-	input := &dynamodb.GetItemInput{TableName: aws.String(TABLE_NAME), Key: map[string]*dynamodb.AttributeValue{
+	input := &dynamodb.GetItemInput{TableName: aws.String(AboutTable), Key: map[string]*dynamodb.AttributeValue{
 		"id": {
 			S: aws.String(id),
 		},
@@ -75,7 +75,7 @@ func (store *AboutStoreImpl) CreateAbout(about *types.About) (*types.About, erro
 	}
 
 	input := &dynamodb.PutItemInput{
-		TableName: aws.String(TABLE_NAME),
+		TableName: aws.String(AboutTable),
 		Item:      item,
 	}
 
@@ -90,7 +90,7 @@ func (store *AboutStoreImpl) CreateAbout(about *types.About) (*types.About, erro
 func (store *AboutStoreImpl) UpdateAbout(about *types.About) (*types.About, error) {
 	updateExpression := "SET Title = :title, Description = : desc, Image = : img"
 	input := &dynamodb.UpdateItemInput{
-		TableName: aws.String(TABLE_NAME),
+		TableName: aws.String(AboutTable),
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
 				S: aws.String(about.ID),
@@ -115,7 +115,7 @@ func (store *AboutStoreImpl) UpdateAbout(about *types.About) (*types.About, erro
 
 func (store *AboutStoreImpl) DeleteAbout(about *types.About) error {
 	input := &dynamodb.DeleteItemInput{
-		TableName: aws.String(TABLE_NAME),
+		TableName: aws.String(AboutTable),
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
 				S: aws.String(about.ID),
