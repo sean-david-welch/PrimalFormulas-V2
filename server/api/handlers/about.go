@@ -2,19 +2,19 @@ package handlers
 
 import (
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/sean-david-welch/primal-formulas/database"
+	"github.com/sean-david-welch/primal-formulas/services"
 )
 
-type AboutHanlder interface {
+type AboutHandler interface {
 	GetAbouts()
 }
 
 type AboutHandlerImpl struct {
-	store database.AboutStore
+	service services.AboutService
 }
 
-func NewAboutHandler(store *database.AboutStoreImpl) AboutHandlerImpl {
-	return AboutHandlerImpl{store: store}
+func NewAboutHandler(service services.AboutService) AboutHandlerImpl {
+	return AboutHandlerImpl{service: service}
 }
 
 func (handler AboutHandlerImpl) GetAbouts(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {

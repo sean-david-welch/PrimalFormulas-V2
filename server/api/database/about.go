@@ -14,9 +14,9 @@ const (
 type AboutStore interface {
 	GetAbouts() ([]*types.About, error)
 	GetAboutByID(string) (*types.About, error)
-	CreateAbout(*types.About) (*types.About, error)
-	UpdateAbout(*types.About) (*types.About, error)
-	DeleteAbout(*types.About) error
+	CreateAbout(about *types.About) error
+	UpdateAbout(id string, about *types.About) error
+	DeleteAbout(id string) error
 }
 
 type AboutStoreImpl struct {
@@ -87,13 +87,13 @@ func (store *AboutStoreImpl) CreateAbout(about *types.About) (*types.About, erro
 	return about, nil
 }
 
-func (store *AboutStoreImpl) UpdateAbout(about *types.About) (*types.About, error) {
+func (store *AboutStoreImpl) UpdateAbout(id string, about *types.About) (*types.About, error) {
 	updateExpression := "SET Title = :title, Description = : desc, Image = : img"
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(AboutTable),
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
-				S: aws.String(about.ID),
+				S: aws.String(id),
 			},
 		},
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
@@ -113,12 +113,12 @@ func (store *AboutStoreImpl) UpdateAbout(about *types.About) (*types.About, erro
 	return about, nil
 }
 
-func (store *AboutStoreImpl) DeleteAbout(about *types.About) error {
+func (store *AboutStoreImpl) DeleteAbout(id string) error {
 	input := &dynamodb.DeleteItemInput{
 		TableName: aws.String(AboutTable),
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
-				S: aws.String(about.ID),
+				S: aws.String(id),
 			},
 		},
 	}

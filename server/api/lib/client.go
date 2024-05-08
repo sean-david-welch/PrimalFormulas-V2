@@ -1,4 +1,4 @@
-package types
+package lib
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 )
 
 type S3Client interface {
-	GeneratePresignedUrl(folder, image string) (string, string, error)
+	GeneratePresignedUrl(image string) (string, string, error)
 	DeleteImageFromS3(imageUrl string) error
 }
 
