@@ -10,8 +10,8 @@ import (
 type AboutService interface {
 	GetAbouts() ([]*types.About, error)
 	GetAboutByID(id string) (*types.About, error)
-	CreateAbout(about *types.About) (*types.About, error)
-	UpdateAbout(id string, about *types.About) (*types.About, error)
+	CreateAbout(about *types.About) (*types.ModelResult, error)
+	UpdateAbout(id string, about *types.About) (*types.ModelResult, error)
 	DeleteAbout(id string) error
 }
 
@@ -50,18 +50,22 @@ func (service *AboutServiceImpl) GetAboutById(id string) (*types.About, error) {
 	return about, nil
 }
 
-func (service *AboutServiceImpl) CreateAbout(about *types.About) (*types.About, error) {
+func (service *AboutServiceImpl) CreateAbout(about *types.About) (*types.ModelResult, error) {
 	image := about.Image
 
 	if image == "" || image == "null" {
 		return nil, errors.New("image is empty")
 	}
 
-	presignedUrl, ImageUrl, err := service.client.GeneratePresignedUrl(image)
+	presignedUrl, imageUrl, err := service.client.GeneratePresignedUrl(image)
 
-	about.Image = ImageUrl
+	about.Image = imageUrl
 
-	if err := service.store.CreateAbout(about); err != nil {
+	if err = service.store.CreateAbout(about); err != nil {
 		return nil, err
 	}
+
+	result := &types.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
+
+	return result, nil
 }
