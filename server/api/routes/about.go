@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func InitAbout() handlers.AboutHandler {
+func AboutRouter(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	secrets, err := config.NewSecrets()
 	if err != nil {
 		log.Fatalf("Error loading configuration: %v", err)
@@ -30,26 +30,20 @@ func InitAbout() handlers.AboutHandler {
 	responseHandler := lib.NewResponseHandler[interface{}]()
 	aboutHandler := handlers.NewAboutHandler(aboutService, responseHandler)
 
-	return aboutHandler
-}
-
-func AboutRouter(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	handler := InitAbout()
-
 	switch request.HTTPMethod {
 	case "GET":
 		if _, ok := request.PathParameters["id"]; ok {
 			// This means /abouts/{id} is called
-			return handler.GetAboutByID(request), nil
+			return aboutHandler.GetAboutByID(request), nil
 		}
 		// This means /abouts is called
-		return handler.GetAbouts(request), nil
+		return aboutHandler.GetAbouts(request), nil
 	case "POST":
-		return handler.CreateAbout(request), nil
+		return aboutHandler.CreateAbout(request), nil
 	case "PUT":
-		return handler.UpdateAbout(request), nil
+		return aboutHandler.UpdateAbout(request), nil
 	case "DELETE":
-		return handler.DeleteAbout(request), nil
+		return aboutHandler.DeleteAbout(request), nil
 	default:
 		message := map[string]string{
 			"message": "method not allowed",
