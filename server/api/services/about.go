@@ -58,7 +58,9 @@ func (service *AboutServiceImpl) CreateAbout(about *types.About) (*types.ModelRe
 	}
 
 	presignedUrl, imageUrl, err := service.client.GeneratePresignedUrl(image)
-
+	if err != nil {
+		return nil, err
+	}
 	about.Image = imageUrl
 
 	if err = service.store.CreateAbout(about); err != nil {
@@ -69,3 +71,33 @@ func (service *AboutServiceImpl) CreateAbout(about *types.About) (*types.ModelRe
 
 	return result, nil
 }
+
+func (service *AboutServiceImpl) UpdateAbout(id string, about *types.About) (*types.ModelResult, error) {
+	image := about.Image
+
+	var presignedUrl, imageUrl string
+	var err error
+
+	if image != "null" && image != "" {
+		presignedUrl, imageUrl, err = service.client.GeneratePresignedUrl(image)
+		if err != nil {
+			return nil, err
+		}
+		about.Image = imageUrl
+	}
+
+	if err := service.store.UpdateAbout(id, about); err != nil {
+		return nil, err
+	}
+
+	result := &types.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
+
+	return result, nil
+}
+
+//
+//func (service *AboutServiceImpl) DeleteAbout(id string) error {
+//	return err := service.store.DeleteAbout(id); if err != nil {
+//		return nil
+//	}
+//}
