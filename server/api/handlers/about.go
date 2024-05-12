@@ -87,6 +87,6 @@ func (handler *AboutHandlerImpl) DeleteAbout(request events.APIGatewayProxyReque
 		return handler.response.ErrorResponse(err, http.StatusInternalServerError)
 	}
 
-	response := lib.GenerateResponseMessage(id, "update")
+	response := lib.GenerateResponseMessage(id, lib.DeleteAction)
 	return handler.response.SuccessResponse(response, http.StatusOK)
 }

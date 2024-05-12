@@ -23,8 +23,23 @@ type ResponseHandler[T any] interface {
 type ResponseHandlerImpl[T any] struct{}
 
 func GenerateResponseMessage(id string, action ActionType) map[string]string {
-	return map[string]string{
-		"message": fmt.Sprintf("Successfully %s about with ID: %s", action, id),
+	switch action {
+	case CreateAction:
+		return map[string]string{
+			"message": fmt.Sprintf("Successfully created resource with ID: %s", id),
+		}
+	case UpdateAction:
+		return map[string]string{
+			"message": fmt.Sprintf("Successfully updated resource with ID: %s", id),
+		}
+	case DeleteAction:
+		return map[string]string{
+			"message": fmt.Sprintf("successfully deleted resource with ID: %s", id),
+		}
+	default:
+		return map[string]string{
+			"message": fmt.Sprintf("unsupported action"),
+		}
 	}
 }
 
