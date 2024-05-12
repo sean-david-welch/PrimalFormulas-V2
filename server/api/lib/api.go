@@ -21,7 +21,7 @@ func (response *ResponseHandlerImpl[T]) ErrorResponse(err error, statusCode int)
 	}
 }
 
-func (response *ResponseHandlerImpl[T]) SuccessResponse(data interface{}) *events.APIGatewayProxyResponse {
+func (response *ResponseHandlerImpl[T]) SuccessResponse(data T) *events.APIGatewayProxyResponse {
 	body, err := json.Marshal(data)
 	if err != nil {
 		return response.ErrorResponse(

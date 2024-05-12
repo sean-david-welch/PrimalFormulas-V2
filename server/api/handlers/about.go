@@ -1,84 +1,49 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/sean-david-welch/primal-formulas/lib"
 	"github.com/sean-david-welch/primal-formulas/services"
 	"net/http"
 )
 
 type AboutHandler interface {
-	GetAbouts()
+	GetAbouts(request events.APIGatewayProxyRequest) events.APIGatewayProxyResponse
 }
 
 type AboutHandlerImpl struct {
-	service services.AboutService
+	service  services.AboutService
+	response lib.ResponseHandler[interface{}]
 }
 
-func NewAboutHandler(service services.AboutService) AboutHandlerImpl {
-	return AboutHandlerImpl{service: service}
+func NewAboutHandler(service services.AboutService, response *lib.ResponseHandlerImpl[interface{}]) AboutHandlerImpl {
+	return AboutHandlerImpl{service: service, response: response}
 }
 
-func (handler AboutHandlerImpl) GetAbouts(request events.APIGatewayProxyRequest) events.APIGatewayProxyResponse {
+func (handler AboutHandlerImpl) GetAbouts(_ events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse {
 	abouts, err := handler.service.GetAbouts()
 	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: http.StatusInternalServerError,
-			Body:       err.Error(),
-		}
+		return handler.response.ErrorResponse(err, http.StatusInternalServerError)
 	}
 
 	if abouts == nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: http.StatusNotFound,
-			Body:       "No about information found",
-		}
+		return handler.response.ErrorResponse(err, http.StatusNotFound)
 	}
 
-	body, err := json.Marshal(abouts)
-	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: http.StatusInternalServerError,
-			Body:       "Failed to parse abouts data",
-		}
-	}
-
-	return events.APIGatewayProxyResponse{
-		StatusCode: http.StatusOK,
-		Headers:    map[string]string{"Content-Type": "application/json"},
-		Body:       string(body),
-	}
+	return handler.response.SuccessResponse(abouts)
 }
 
-func (handler AboutHandlerImpl) GetAboutByID(request events.APIGatewayProxyRequest) events.APIGatewayProxyResponse {
+func (handler AboutHandlerImpl) GetAboutByID(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse {
 	id := request.PathParameters["id"]
 
 	about, err := handler.service.GetAboutByID(id)
 	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: http.StatusInternalServerError, Body: err.Error(),
-		}
+		return handler.response.ErrorResponse(err, http.StatusInternalServerError)
 	}
 
 	if about == nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: http.StatusInternalServerError,
-			Body:       "About with that id does not exist",
-		}
+		return handler.response.ErrorResponse(err, http.StatusNotFound)
 	}
 
-	body, err := json.Marshal(about)
-	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: http.StatusInternalServerError,
-			Body:       fmt.Sprintf("Failed to parse about with id of %s", id),
-		}
-	}
-
-	return events.APIGatewayProxyResponse{
-		StatusCode: http.StatusOK,
-		Headers:    map[string]string{"Content-Type": "application/json"},
-		Body:       string(body),
-	}
+	return handler.response.SuccessResponse(about)
 }
