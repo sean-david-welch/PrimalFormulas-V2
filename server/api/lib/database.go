@@ -1,4 +1,4 @@
-package types
+package lib
 
 import (
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -9,11 +9,11 @@ type DynamoDBClient struct {
 	Database *dynamodb.DynamoDB
 }
 
-func NewDynamoDBClient() DynamoDBClient {
+func NewDynamoDBClient() *DynamoDBClient {
 	dbSession := session.Must(session.NewSession())
 	database := dynamodb.New(dbSession)
 
-	return DynamoDBClient{
+	return &DynamoDBClient{
 		Database: database,
 	}
 }

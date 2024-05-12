@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/sean-david-welch/primal-formulas/lib"
 	"github.com/sean-david-welch/primal-formulas/types"
 )
 
@@ -21,10 +22,10 @@ type ProductStore interface {
 }
 
 type ProductStoreImpl struct {
-	database *types.DynamoDBClient
+	database *lib.DynamoDBClient
 }
 
-func NewProductStore(database *types.DynamoDBClient) *ProductStoreImpl {
+func NewProductStore(database *lib.DynamoDBClient) *ProductStoreImpl {
 	return &ProductStoreImpl{
 		database: database,
 	}

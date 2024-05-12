@@ -4,6 +4,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/sean-david-welch/primal-formulas/lib"
 	"github.com/sean-david-welch/primal-formulas/types"
 )
 
@@ -14,16 +15,16 @@ const (
 type AboutStore interface {
 	GetAbouts() ([]*types.About, error)
 	GetAboutByID(string) (*types.About, error)
-	CreateAbout(about *types.About) error
-	UpdateAbout(id string, about *types.About) error
+	CreateAbout(about *types.About) (*types.About, error)
+	UpdateAbout(id string, about *types.About) (*types.About, error)
 	DeleteAbout(id string) (*types.About, error)
 }
 
 type AboutStoreImpl struct {
-	db *types.DynamoDBClient
+	db *lib.DynamoDBClient
 }
 
-func NewAboutStore(db *types.DynamoDBClient) *AboutStoreImpl {
+func NewAboutStore(db *lib.DynamoDBClient) *AboutStoreImpl {
 	return &AboutStoreImpl{db: db}
 }
 

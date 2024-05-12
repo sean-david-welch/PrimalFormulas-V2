@@ -22,6 +22,9 @@ type ResponseHandler[T any] interface {
 
 type ResponseHandlerImpl[T any] struct{}
 
+func NewResponseHandler[T any]() *ResponseHandlerImpl[T] {
+	return &ResponseHandlerImpl[T]{}
+}
 func GenerateResponseMessage(id string, action ActionType) map[string]string {
 	switch action {
 	case CreateAction:

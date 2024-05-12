@@ -37,7 +37,7 @@ func (service *AboutServiceImpl) GetAbouts() ([]*types.About, error) {
 	return abouts, nil
 }
 
-func (service *AboutServiceImpl) GetAboutById(id string) (*types.About, error) {
+func (service *AboutServiceImpl) GetAboutByID(id string) (*types.About, error) {
 	about, err := service.store.GetAboutByID(id)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (service *AboutServiceImpl) CreateAbout(about *types.About) (*types.ModelRe
 	}
 	about.Image = imageUrl
 
-	if err = service.store.CreateAbout(about); err != nil {
+	if _, err = service.store.CreateAbout(about); err != nil {
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (service *AboutServiceImpl) UpdateAbout(id string, about *types.About) (*ty
 		about.Image = imageUrl
 	}
 
-	if err := service.store.UpdateAbout(id, about); err != nil {
+	if _, err := service.store.UpdateAbout(id, about); err != nil {
 		return nil, err
 	}
 

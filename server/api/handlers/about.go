@@ -10,7 +10,11 @@ import (
 )
 
 type AboutHandler interface {
-	GetAbouts(request events.APIGatewayProxyRequest) events.APIGatewayProxyResponse
+	GetAbouts(_ events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse
+	GetAboutByID(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse
+	CreateAbout(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse
+	UpdateAbout(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse
+	DeleteAbout(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse
 }
 
 type AboutHandlerImpl struct {
