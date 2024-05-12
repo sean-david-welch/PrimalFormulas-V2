@@ -95,9 +95,15 @@ func (service *AboutServiceImpl) UpdateAbout(id string, about *types.About) (*ty
 	return result, nil
 }
 
-//
-//func (service *AboutServiceImpl) DeleteAbout(id string) error {
-//	return err := service.store.DeleteAbout(id); if err != nil {
-//		return nil
-//	}
-//}
+func (service *AboutServiceImpl) DeleteAbout(id string) error {
+	about, err := service.store.DeleteAbout(id)
+	if err != nil {
+		return nil
+	}
+
+	if err := service.client.DeleteImageFromS3(about.Image); err != nil {
+		return err
+	}
+
+	return nil
+}
