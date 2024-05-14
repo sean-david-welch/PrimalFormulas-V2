@@ -33,10 +33,8 @@ func AboutRouter(request events.APIGatewayProxyRequest) (*events.APIGatewayProxy
 	switch request.HTTPMethod {
 	case "GET":
 		if _, ok := request.PathParameters["id"]; ok {
-			// This means /abouts/{id} is called
 			return aboutHandler.GetAboutByID(request), nil
 		}
-		// This means /abouts is called
 		return aboutHandler.GetAbouts(request), nil
 	case "POST":
 		return aboutHandler.CreateAbout(request), nil
