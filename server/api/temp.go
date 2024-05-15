@@ -1,9 +1,8 @@
-package main
+package api
 
 import (
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/sean-david-welch/primal-formulas/config"
 	"github.com/sean-david-welch/primal-formulas/database"
 	"github.com/sean-david-welch/primal-formulas/handlers"
@@ -12,10 +11,6 @@ import (
 	"log"
 	"net/http"
 )
-
-func main() {
-	lambda.Start(Handler)
-}
 
 func Handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	secrets, err := config.NewSecrets()
@@ -51,10 +46,10 @@ func Handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 		return handler(request), nil
 	}
 
-	msg, _ := json.Marshal(map[string]string{
+	message := map[string]string{
 		"message": "method not allowed",
-	})
-
+	}
+	msg, _ := json.Marshal(message)
 	return &events.APIGatewayProxyResponse{
 		StatusCode: http.StatusMethodNotAllowed,
 		Body:       string(msg),
