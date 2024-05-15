@@ -17,8 +17,8 @@ type ProductStore interface {
 	GetProducts() ([]*types.Product, error)
 	GetProductByID(string) (*types.Product, error)
 	CreateProduct(product *types.Product) (*types.Product, error)
-	UpdateProduct(product *types.Product) (*types.Product, error)
-	DeleteProduct(product *types.Product) error
+	UpdateProduct(id string, product *types.Product) (*types.Product, error)
+	DeleteProduct(id string) (*types.Product, error)
 }
 
 type ProductStoreImpl struct {
