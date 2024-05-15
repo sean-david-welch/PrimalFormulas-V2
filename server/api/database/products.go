@@ -22,18 +22,18 @@ type ProductStore interface {
 }
 
 type ProductStoreImpl struct {
-	database *lib.DynamoDBClient
+	db *lib.DynamoDBClient
 }
 
-func NewProductStore(database *lib.DynamoDBClient) *ProductStoreImpl {
+func NewProductStore(db *lib.DynamoDBClient) *ProductStoreImpl {
 	return &ProductStoreImpl{
-		database: database,
+		db: db,
 	}
 }
 
 func (store *ProductStoreImpl) GetProducts() ([]*types.Product, error) {
 	input := &dynamodb.ScanInput{TableName: aws.String(ProductsTable)}
-	result, err := store.database.Database.Scan(input)
+	result, err := store.db.Database.Scan(input)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (store *ProductStoreImpl) GetProductByID(id string) (*types.Product, error)
 			},
 		}}
 
-	result, err := store.database.Database.GetItem(input)
+	result, err := store.db.Database.GetItem(input)
 	if err != nil {
 		return nil, err
 	}
@@ -79,9 +79,12 @@ func (store *ProductStoreImpl) CreateProduct(product *types.Product) (*types.Pro
 		return nil, err
 	}
 
-	input := &dynamodb.PutItemInput{TableName: aws.String(ProductsTable), Item: item}
+	input := &dynamodb.PutItemInput{
+		TableName: aws.String(ProductsTable),
+		Item:      item,
+	}
 
-	_, err = store.database.Database.PutItem(input)
+	_, err = store.db.Database.PutItem(input)
 	if err != nil {
 		return nil, err
 	}
@@ -89,13 +92,13 @@ func (store *ProductStoreImpl) CreateProduct(product *types.Product) (*types.Pro
 	return product, err
 }
 
-func (store *ProductStoreImpl) UpdateProduct(product *types.Product) (*types.Product, error) {
+func (store *ProductStoreImpl) UpdateProduct(id string, product *types.Product) (*types.Product, error) {
 	updateExpression := "SET Name = : name, Description = : desc, Image = : img, Price = : price"
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(ProductsTable),
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
-				S: aws.String(product.ID),
+				S: aws.String(id),
 			},
 		},
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
@@ -108,7 +111,7 @@ func (store *ProductStoreImpl) UpdateProduct(product *types.Product) (*types.Pro
 		ReturnValues:     aws.String("UPDATED_NEW"),
 	}
 
-	_, err := store.database.Database.UpdateItem(input)
+	_, err := store.db.Database.UpdateItem(input)
 	if err != nil {
 		return nil, err
 	}
@@ -116,20 +119,24 @@ func (store *ProductStoreImpl) UpdateProduct(product *types.Product) (*types.Pro
 	return product, nil
 }
 
-func (store *ProductStoreImpl) DeleteProduct(product *types.Product) error {
+func (store *ProductStoreImpl) DeleteProduct(id string) (*types.Product, error) {
+	product, err := store.GetProductByID(id)
+	if err != nil {
+		return nil, err
+	}
+
 	input := &dynamodb.DeleteItemInput{
 		TableName: aws.String(ProductsTable),
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
-				S: aws.String(product.ID),
+				S: aws.String(id),
 			},
 		},
 	}
 
-	_, err := store.database.Database.DeleteItem(input)
-	if err != nil {
-		return err
+	if _, err := store.db.Database.DeleteItem(input); err != nil {
+		return nil, err
 	}
 
-	return nil
+	return product, nil
 }
