@@ -15,7 +15,7 @@ const (
 
 type ProductStore interface {
 	GetProducts() ([]*types.Product, error)
-	GetProductByID(string) (*types.Product, error)
+	GetProductByID(id string) (*types.Product, error)
 	CreateProduct(product *types.Product) (*types.Product, error)
 	UpdateProduct(id string, product *types.Product) (*types.Product, error)
 	DeleteProduct(id string) (*types.Product, error)
@@ -89,7 +89,7 @@ func (store *ProductStoreImpl) CreateProduct(product *types.Product) (*types.Pro
 		return nil, err
 	}
 
-	return product, err
+	return product, nil
 }
 
 func (store *ProductStoreImpl) UpdateProduct(id string, product *types.Product) (*types.Product, error) {
