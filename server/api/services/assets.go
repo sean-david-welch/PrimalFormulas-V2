@@ -60,14 +60,55 @@ func (service *AssetServiceImpl) CreateAsset(asset *types.Asset) (*types.ModelRe
 		return nil, errors.New("image is empty")
 	}
 
-	presignedUrl, imageUrl,
+	presignedUrl, imageUrl, err := service.client.GeneratePresignedUrl(content)
+	if err != nil {
+		return nil, err
+	}
 
+	if _, err := service.store.CreateAsset(asset); err != nil {
+		return nil, err
+	}
+
+	result := &types.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
+
+	return result, nil
 }
 
 func (service *AssetServiceImpl) UpdateAsset(id string, asset *types.Asset) (*types.ModelResult, error) {
+	content := asset.Content
 
+	var presignedUrl, imageUrl string
+	var err error
+
+	if content != "" && content != "null" {
+		presignedUrl, imageUrl, err = service.client.GeneratePresignedUrl(content)
+		if err != nil {
+			return nil, err
+		}
+		asset.Content = imageUrl
+	}
+
+	if _, err := service.store.UpdateAsset(id, asset); err != nil {
+		return nil, err
+	}
+
+	result := &types.ModelResult{
+		PresignedUrl: presignedUrl,
+		ImageUrl:     imageUrl,
+	}
+
+	return result, nil
 }
 
 func (service *AssetServiceImpl) DeleteAsset(id string) error {
+	asset, err := service.store.DeleteAsset(id)
+	if err != nil {
+		return err
+	}
 
+	if err := service.client.DeleteImageFromS3(asset.Content); err != nil {
+		return err
+	}
+
+	return nil
 }
