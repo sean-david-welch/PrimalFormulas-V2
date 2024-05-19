@@ -15,62 +15,84 @@ export class ServerStack extends cdk.Stack {
       versioned: true,
     });
 
-    // Define the Secrets Manager instance
     const secret = new secretsmanager.Secret(this, 'primalformulas.ie', {
       description: 'A secret for my Lambda functions',
     });
 
-    // Define the DynamoDB table
     const table = new dynamodb.Table(this, 'primalformulas.ie', {
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
     });
 
-    // Define the Lambda function for products
-    const productsFunction = new lambda.Function(this, 'ProductsFunction', {
-      runtime: lambda.Runtime.PROVIDED_AL2023,
-      code: lambda.Code.fromAsset('path/to/products/build/directory'),
-      handler: 'productsBinaryName',
+    const methods: string[] = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+
+    const functions = [
+      {
+        name: 'ProductsFunction',
+        path: 'bin/products/function.zip',
+        handler: 'bootstrap',
+      },
+      {
+        name: 'AboutFunction',
+        path: 'bin/about/function.zip',
+        handler: 'bootstrap',
+      },
+      {
+        name: 'AssetsFunction',
+        path: 'bin/assets/function.zip',
+        handler: 'bootstrap',
+      },
+    ];
+
+    const lambdaFunctions = functions.map(func => {
+      return new lambda.Function(this, func.name, {
+        runtime: lambda.Runtime.PROVIDED_AL2023,
+        code: lambda.Code.fromAsset(func.path),
+        handler: func.handler,
+        environment: {
+          BUCKET_NAME: bucket.bucketName,
+          SECRET_NAME: secret.secretName,
+          TABLE_NAME: table.tableName,
+        },
+      });
     });
 
-    // Define the Lambda function for about
-    const aboutFunction = new lambda.Function(this, 'AboutFunction', {
-      runtime: lambda.Runtime.PROVIDED_AL2023,
-      code: lambda.Code.fromAsset('path/to/about/build/directory'),
-      handler: 'aboutBinaryName',
+    lambdaFunctions.forEach(func => {
+      bucket.grantReadWrite(func);
+      secret.grantRead(func);
+      table.grantReadWriteData(func);
     });
 
-    // Define the Lambda function for assets
-    const assetsFunction = new lambda.Function(this, 'AssetsFunction', {
-      runtime: lambda.Runtime.PROVIDED_AL2023,
-      code: lambda.Code.fromAsset('path/to/assets/build/directory'),
-      handler: 'assetsBinaryName',
+    const api = new apigateway.RestApi(this, 'PrimalFormulasAPI', {
+      restApiName: 'PrimalFormulas',
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigateway.Cors.ALL_ORIGINS,
+        allowMethods: methods,
+      },
+      deployOptions: {
+        loggingLevel: apigateway.MethodLoggingLevel.INFO,
+      },
     });
 
-    bucket.grantReadWrite(productsFunction);
-    bucket.grantReadWrite(aboutFunction);
-    bucket.grantReadWrite(assetsFunction);
+    const resources = [
+      {
+        path: 'products',
+        function: lambdaFunctions[0],
+      },
+      {
+        path: 'about',
+        function: lambdaFunctions[1],
+      },
+      {
+        path: 'assets',
+        function: lambdaFunctions[2],
+      },
+    ];
 
-    secret.grantRead(productsFunction);
-    secret.grantRead(aboutFunction);
-    secret.grantRead(assetsFunction);
-
-    table.grantReadWriteData(productsFunction);
-    table.grantReadWriteData(aboutFunction);
-    table.grantReadWriteData(assetsFunction);
-
-    // Define a single API Gateway
-    const api = new apigateway.RestApi(this, 'MyApi', {
-      restApiName: 'MyService',
+    resources.forEach(resource => {
+      const apiResource = api.root.addResource(resource.path);
+        methods.forEach(method => {
+        apiResource.addMethod(method, new apigateway.LambdaIntegration(resource.function));
+      });
     });
-
-    // Define API Gateway resources and methods
-    const productsResource = api.root.addResource('products');
-    productsResource.addMethod('GET', new apigateway.LambdaIntegration(productsFunction));
-
-    const aboutResource = api.root.addResource('about');
-    aboutResource.addMethod('GET', new apigateway.LambdaIntegration(aboutFunction));
-
-    const assetsResource = api.root.addResource('assets');
-    assetsResource.addMethod('GET', new apigateway.LambdaIntegration(assetsFunction));
   }
 }
