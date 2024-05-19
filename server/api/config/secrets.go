@@ -1,11 +1,12 @@
 package config
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/secretsmanager"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 )
 
 type Secrets struct {
@@ -17,17 +18,20 @@ type Secrets struct {
 }
 
 func getSecrets(secretName string) (*Secrets, error) {
+	ctx := context.TODO()
 	region := "eu-west-1"
-	sess := session.Must(session.NewSession(&aws.Config{
-		Region: aws.String(region),
-	}))
 
-	svc := secretsmanager.New(sess)
+	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
+	if err != nil {
+		return nil, fmt.Errorf("failed to load configuration: %w", err)
+	}
+
+	svc := secretsmanager.NewFromConfig(cfg)
 	input := &secretsmanager.GetSecretValueInput{
 		SecretId: aws.String(secretName),
 	}
 
-	result, err := svc.GetSecretValue(input)
+	result, err := svc.GetSecretValue(ctx, input)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get secret value: %w", err)
 	}
