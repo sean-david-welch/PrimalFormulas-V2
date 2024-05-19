@@ -11,7 +11,7 @@ export class ServerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const bucket = new s3.Bucket(this, 'primalformulas.ie', {
+    const bucket = new s3.Bucket(this, 'primalformulas', {
       versioned: true,
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: 'index.html',
@@ -48,8 +48,6 @@ export class ServerStack extends cdk.Stack {
       partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
     });
-
-    const methods: string[] = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 
     const functions = [
       {
@@ -92,7 +90,7 @@ export class ServerStack extends cdk.Stack {
       restApiName: 'PrimalFormulas',
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
-        allowMethods: methods,
+        allowMethods: apigateway.Cors.ALL_METHODS,
       },
       deployOptions: {
         loggingLevel: apigateway.MethodLoggingLevel.INFO,
@@ -114,10 +112,12 @@ export class ServerStack extends cdk.Stack {
       },
     ];
 
+    const methods = ['GET', 'POST', 'PUT', 'DELETE'];
+
     resources.forEach(resource => {
-      const apiResource = api.root.addResource(resource.path);
-        methods.forEach(method => {
-        apiResource.addMethod(method, new apigateway.LambdaIntegration(resource.function));
+      const resourceApi = api.root.addResource(resource.path);
+      methods.forEach(method => {
+        resourceApi.addMethod(method, new apigateway.LambdaIntegration(resource.function));
       });
     });
   }
