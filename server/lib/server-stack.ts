@@ -39,12 +39,12 @@ export class ServerStack extends cdk.Stack {
       TEST_SECRET_KEY: process.env.TEST_SECRET_KEY,
     };
 
-    const secret = new secretsmanager.Secret(this, 'primalformulas.ie', {
+    const secret = new secretsmanager.Secret(this, 'primalformulasSecret', {
       description: 'Environment variables for PrimalFormulas serverless API',
       secretStringValue: cdk.SecretValue.unsafePlainText(JSON.stringify(secrets)),
     });
 
-    const table = new dynamodb.Table(this, 'primalformulas.ie', {
+    const table = new dynamodb.Table(this, 'primalformulasStore', {
       partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
     });
@@ -54,17 +54,17 @@ export class ServerStack extends cdk.Stack {
     const functions = [
       {
         name: 'ProductsFunction',
-        path: 'bin/products/function.zip',
+        path: './api/bin/products/function.zip',
         handler: 'bootstrap',
       },
       {
         name: 'AboutFunction',
-        path: 'bin/about/function.zip',
+        path: './api/bin/about/function.zip',
         handler: 'bootstrap',
       },
       {
         name: 'AssetsFunction',
-        path: 'bin/assets/function.zip',
+        path: './api/bin/assets/function.zip',
         handler: 'bootstrap',
       },
     ];
