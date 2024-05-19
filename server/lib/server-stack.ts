@@ -13,14 +13,40 @@ export class ServerStack extends cdk.Stack {
 
     const bucket = new s3.Bucket(this, 'primalformulas.ie', {
       versioned: true,
+      websiteIndexDocument: 'index.html',
+      websiteErrorDocument: 'index.html',
+      cors: [
+        {
+          allowedOrigins: ['*'],
+          allowedMethods: [
+            s3.HttpMethods.GET,
+            s3.HttpMethods.HEAD,
+            s3.HttpMethods.POST,
+            s3.HttpMethods.PUT,
+            s3.HttpMethods.DELETE,
+          ],
+          allowedHeaders: ['*'],
+          maxAge: 3000,
+        },
+      ],
     });
 
-    const secret = new secretsmanager.Secret(this, 'primalformulas.ie', {
-      description: 'A secret for my Lambda functions',
+    const secrets = {
+      AWS_REGION_NAME: process.env.AWS_REGION_NAME,
+      AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
+      AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
+      STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+      TEST_SECRET_KEY: process.env.TEST_SECRET_KEY,
+    };
+
+    const secret = new secretsmanager.Secret(this, 'MySecret', {
+      description: 'Environment variables for PrimalFormulas serverless API',
+      secretStringValue: cdk.SecretValue.unsafePlainText(JSON.stringify(secrets)),
     });
 
     const table = new dynamodb.Table(this, 'primalformulas.ie', {
-      partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
+      partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
     });
 
     const methods: string[] = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
