@@ -60,6 +60,10 @@ func (store *AssetStoreImpl) GetAssetByID(id string) (*models.Asset, error) {
 		return nil, err
 	}
 
+	if result.Item == nil {
+		return nil, err
+	}
+
 	var asset models.Asset
 	err = attributevalue.UnmarshalMap(result.Item, &asset)
 	if err != nil {

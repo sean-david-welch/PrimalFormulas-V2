@@ -1,9 +1,11 @@
 package database
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"context"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/sean-david-welch/primal-formulas/lib"
 	"github.com/sean-david-welch/primal-formulas/models"
 )
@@ -30,13 +32,13 @@ func NewAboutStore(db *lib.DynamoDBClient) *AboutStoreImpl {
 
 func (store *AboutStoreImpl) GetAbouts() ([]*models.About, error) {
 	input := &dynamodb.ScanInput{TableName: aws.String(AboutTable)}
-	result, err := store.db.Database.Scan(input)
+	result, err := store.db.Database.Scan(context.TODO(), input)
 	if err != nil {
 		return nil, err
 	}
 
 	var abouts []*models.About
-	err = dynamodbattribute.UnmarshalListOfMaps(result.Items, &abouts)
+	err = attributevalue.UnmarshalListOfMaps(result.Items, &abouts)
 	if err != nil {
 		return nil, err
 	}
@@ -45,13 +47,14 @@ func (store *AboutStoreImpl) GetAbouts() ([]*models.About, error) {
 }
 
 func (store *AboutStoreImpl) GetAboutByID(id string) (*models.About, error) {
-	input := &dynamodb.GetItemInput{TableName: aws.String(AboutTable), Key: map[string]*dynamodb.AttributeValue{
-		"id": {
-			S: aws.String(id),
+	input := &dynamodb.GetItemInput{
+		TableName: aws.String(AboutTable),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
 		},
-	}}
+	}
 
-	result, err := store.db.Database.GetItem(input)
+	result, err := store.db.Database.GetItem(context.TODO(), input)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +64,7 @@ func (store *AboutStoreImpl) GetAboutByID(id string) (*models.About, error) {
 	}
 
 	var about *models.About
-	err = dynamodbattribute.UnmarshalMap(result.Item, &about)
+	err = attributevalue.UnmarshalMap(result.Item, &about)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +73,7 @@ func (store *AboutStoreImpl) GetAboutByID(id string) (*models.About, error) {
 }
 
 func (store *AboutStoreImpl) CreateAbout(about *models.About) (*models.About, error) {
-	item, err := dynamodbattribute.MarshalMap(about)
+	item, err := attributevalue.MarshalMap(about)
 	if err != nil {
 		return nil, err
 	}
@@ -80,8 +83,7 @@ func (store *AboutStoreImpl) CreateAbout(about *models.About) (*models.About, er
 		Item:      item,
 	}
 
-	_, err = store.db.Database.PutItem(input)
-	if err != nil {
+	if _, err = store.db.Database.PutItem(context.TODO(), input); err != nil {
 		return nil, err
 	}
 
@@ -92,22 +94,19 @@ func (store *AboutStoreImpl) UpdateAbout(id string, about *models.About) (*model
 	updateExpression := "SET Title = :title, Description = : desc, Image = : img"
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(AboutTable),
-		Key: map[string]*dynamodb.AttributeValue{
-			"id": {
-				S: aws.String(id),
-			},
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
 		},
-		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-			":title":       {S: aws.String(about.Title)},
-			":description": {S: aws.String(about.Description)},
-			":img":         {S: aws.String(about.Image)},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":title":       &types.AttributeValueMemberS{Value: about.Title},
+			":description": &types.AttributeValueMemberS{Value: about.Description},
+			":img":         &types.AttributeValueMemberS{Value: about.Image},
 		},
 		UpdateExpression: aws.String(updateExpression),
-		ReturnValues:     aws.String("UPDATED_NEW"),
+		ReturnValues:     types.ReturnValueUpdatedNew,
 	}
 
-	_, err := store.db.Database.UpdateItem(input)
-	if err != nil {
+	if _, err := store.db.Database.UpdateItem(context.TODO(), input); err != nil {
 		return nil, err
 	}
 
@@ -122,14 +121,12 @@ func (store *AboutStoreImpl) DeleteAbout(id string) (*models.About, error) {
 
 	input := &dynamodb.DeleteItemInput{
 		TableName: aws.String(AboutTable),
-		Key: map[string]*dynamodb.AttributeValue{
-			"id": {
-				S: aws.String(id),
-			},
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
 		},
 	}
 
-	if _, err = store.db.Database.DeleteItem(input); err != nil {
+	if _, err = store.db.Database.DeleteItem(context.TODO(), input); err != nil {
 		return nil, err
 	}
 
