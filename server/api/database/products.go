@@ -1,10 +1,12 @@
 package database
 
 import (
+	"context"
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/sean-david-welch/primal-formulas/lib"
 	"github.com/sean-david-welch/primal-formulas/models"
 )
@@ -33,13 +35,13 @@ func NewProductStore(db *lib.DynamoDBClient) *ProductStoreImpl {
 
 func (store *ProductStoreImpl) GetProducts() ([]*models.Product, error) {
 	input := &dynamodb.ScanInput{TableName: aws.String(ProductsTable)}
-	result, err := store.db.Database.Scan(input)
+	result, err := store.db.Database.Scan(context.TODO(), input)
 	if err != nil {
 		return nil, err
 	}
 
 	var products []*models.Product
-	err = dynamodbattribute.UnmarshalListOfMaps(result.Items, products)
+	err = attributevalue.UnmarshalListOfMaps(result.Items, &products)
 	if err != nil {
 		return nil, err
 	}
@@ -48,14 +50,14 @@ func (store *ProductStoreImpl) GetProducts() ([]*models.Product, error) {
 }
 
 func (store *ProductStoreImpl) GetProductByID(id string) (*models.Product, error) {
-	input := &dynamodb.GetItemInput{TableName: aws.String(ProductsTable),
-		Key: map[string]*dynamodb.AttributeValue{
-			"id": {
-				S: aws.String(id),
-			},
-		}}
+	input := &dynamodb.GetItemInput{
+		TableName: aws.String(ProductsTable),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
+		},
+	}
 
-	result, err := store.db.Database.GetItem(input)
+	result, err := store.db.Database.GetItem(context.TODO(), input)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +67,7 @@ func (store *ProductStoreImpl) GetProductByID(id string) (*models.Product, error
 	}
 
 	var product *models.Product
-	err = dynamodbattribute.UnmarshalMap(result.Item, product)
+	err = attributevalue.UnmarshalMap(result.Item, &product)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +76,7 @@ func (store *ProductStoreImpl) GetProductByID(id string) (*models.Product, error
 }
 
 func (store *ProductStoreImpl) CreateProduct(product *models.Product) (*models.Product, error) {
-	item, err := dynamodbattribute.MarshalMap(product)
+	item, err := attributevalue.MarshalMap(product)
 	if err != nil {
 		return nil, err
 	}
@@ -84,8 +86,7 @@ func (store *ProductStoreImpl) CreateProduct(product *models.Product) (*models.P
 		Item:      item,
 	}
 
-	_, err = store.db.Database.PutItem(input)
-	if err != nil {
+	if _, err = store.db.Database.PutItem(context.TODO(), input); err != nil {
 		return nil, err
 	}
 
@@ -96,23 +97,20 @@ func (store *ProductStoreImpl) UpdateProduct(id string, product *models.Product)
 	updateExpression := "SET Name = : name, Description = : desc, Image = : img, Price = : price"
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(ProductsTable),
-		Key: map[string]*dynamodb.AttributeValue{
-			"id": {
-				S: aws.String(id),
-			},
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
 		},
-		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-			":name":        {S: aws.String(product.Name)},
-			":description": {S: aws.String(product.Description)},
-			":image":       {S: aws.String(product.Image)},
-			":price":       {N: aws.String(fmt.Sprintf("%f", product.Price))},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":name":        &types.AttributeValueMemberS{Value: product.Name},
+			":description": &types.AttributeValueMemberS{Value: product.Description},
+			":image":       &types.AttributeValueMemberS{Value: product.Image},
+			":price":       &types.AttributeValueMemberN{Value: fmt.Sprintf("%f", product.Price)},
 		},
 		UpdateExpression: aws.String(updateExpression),
-		ReturnValues:     aws.String("UPDATED_NEW"),
+		ReturnValues:     types.ReturnValueUpdatedNew,
 	}
 
-	_, err := store.db.Database.UpdateItem(input)
-	if err != nil {
+	if _, err := store.db.Database.UpdateItem(context.TODO(), input); err != nil {
 		return nil, err
 	}
 
@@ -127,14 +125,12 @@ func (store *ProductStoreImpl) DeleteProduct(id string) (*models.Product, error)
 
 	input := &dynamodb.DeleteItemInput{
 		TableName: aws.String(ProductsTable),
-		Key: map[string]*dynamodb.AttributeValue{
-			"id": {
-				S: aws.String(id),
-			},
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
 		},
 	}
 
-	if _, err := store.db.Database.DeleteItem(input); err != nil {
+	if _, err := store.db.Database.DeleteItem(context.TODO(), input); err != nil {
 		return nil, err
 	}
 
