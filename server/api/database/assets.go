@@ -1,9 +1,10 @@
 package database
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"context"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/sean-david-welch/primal-formulas/lib"
 	"github.com/sean-david-welch/primal-formulas/types"
 )
@@ -31,13 +32,13 @@ func NewAssetStore(db *lib.DynamoDBClient) *AssetStoreImpl {
 func (store *AssetStoreImpl) GetAssets() ([]*types.Asset, error) {
 	input := &dynamodb.ScanInput{TableName: aws.String(AssetsTable)}
 
-	result, err := store.db.Database.Scan(input)
+	result, err := store.db.Database.Scan(context.TODO(), input)
 	if err != nil {
 		return nil, err
 	}
 
 	var assets []*types.Asset
-	err = dynamodbattribute.UnmarshalListOfMaps(result.Items, assets)
+	err = attributevalue.UnmarshalListOfMaps(result.Items, &assets)
 	if err != nil {
 		return nil, err
 	}
@@ -46,29 +47,29 @@ func (store *AssetStoreImpl) GetAssets() ([]*types.Asset, error) {
 }
 
 func (store *AssetStoreImpl) GetAssetByID(id string) (*types.Asset, error) {
-	input := &dynamodb.GetItemInput{TableName: aws.String(AssetsTable),
-		Key: map[string]*dynamodb.AttributeValue{
-			"id": {
-				S: aws.String(id),
-			},
-		}}
+	input := &dynamodb.GetItemInput{
+		TableName: aws.String(AssetsTable),
+		Key: map[string]dynamodb.At{
+			"id": &dynamodb.AttributeValueMemberS{Value: id},
+		},
+	}
 
-	result, err := store.db.Database.GetItem(input)
+	result, err := store.db.Database.GetItem(context.TODO(), input)
 	if err != nil {
 		return nil, err
 	}
 
-	var asset *types.Asset
-	err = dynamodbattribute.UnmarshalMap(result.Item, asset)
+	var asset types.Asset
+	err = attributevalue.UnmarshalMap(result.Item, &asset)
 	if err != nil {
 		return nil, err
 	}
 
-	return asset, nil
+	return &asset, nil
 }
 
 func (store *AssetStoreImpl) CreateAsset(asset *types.Asset) (*types.Asset, error) {
-	item, err := dynamodbattribute.MarshalMap(asset)
+	item, err := attributevalue.MarshalMap(asset)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +79,7 @@ func (store *AssetStoreImpl) CreateAsset(asset *types.Asset) (*types.Asset, erro
 		Item:      item,
 	}
 
-	if _, err = store.db.Database.PutItem(input); err != nil {
+	if _, err = store.db.Database.PutItem(context.TODO(), input); err != nil {
 		return nil, err
 	}
 
@@ -86,23 +87,23 @@ func (store *AssetStoreImpl) CreateAsset(asset *types.Asset) (*types.Asset, erro
 }
 
 func (store *AssetStoreImpl) UpdateAsset(id string, asset *types.Asset) (*types.Asset, error) {
-	updateExpression := "SET Name = : name, Content = : content"
+	updateExpression := "SET Name = :name, Content = :content"
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(AssetsTable),
-		Key: map[string]*dynamodb.AttributeValue{
+		Key: map[string]dynamodb.AttributeValue{
 			"id": {
 				S: aws.String(id),
 			},
 		},
-		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
 			":name":    {S: aws.String(asset.Name)},
 			":content": {S: aws.String(asset.Content)},
 		},
 		UpdateExpression: aws.String(updateExpression),
-		ReturnValues:     aws.String("UPDATED_NEW"),
+		ReturnValues:     dynamodb.ReturnValueUpdatedNew,
 	}
 
-	if _, err := store.db.Database.UpdateItem(input); err != nil {
+	if _, err := store.db.Database.UpdateItem(context.TODO(), input); err != nil {
 		return nil, err
 	}
 
@@ -117,14 +118,14 @@ func (store *AssetStoreImpl) DeleteAsset(id string) (*types.Asset, error) {
 
 	input := &dynamodb.DeleteItemInput{
 		TableName: aws.String(AssetsTable),
-		Key: map[string]*dynamodb.AttributeValue{
+		Key: map[string]dynamodb.AttributeValue{
 			"id": {
 				S: aws.String(id),
 			},
 		},
 	}
 
-	if _, err := store.db.Database.DeleteItem(input); err != nil {
+	if _, err := store.db.Database.DeleteItem(context.TODO(), input); err != nil {
 		return nil, err
 	}
 
