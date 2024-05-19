@@ -4,14 +4,14 @@ import (
 	"errors"
 	"github.com/sean-david-welch/primal-formulas/database"
 	"github.com/sean-david-welch/primal-formulas/lib"
-	"github.com/sean-david-welch/primal-formulas/types"
+	"github.com/sean-david-welch/primal-formulas/models"
 )
 
 type AboutService interface {
-	GetAbouts() ([]*types.About, error)
-	GetAboutByID(id string) (*types.About, error)
-	CreateAbout(about *types.About) (*types.ModelResult, error)
-	UpdateAbout(id string, about *types.About) (*types.ModelResult, error)
+	GetAbouts() ([]*models.About, error)
+	GetAboutByID(id string) (*models.About, error)
+	CreateAbout(about *models.About) (*models.ModelResult, error)
+	UpdateAbout(id string, about *models.About) (*models.ModelResult, error)
 	DeleteAbout(id string) error
 }
 
@@ -24,7 +24,7 @@ func NewAboutService(store database.AboutStore, client lib.S3Client) *AboutServi
 	return &AboutServiceImpl{store: store, client: client}
 }
 
-func (service *AboutServiceImpl) GetAbouts() ([]*types.About, error) {
+func (service *AboutServiceImpl) GetAbouts() ([]*models.About, error) {
 	abouts, err := service.store.GetAbouts()
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (service *AboutServiceImpl) GetAbouts() ([]*types.About, error) {
 	return abouts, nil
 }
 
-func (service *AboutServiceImpl) GetAboutByID(id string) (*types.About, error) {
+func (service *AboutServiceImpl) GetAboutByID(id string) (*models.About, error) {
 	about, err := service.store.GetAboutByID(id)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (service *AboutServiceImpl) GetAboutByID(id string) (*types.About, error) {
 	return about, nil
 }
 
-func (service *AboutServiceImpl) CreateAbout(about *types.About) (*types.ModelResult, error) {
+func (service *AboutServiceImpl) CreateAbout(about *models.About) (*models.ModelResult, error) {
 	image := about.Image
 
 	if image == "" || image == "null" {
@@ -67,12 +67,12 @@ func (service *AboutServiceImpl) CreateAbout(about *types.About) (*types.ModelRe
 		return nil, err
 	}
 
-	result := &types.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
+	result := &models.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
 
 	return result, nil
 }
 
-func (service *AboutServiceImpl) UpdateAbout(id string, about *types.About) (*types.ModelResult, error) {
+func (service *AboutServiceImpl) UpdateAbout(id string, about *models.About) (*models.ModelResult, error) {
 	image := about.Image
 
 	var presignedUrl, imageUrl string
@@ -90,7 +90,7 @@ func (service *AboutServiceImpl) UpdateAbout(id string, about *types.About) (*ty
 		return nil, err
 	}
 
-	result := &types.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
+	result := &models.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
 
 	return result, nil
 }

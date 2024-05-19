@@ -4,14 +4,14 @@ import (
 	"errors"
 	"github.com/sean-david-welch/primal-formulas/database"
 	"github.com/sean-david-welch/primal-formulas/lib"
-	"github.com/sean-david-welch/primal-formulas/types"
+	"github.com/sean-david-welch/primal-formulas/models"
 )
 
 type ProductService interface {
-	GetProducts() ([]*types.Product, error)
-	GetProductByID(id string) (*types.Product, error)
-	CreateProduct(product *types.Product) (*types.ModelResult, error)
-	UpdateProduct(id string, product *types.Product) (*types.ModelResult, error)
+	GetProducts() ([]*models.Product, error)
+	GetProductByID(id string) (*models.Product, error)
+	CreateProduct(product *models.Product) (*models.ModelResult, error)
+	UpdateProduct(id string, product *models.Product) (*models.ModelResult, error)
 	DeleteProduct(id string) error
 }
 
@@ -24,7 +24,7 @@ func NewProductService(store database.ProductStore, client lib.S3Client) *Produc
 	return &ProductServiceImpl{store: store, client: client}
 }
 
-func (service *ProductServiceImpl) GetProducts() ([]*types.Product, error) {
+func (service *ProductServiceImpl) GetProducts() ([]*models.Product, error) {
 	products, err := service.store.GetProducts()
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (service *ProductServiceImpl) GetProducts() ([]*types.Product, error) {
 	return products, nil
 }
 
-func (service *ProductServiceImpl) GetProductByID(id string) (*types.Product, error) {
+func (service *ProductServiceImpl) GetProductByID(id string) (*models.Product, error) {
 	product, err := service.store.GetProductByID(id)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (service *ProductServiceImpl) GetProductByID(id string) (*types.Product, er
 	return product, nil
 }
 
-func (service *ProductServiceImpl) CreateProduct(product *types.Product) (*types.ModelResult, error) {
+func (service *ProductServiceImpl) CreateProduct(product *models.Product) (*models.ModelResult, error) {
 	image := product.Image
 
 	if image == "" || image == "null" {
@@ -67,12 +67,12 @@ func (service *ProductServiceImpl) CreateProduct(product *types.Product) (*types
 		return nil, err
 	}
 
-	result := &types.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
+	result := &models.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
 
 	return result, nil
 }
 
-func (service *ProductServiceImpl) UpdateProduct(id string, product *types.Product) (*types.ModelResult, error) {
+func (service *ProductServiceImpl) UpdateProduct(id string, product *models.Product) (*models.ModelResult, error) {
 	image := product.Image
 
 	var presignedUrl, imageUrl string
@@ -90,7 +90,7 @@ func (service *ProductServiceImpl) UpdateProduct(id string, product *types.Produ
 		return nil, err
 	}
 
-	result := &types.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
+	result := &models.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
 
 	return result, nil
 }

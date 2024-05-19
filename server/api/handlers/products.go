@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/sean-david-welch/primal-formulas/lib"
+	"github.com/sean-david-welch/primal-formulas/models"
 	"github.com/sean-david-welch/primal-formulas/services"
-	"github.com/sean-david-welch/primal-formulas/types"
 	"net/http"
 )
 
@@ -55,7 +55,7 @@ func (handler *ProductHandlerImpl) GetProductByID(request events.APIGatewayProxy
 }
 
 func (handler *ProductHandlerImpl) CreateProduct(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse {
-	var product *types.Product
+	var product *models.Product
 	if err := json.Unmarshal([]byte(request.Body), &product); err != nil {
 		return handler.response.ErrorResponse(err, http.StatusBadRequest)
 	}
@@ -69,7 +69,7 @@ func (handler *ProductHandlerImpl) CreateProduct(request events.APIGatewayProxyR
 }
 
 func (handler *ProductHandlerImpl) UpdateProduct(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse {
-	var product *types.Product
+	var product *models.Product
 	id := request.PathParameters["id"]
 
 	if err := json.Unmarshal([]byte(request.Body), &product); err != nil {

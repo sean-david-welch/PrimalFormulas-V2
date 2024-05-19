@@ -4,14 +4,14 @@ import (
 	"errors"
 	"github.com/sean-david-welch/primal-formulas/database"
 	"github.com/sean-david-welch/primal-formulas/lib"
-	"github.com/sean-david-welch/primal-formulas/types"
+	"github.com/sean-david-welch/primal-formulas/models"
 )
 
 type AssetService interface {
-	GetAssets() ([]*types.Asset, error)
-	GetAssetByID(id string) (*types.Asset, error)
-	CreateAsset(asset *types.Asset) (*types.ModelResult, error)
-	UpdateAsset(id string, asset *types.Asset) (*types.ModelResult, error)
+	GetAssets() ([]*models.Asset, error)
+	GetAssetByID(id string) (*models.Asset, error)
+	CreateAsset(asset *models.Asset) (*models.ModelResult, error)
+	UpdateAsset(id string, asset *models.Asset) (*models.ModelResult, error)
 	DeleteAsset(id string) error
 }
 
@@ -27,7 +27,7 @@ func NewAssetStore(store database.AssetStore, client lib.S3Client) *AssetService
 	}
 }
 
-func (service *AssetServiceImpl) GetAssets() ([]*types.Asset, error) {
+func (service *AssetServiceImpl) GetAssets() ([]*models.Asset, error) {
 	assets, err := service.store.GetAssets()
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (service *AssetServiceImpl) GetAssets() ([]*types.Asset, error) {
 	return assets, nil
 }
 
-func (service *AssetServiceImpl) GetAssetByID(id string) (*types.Asset, error) {
+func (service *AssetServiceImpl) GetAssetByID(id string) (*models.Asset, error) {
 	asset, err := service.store.GetAssetByID(id)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (service *AssetServiceImpl) GetAssetByID(id string) (*types.Asset, error) {
 	return asset, nil
 }
 
-func (service *AssetServiceImpl) CreateAsset(asset *types.Asset) (*types.ModelResult, error) {
+func (service *AssetServiceImpl) CreateAsset(asset *models.Asset) (*models.ModelResult, error) {
 	content := asset.Content
 
 	if content == "" || content == "null" {
@@ -69,12 +69,12 @@ func (service *AssetServiceImpl) CreateAsset(asset *types.Asset) (*types.ModelRe
 		return nil, err
 	}
 
-	result := &types.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
+	result := &models.ModelResult{PresignedUrl: presignedUrl, ImageUrl: imageUrl}
 
 	return result, nil
 }
 
-func (service *AssetServiceImpl) UpdateAsset(id string, asset *types.Asset) (*types.ModelResult, error) {
+func (service *AssetServiceImpl) UpdateAsset(id string, asset *models.Asset) (*models.ModelResult, error) {
 	content := asset.Content
 
 	var presignedUrl, imageUrl string
@@ -92,7 +92,7 @@ func (service *AssetServiceImpl) UpdateAsset(id string, asset *types.Asset) (*ty
 		return nil, err
 	}
 
-	result := &types.ModelResult{
+	result := &models.ModelResult{
 		PresignedUrl: presignedUrl,
 		ImageUrl:     imageUrl,
 	}

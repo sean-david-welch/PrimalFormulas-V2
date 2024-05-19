@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/sean-david-welch/primal-formulas/lib"
+	"github.com/sean-david-welch/primal-formulas/models"
 	"github.com/sean-david-welch/primal-formulas/services"
-	"github.com/sean-david-welch/primal-formulas/types"
 	"net/http"
 )
 
@@ -55,7 +55,7 @@ func (handler *AboutHandlerImpl) GetAboutByID(request events.APIGatewayProxyRequ
 }
 
 func (handler *AboutHandlerImpl) CreateAbout(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse {
-	var about *types.About
+	var about *models.About
 	if err := json.Unmarshal([]byte(request.Body), &about); err != nil {
 		return handler.response.ErrorResponse(err, http.StatusBadRequest)
 	}
@@ -69,7 +69,7 @@ func (handler *AboutHandlerImpl) CreateAbout(request events.APIGatewayProxyReque
 }
 
 func (handler *AboutHandlerImpl) UpdateAbout(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse {
-	var about *types.About
+	var about *models.About
 	id := request.PathParameters["id"]
 
 	if err := json.Unmarshal([]byte(request.Body), &about); err != nil {

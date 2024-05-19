@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/sean-david-welch/primal-formulas/lib"
-	"github.com/sean-david-welch/primal-formulas/types"
+	"github.com/sean-david-welch/primal-formulas/models"
 )
 
 const (
@@ -13,11 +13,11 @@ const (
 )
 
 type AboutStore interface {
-	GetAbouts() ([]*types.About, error)
-	GetAboutByID(string) (*types.About, error)
-	CreateAbout(about *types.About) (*types.About, error)
-	UpdateAbout(id string, about *types.About) (*types.About, error)
-	DeleteAbout(id string) (*types.About, error)
+	GetAbouts() ([]*models.About, error)
+	GetAboutByID(string) (*models.About, error)
+	CreateAbout(about *models.About) (*models.About, error)
+	UpdateAbout(id string, about *models.About) (*models.About, error)
+	DeleteAbout(id string) (*models.About, error)
 }
 
 type AboutStoreImpl struct {
@@ -28,14 +28,14 @@ func NewAboutStore(db *lib.DynamoDBClient) *AboutStoreImpl {
 	return &AboutStoreImpl{db: db}
 }
 
-func (store *AboutStoreImpl) GetAbouts() ([]*types.About, error) {
+func (store *AboutStoreImpl) GetAbouts() ([]*models.About, error) {
 	input := &dynamodb.ScanInput{TableName: aws.String(AboutTable)}
 	result, err := store.db.Database.Scan(input)
 	if err != nil {
 		return nil, err
 	}
 
-	var abouts []*types.About
+	var abouts []*models.About
 	err = dynamodbattribute.UnmarshalListOfMaps(result.Items, &abouts)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (store *AboutStoreImpl) GetAbouts() ([]*types.About, error) {
 	return abouts, nil
 }
 
-func (store *AboutStoreImpl) GetAboutByID(id string) (*types.About, error) {
+func (store *AboutStoreImpl) GetAboutByID(id string) (*models.About, error) {
 	input := &dynamodb.GetItemInput{TableName: aws.String(AboutTable), Key: map[string]*dynamodb.AttributeValue{
 		"id": {
 			S: aws.String(id),
@@ -60,7 +60,7 @@ func (store *AboutStoreImpl) GetAboutByID(id string) (*types.About, error) {
 		return nil, nil
 	}
 
-	var about *types.About
+	var about *models.About
 	err = dynamodbattribute.UnmarshalMap(result.Item, &about)
 	if err != nil {
 		return nil, err
@@ -69,7 +69,7 @@ func (store *AboutStoreImpl) GetAboutByID(id string) (*types.About, error) {
 	return about, nil
 }
 
-func (store *AboutStoreImpl) CreateAbout(about *types.About) (*types.About, error) {
+func (store *AboutStoreImpl) CreateAbout(about *models.About) (*models.About, error) {
 	item, err := dynamodbattribute.MarshalMap(about)
 	if err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func (store *AboutStoreImpl) CreateAbout(about *types.About) (*types.About, erro
 	return about, nil
 }
 
-func (store *AboutStoreImpl) UpdateAbout(id string, about *types.About) (*types.About, error) {
+func (store *AboutStoreImpl) UpdateAbout(id string, about *models.About) (*models.About, error) {
 	updateExpression := "SET Title = :title, Description = : desc, Image = : img"
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(AboutTable),
@@ -114,7 +114,7 @@ func (store *AboutStoreImpl) UpdateAbout(id string, about *types.About) (*types.
 	return about, nil
 }
 
-func (store *AboutStoreImpl) DeleteAbout(id string) (*types.About, error) {
+func (store *AboutStoreImpl) DeleteAbout(id string) (*models.About, error) {
 	about, err := store.GetAboutByID(id)
 	if err != nil {
 		return nil, err

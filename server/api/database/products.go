@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/sean-david-welch/primal-formulas/lib"
-	"github.com/sean-david-welch/primal-formulas/types"
+	"github.com/sean-david-welch/primal-formulas/models"
 )
 
 const (
@@ -14,11 +14,11 @@ const (
 )
 
 type ProductStore interface {
-	GetProducts() ([]*types.Product, error)
-	GetProductByID(id string) (*types.Product, error)
-	CreateProduct(product *types.Product) (*types.Product, error)
-	UpdateProduct(id string, product *types.Product) (*types.Product, error)
-	DeleteProduct(id string) (*types.Product, error)
+	GetProducts() ([]*models.Product, error)
+	GetProductByID(id string) (*models.Product, error)
+	CreateProduct(product *models.Product) (*models.Product, error)
+	UpdateProduct(id string, product *models.Product) (*models.Product, error)
+	DeleteProduct(id string) (*models.Product, error)
 }
 
 type ProductStoreImpl struct {
@@ -31,14 +31,14 @@ func NewProductStore(db *lib.DynamoDBClient) *ProductStoreImpl {
 	}
 }
 
-func (store *ProductStoreImpl) GetProducts() ([]*types.Product, error) {
+func (store *ProductStoreImpl) GetProducts() ([]*models.Product, error) {
 	input := &dynamodb.ScanInput{TableName: aws.String(ProductsTable)}
 	result, err := store.db.Database.Scan(input)
 	if err != nil {
 		return nil, err
 	}
 
-	var products []*types.Product
+	var products []*models.Product
 	err = dynamodbattribute.UnmarshalListOfMaps(result.Items, products)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (store *ProductStoreImpl) GetProducts() ([]*types.Product, error) {
 	return products, nil
 }
 
-func (store *ProductStoreImpl) GetProductByID(id string) (*types.Product, error) {
+func (store *ProductStoreImpl) GetProductByID(id string) (*models.Product, error) {
 	input := &dynamodb.GetItemInput{TableName: aws.String(ProductsTable),
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
@@ -64,7 +64,7 @@ func (store *ProductStoreImpl) GetProductByID(id string) (*types.Product, error)
 		return nil, nil
 	}
 
-	var product *types.Product
+	var product *models.Product
 	err = dynamodbattribute.UnmarshalMap(result.Item, product)
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func (store *ProductStoreImpl) GetProductByID(id string) (*types.Product, error)
 	return product, nil
 }
 
-func (store *ProductStoreImpl) CreateProduct(product *types.Product) (*types.Product, error) {
+func (store *ProductStoreImpl) CreateProduct(product *models.Product) (*models.Product, error) {
 	item, err := dynamodbattribute.MarshalMap(product)
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ func (store *ProductStoreImpl) CreateProduct(product *types.Product) (*types.Pro
 	return product, nil
 }
 
-func (store *ProductStoreImpl) UpdateProduct(id string, product *types.Product) (*types.Product, error) {
+func (store *ProductStoreImpl) UpdateProduct(id string, product *models.Product) (*models.Product, error) {
 	updateExpression := "SET Name = : name, Description = : desc, Image = : img, Price = : price"
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(ProductsTable),
@@ -119,7 +119,7 @@ func (store *ProductStoreImpl) UpdateProduct(id string, product *types.Product) 
 	return product, nil
 }
 
-func (store *ProductStoreImpl) DeleteProduct(id string) (*types.Product, error) {
+func (store *ProductStoreImpl) DeleteProduct(id string) (*models.Product, error) {
 	product, err := store.GetProductByID(id)
 	if err != nil {
 		return nil, err

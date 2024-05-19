@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/sean-david-welch/primal-formulas/lib"
+	"github.com/sean-david-welch/primal-formulas/models"
 	"github.com/sean-david-welch/primal-formulas/services"
-	"github.com/sean-david-welch/primal-formulas/types"
 	"net/http"
 )
 
@@ -57,7 +57,7 @@ func (handler *AssetHandlerImpl) GetAssetByID(request events.APIGatewayProxyRequ
 }
 
 func (handler *AssetHandlerImpl) CreateAsset(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse {
-	var asset *types.Asset
+	var asset *models.Asset
 	if err := json.Unmarshal([]byte(request.Body), &asset); err != nil {
 		return handler.response.ErrorResponse(err, http.StatusBadRequest)
 	}
@@ -71,7 +71,7 @@ func (handler *AssetHandlerImpl) CreateAsset(request events.APIGatewayProxyReque
 }
 
 func (handler *AssetHandlerImpl) UpdateAsset(request events.APIGatewayProxyRequest) *events.APIGatewayProxyResponse {
-	var asset *types.Asset
+	var asset *models.Asset
 	id := request.PathParameters["id"]
 
 	if err := json.Unmarshal([]byte(request.Body), &asset); err != nil {
