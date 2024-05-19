@@ -6,8 +6,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
-	"github.com/joho/godotenv"
-	"os"
 )
 
 type Secrets struct {
@@ -44,22 +42,7 @@ func getSecrets(secretName string) (*Secrets, error) {
 }
 
 func NewSecrets() (*Secrets, error) {
-	env := os.Getenv("ENV")
-	if env != "production" {
-		if err := godotenv.Load(".env"); err != nil {
-			return nil, fmt.Errorf("failed to load .env file: %w", err)
-		}
-
-		return &Secrets{
-			AwsRegionName:       os.Getenv("AWS_REGION_NAME"),
-			AwsAccessKey:        os.Getenv("AWS_ACCESS_KEY"),
-			AwsSecret:           os.Getenv("AWS_SECRET_KEY"),
-			StripeSecretKey:     os.Getenv("STRIPE_SECRET_KEY"),
-			StripeSecretKeyTest: os.Getenv("TEST_SECRET_KEY"),
-		}, nil
-	}
-
-	secrets, err := getSecrets("your-secret-id")
+	secrets, err := getSecrets("primalformulas.ie")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get secrets: %w", err)
 	}

@@ -39,7 +39,7 @@ export class ServerStack extends cdk.Stack {
       TEST_SECRET_KEY: process.env.TEST_SECRET_KEY,
     };
 
-    const secret = new secretsmanager.Secret(this, 'MySecret', {
+    const secret = new secretsmanager.Secret(this, 'primalformulas.ie', {
       description: 'Environment variables for PrimalFormulas serverless API',
       secretStringValue: cdk.SecretValue.unsafePlainText(JSON.stringify(secrets)),
     });
