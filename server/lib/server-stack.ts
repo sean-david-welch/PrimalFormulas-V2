@@ -87,12 +87,16 @@ export class ServerStack extends cdk.Stack {
       table.grantReadWriteData(lambdaFunction);
 
       lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
-        actions: ['secretsmanager:GetSecretValue'],
+        actions: [
+          'secretsmanager:GetSecretValue',
+          'secretsmanager:DescribeSecret'
+        ],
         resources: [secret.secretArn],
       }));
 
       return lambdaFunction;
     });
+
 
 
     const api = new apigateway.RestApi(this, 'PrimalFormulasAPI', {
