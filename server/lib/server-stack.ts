@@ -4,8 +4,10 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+
 
 export class ServerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -69,7 +71,7 @@ export class ServerStack extends cdk.Stack {
     ];
 
     const lambdaFunctions = functions.map(func => {
-      return new lambda.Function(this, func.name, {
+      const lambdaFunction = new lambda.Function(this, func.name, {
         runtime: lambda.Runtime.PROVIDED_AL2023,
         code: lambda.Code.fromAsset(func.path),
         handler: func.handler,
@@ -79,13 +81,19 @@ export class ServerStack extends cdk.Stack {
           TABLE_NAME: table.tableName,
         },
       });
+
+      bucket.grantReadWrite(lambdaFunction);
+      secret.grantRead(lambdaFunction);
+      table.grantReadWriteData(lambdaFunction);
+
+      lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
+        actions: ['secretsmanager:GetSecretValue'],
+        resources: [secret.secretArn],
+      }));
+
+      return lambdaFunction;
     });
 
-    lambdaFunctions.forEach(func => {
-      bucket.grantReadWrite(func);
-      secret.grantRead(func);
-      table.grantReadWriteData(func);
-    });
 
     const api = new apigateway.RestApi(this, 'PrimalFormulasAPI', {
       restApiName: 'PrimalFormulas',
