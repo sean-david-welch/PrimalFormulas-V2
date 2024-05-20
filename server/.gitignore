@@ -11,3 +11,8 @@ cdk.out
 /api/bin/*
 /api/bin/**
 
+./api/bin/
+./api/bin/*
+./api/bin/**
+
+

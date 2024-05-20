@@ -47,11 +47,13 @@ export class ServerStack extends cdk.Stack {
     console.log('secrets', secrets)
 
     const secret = new secretsmanager.Secret(this, 'primalformulasSecret', {
+      secretName: 'primalformulasSecret',
       description: 'Environment variables for PrimalFormulas serverless API',
       secretStringValue: cdk.SecretValue.unsafePlainText(JSON.stringify(secrets)),
     });
 
     const table = new dynamodb.Table(this, 'primalformulasStore', {
+      tableName: 'primalformulasStore',
       partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
     });
