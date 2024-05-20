@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/sean-david-welch/primal-formulas/config"
@@ -20,12 +21,20 @@ func main() {
 func Handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	secrets, err := config.NewSecrets()
 	if err != nil {
-		log.Fatalf("Error loading configuration: %v", err)
+		log.Printf("Error loading configurationsL %v", err)
+		return &events.APIGatewayProxyResponse{
+			StatusCode: http.StatusMethodNotAllowed,
+			Body:       fmt.Sprintf("Error loading secrets configurations: %v", err),
+		}, nil
 	}
 
 	s3Client, err := lib.NewS3Client(secrets.AwsRegionName, secrets.AwsAccessKey, secrets.AwsSecret)
 	if err != nil {
-		log.Fatalf("Failed to create S3 client: %v", err)
+		log.Printf("Failed to create s3 client: %v", err)
+		return &events.APIGatewayProxyResponse{
+			StatusCode: http.StatusMethodNotAllowed,
+			Body:       fmt.Sprintf("Error loading s3 configurations: %v", err),
+		}, nil
 	}
 
 	dbClient := lib.NewDynamoDBClient()

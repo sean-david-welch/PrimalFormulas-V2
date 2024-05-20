@@ -46,7 +46,7 @@ func getSecrets(secretName string) (*Secrets, error) {
 }
 
 func NewSecrets() (*Secrets, error) {
-	secrets, err := getSecrets("primalformulas.ie")
+	secrets, err := getSecrets("primalformulasSecret")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get secrets: %w", err)
 	}

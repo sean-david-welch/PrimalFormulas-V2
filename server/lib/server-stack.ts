@@ -8,6 +8,8 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export class ServerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -41,6 +43,8 @@ export class ServerStack extends cdk.Stack {
       STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
       TEST_SECRET_KEY: process.env.TEST_SECRET_KEY,
     };
+
+    console.log('secrets', secrets)
 
     const secret = new secretsmanager.Secret(this, 'primalformulasSecret', {
       description: 'Environment variables for PrimalFormulas serverless API',
@@ -87,15 +91,18 @@ export class ServerStack extends cdk.Stack {
       table.grantReadWriteData(lambdaFunction);
 
       lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
-        actions: [
-          'secretsmanager:GetSecretValue',
-          'secretsmanager:DescribeSecret'
-        ],
+        actions: ['secretsmanager:GetSecretValue', 'secretsmanager:DescribeSecret'],
         resources: [secret.secretArn],
       }));
 
+      const role = lambdaFunction.role;
+      if (role) {
+        role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('SecretsManagerReadWrite'));
+      }
+
       return lambdaFunction;
     });
+
 
 
 
