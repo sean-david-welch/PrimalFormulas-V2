@@ -11,8 +11,9 @@ export class ServerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const bucket = new s3.Bucket(this, 'primalformulas', {
+    const bucket = new s3.Bucket(this, 'primalformulas.ie', {
       versioned: true,
+      bucketName: 'primalformulas.ie',
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: 'index.html',
       cors: [
