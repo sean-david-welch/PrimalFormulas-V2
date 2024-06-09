@@ -13,7 +13,12 @@ dotenv.config();
 
 export class ServerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+    super(scope, id, {
+      ...props,
+      env: {
+        region: 'eu-west-1', // Explicitly specify the region
+      },
+    });
 
     const bucket = new s3.Bucket(this, 'primalformulas.ie', {
       versioned: true,
@@ -44,8 +49,6 @@ export class ServerStack extends cdk.Stack {
       TEST_SECRET_KEY: process.env.TEST_SECRET_KEY,
     };
 
-    console.log('secrets', secrets)
-
     const secret = new secretsmanager.Secret(this, 'primalformulasSecret', {
       secretName: 'primalformulasSecret',
       description: 'Environment variables for PrimalFormulas serverless API',
@@ -56,6 +59,7 @@ export class ServerStack extends cdk.Stack {
       tableName: 'primalformulasStore',
       partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
     const functions = [
@@ -97,16 +101,13 @@ export class ServerStack extends cdk.Stack {
         resources: [secret.secretArn],
       }));
 
-      const role = lambdaFunction.role;
-      if (role) {
-        role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('SecretsManagerReadWrite'));
-      }
+      lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
+        actions: ['dynamodb:Scan'],
+        resources: [table.tableArn],
+      }));
 
       return lambdaFunction;
     });
-
-
-
 
     const api = new apigateway.RestApi(this, 'PrimalFormulasAPI', {
       restApiName: 'PrimalFormulas',
